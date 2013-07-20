@@ -1,0 +1,3 @@
+title=droidchat
+author=vaizlabs
+orientation=portrait
