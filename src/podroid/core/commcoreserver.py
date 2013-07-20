@@ -2,8 +2,6 @@
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 
-
-from twisted.internet import reactor
 from twisted.internet import protocol
 
 ## Server backend to pocess the commands

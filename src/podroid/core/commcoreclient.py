@@ -4,7 +4,7 @@ install_twisted_reactor()
 
 
 # connection to command server
-from twisted.internet import reactor, protocol
+from twisted.internet import protocol
 
 class CommCoreClient(protocol.Protocol):
     def connectionMade(self):
