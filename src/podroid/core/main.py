@@ -1,11 +1,9 @@
-from commcoreserver import CommCoreServerFactory
-from commcoreclient import CommCoreClientFactory
-from twisted.internet import reactor
-
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
+
+from podroid.comm.twiscomm import CommService
 
 class PodDroidApp(App):
     connection = None
@@ -14,13 +12,16 @@ class PodDroidApp(App):
         ## Start GUI
         root = self.setup_gui()
         ## Start Server
-        self.start_server()      
+        self.tcomm = self.setup_node()      
         return root
 
-    def start_server(self):
+
+    def setup_node(self):
         self.print_message("Starting Server..")
-        reactor.listenTCP(8000, CommCoreServerFactory(self))
+        ## Values hard coded for now.
+        c = CommService(123, 'localhost', 8000)
         self.print_message("Server Started..")
+        return c
 
         
     def setup_gui(self):
@@ -32,12 +33,11 @@ class PodDroidApp(App):
         self.layout.add_widget(self.textbox)
         return self.layout
 
-    def connect_to_server(self):
-        reactor.connectTCP('localhost', 8000, CommCoreClientFactory(self))
 
     def on_connection(self, connection):
         self.print_message("connected succesfully!")
         self.connection = connection
+
 
     def send_message(self, *args):
         msg = self.textbox.text
@@ -45,18 +45,10 @@ class PodDroidApp(App):
             self.connection.write(str(self.textbox.text))
             self.textbox.text = ""
 
+
     def print_message(self, msg):
         self.label.text += msg + "\n"
-
-        
-    def handle_command(self, msg):
-        self.label.text  += "received:  %s\n" % msg
-
-        if msg == "ping":  msg =  "pong"
-        if msg == "plop":  msg = "kivy rocks"
-        self.label.text += "processing: %s\n" % msg
-        return msg
-    
+          
     
     def handle_input(self, *args):
         "*Send* button (and return key) event call back"
@@ -97,7 +89,7 @@ class PodDroidApp(App):
             except AttributeError:
                 return self.default_cmd(cmd)
             else:
-                self.logger.info("Executing: '%s' Args: '%s'", cmd, args)
+                #self.logger.info("Executing: '%s' Args: '%s'", cmd, args)
                 #print args
                 return func(args)
             
@@ -105,7 +97,7 @@ class PodDroidApp(App):
     def default_cmd(self, cmd):
         'If command not found'
         self.print_message('Invalid Command "%s"\n' % cmd)        
-        self.logger.error('Command "%s" not found', cmd)         
+        #self.logger.error('Command "%s" not found', cmd)         
         
         
     def print_topics(self, header, cmds, maxcol):
@@ -116,6 +108,7 @@ class PodDroidApp(App):
                 self.print_message("%s\n"%str(self.ruler * len(header)))
             self.columnize(cmds, maxcol-1)
             self.print_message("\n")
+
 
     def columnize(self, list, displaywidth=80):
         """Display a list of strings as a compact set of columns.

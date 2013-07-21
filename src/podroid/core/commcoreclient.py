@@ -7,10 +7,13 @@ install_twisted_reactor()
 from twisted.internet import protocol
 
 class CommCoreClient(protocol.Protocol):
+    
     def connectionMade(self):
-        self.factory.app.on_connection(self.transport)
+        
+        self.factory.app.on_server_connection(self.transport)
 
     def dataReceived(self, data):
+        
         self.factory.app.print_message(data)
 
 class CommCoreClientFactory(protocol.ClientFactory):
