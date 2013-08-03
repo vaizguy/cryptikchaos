@@ -28,11 +28,11 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
     def clientConnectionLost(self, connector, reason):
         
         #self.app.print_message("connection lost")
-        Logger( "Lost connection.  Reason: {}".format(reason) )
+        Logger.debug( "Lost connection.  Reason: {}".format(reason) )
         protocol.ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
 
     def clientConnectionFailed(self, connector, reason):
         
         #self.app.print_message("connection failed")
-        Logger( "Connection failed. Reason:".format(reason) )
+        Logger.debug( "Connection failed. Reason:".format(reason) )
         protocol.ReconnectingClientFactory.clientConnectionFailed(self, connector,  reason)

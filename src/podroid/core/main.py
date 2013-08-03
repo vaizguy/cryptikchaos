@@ -2,7 +2,9 @@ from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
 from kivy.logger import Logger
+from kivy.lang import Builder
 
 ## Add podroid path
 import pythonpath
@@ -10,20 +12,16 @@ pythonpath.AddSysPath('../../')
 
 from podroid.comm.twiscomm import CommService
 
-import logging
-
 class PodDroidApp(App, CommService):
     
     ## Help documentation printer variables.
-    doc_leader = ""
-    doc_header = "Documented commands (type help <topic>):"
-    misc_header = "Miscellaneous help topics:"
+    doc_leader   = ""
+    doc_header   = "Documented commands (type help <topic>):"
+    misc_header  = "Miscellaneous help topics:"
     undoc_header = "Undocumented commands:"
-    nohelp = "*** No help on %s"
-    ruler = '='
+    nohelp       = "*** No help on %s"
+    ruler        = '='
     
-    logger = logging.getLogger('podroid.core.main.PodDroidApp')
-
     def build(self):
         ## Start GUI
         root = self.setup_gui()
@@ -42,12 +40,19 @@ class PodDroidApp(App, CommService):
 
         
     def setup_gui(self):
+        ## Create Textbox
         self.textbox = TextInput(size_hint_y=.1, multiline=False)
         self.textbox.bind(on_text_validate=self.handle_input)
-        self.label = Label(text='Welcome...\n')
+        ## Create label
+        self.label = Label(text='Welcome to Podnet.\n')
+        ## Create button
+        self.enter_button = Button(text='Enter', ) 
+        self.enter_button.bind(on_press=self.handle_input)
+        
         self.layout = BoxLayout(orientation='vertical')
         self.layout.add_widget(self.label)
         self.layout.add_widget(self.textbox)
+        self.layout.add_widget(self.enter_button)
         return self.layout
 
 
@@ -92,7 +97,7 @@ class PodDroidApp(App, CommService):
                
         (cmd, args) = (cmd_split[0], ' '.join(cmd_split[1:]))
         
-        return (cmd, args)        
+        return (cmd, str(args))
     
     
     def exec_command(self, cmd_line):
@@ -233,15 +238,23 @@ class PodDroidApp(App, CommService):
             self.print_topics(self.misc_header,  help_doc.keys(),80)
             self.print_topics(self.undoc_header, cmds_undoc, 80)
             
+    ## ---------------------------
+    ## Command definitions 
+    ## ---------------------------
     def cmd_send(self, cmdline):
-        
+        """
+        Send message to other peers using peerid.
+        Usage: send <pid> <message>
+        """
+
+        (pid, msg) = ( int(cmdline.split(' ')[0]), ' '.join(cmdline.split(' ')[1:]) )
         #-#self.tcomm.send_data(888, 'test_class', 'test_data')
-        self.send_data(888, 'test_class', 'test_data')
-        
-        
+        if self.send_data(pid, 'test', msg):
+            Logger.debug( "Message sent." )
+        else:
+            Logger.error( "Unable to send message." )
             
-            
-                 
+
 if __name__ == '__main__':
     
     PodDroidApp().run()
