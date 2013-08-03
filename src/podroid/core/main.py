@@ -3,25 +3,37 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
 
+## Add podroid path
+import pythonpath
+pythonpath.AddSysPath('../../')
+
 from podroid.comm.twiscomm import CommService
 
-class PodDroidApp(App):
-    connection = None
+class PodDroidApp(App, CommService):
+    
+    ## Help documentation printer variables.
+    doc_leader = ""
+    doc_header = "Documented commands (type help <topic>):"
+    misc_header = "Miscellaneous help topics:"
+    undoc_header = "Undocumented commands:"
+    nohelp = "*** No help on %s"
+    ruler = '='
 
     def build(self):
         ## Start GUI
         root = self.setup_gui()
         ## Start Server
-        self.tcomm = self.setup_node()      
+        CommService.__init__(self, 123, 'localhost', 8000)
+        #-#self.tcomm = self.setup_node()      
         return root
 
 
     def setup_node(self):
         self.print_message("Starting Server..")
         ## Values hard coded for now.
-        c = CommService(123, 'localhost', 8000)
+        #-#comm_service = CommService(123, 'localhost', 8000)
         self.print_message("Server Started..")
-        return c
+        #-#return comm_service
 
         
     def setup_gui(self):
@@ -58,6 +70,7 @@ class PodDroidApp(App):
 
         #if self.connected:
         if len(cmd_line):
+            self.textbox.text = ""
             return self.exec_command(cmd_line)
         else:
             return None
@@ -164,7 +177,63 @@ class PodDroidApp(App):
                 del texts[-1]
             for col in range(len(texts)):
                 texts[col] = texts[col].ljust(colwidths[col])
-            self.print_message("%s\n"%str("  ".join(texts)))  
+            self.print_message("%s\n"%str("  ".join(texts))) 
+            
+             
+    def cmd_help(self, arg):
+        """
+        Displays all available command information.
+        Usage: help [command]"""
+        if arg:
+            # XXX check arg syntax
+            try:
+                func = getattr(self, 'help_' + arg)
+            except AttributeError:
+                try:
+                    doc=getattr(self, 'cmd_' + arg).__doc__
+                    if doc:
+                        self.print_message("%s\n"%str(doc))
+                        return
+                except AttributeError:
+                    pass
+                self.print_message("%s\n"%str(self.nohelp % (arg,)))
+                return
+            func()
+        else:
+            names = [name for name in dir(self) if 'help_' in name or 'cmd_' in name]
+            cmds_doc = []
+            cmds_undoc = []
+            help_doc = {}
+            for name in names:
+                if name[:5] == 'help_':
+                    help_doc[name[5:]]=1
+            names.sort()
+            # There can be duplicates if routines overridden
+            prevname = ''
+            for name in names:
+                if name[:4] == 'cmd_':
+                    if name == prevname:
+                        continue
+                    prevname = name
+                    cmd=name[4:]
+                    if cmd in help_doc:
+                        cmds_doc.append(cmd)
+                        del help_doc[cmd]
+                    elif getattr(self, name).__doc__:
+                        cmds_doc.append(cmd)
+                    else:
+                        cmds_undoc.append(cmd)
+            self.print_message("%s\n"%str(self.doc_leader))
+            self.print_topics(self.doc_header,   cmds_doc,   80)
+            self.print_topics(self.misc_header,  help_doc.keys(),80)
+            self.print_topics(self.undoc_header, cmds_undoc, 80)
+            
+    def cmd_send(self, cmdline):
+        
+        #-#self.tcomm.send_data(888, 'test_class', 'test_data')
+        self.send_data(888, 'test_class', 'test_data')
+        
+        
             
             
                  

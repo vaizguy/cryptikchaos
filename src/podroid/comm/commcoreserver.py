@@ -7,16 +7,17 @@ from twisted.internet import protocol
 ## Server backend to pocess the commands
 class CommCoreServer(protocol.Protocol):
     
-    def connectionMade(self):
+    #def connectionMade(self):
         
-        self.factory.app.on_client_connection(self.transport)
+    #    self.factory.app.on_client_connection(self.transport)
         
     def dataReceived(self, data):
-        
-        response = self.factory.app.handle_command(data)
+        print data
+        #response = self.factory.app.handle_command(data)
         
         if response:
-            self.transport.write(response)
+            #self.transport.write(response)
+            print response
 
 class CommCoreServerFactory(protocol.Factory):
     protocol = CommCoreServer
