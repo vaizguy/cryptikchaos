@@ -52,15 +52,17 @@ class CommService(PeerManager):
 
         if conn:
             conn.transport.write(data_class + ':' + data_content)
+            return True
         else:
+            return False
             Logger.error( "Connection to peer failed. Please try later." )
         
         
     def on_client_connection(self, connection): pass
     
-    def start_connection(self, pid, host='localhost', port=8001):
+    def start_connection(self, pid, host='localhost', port=8000):
         
-        self.logger.debug( "Connecting to pid: {}".format(pid) )
+        Logger.debug( "Connecting to pid: {}".format(pid) )
         return reactor.connectTCP(host, port, CommCoreClientFactory(self))
         
     def on_server_connection(self, connection): 
