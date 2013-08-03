@@ -5,10 +5,13 @@ Created on Aug 3, 2013
 '''
 from podroid.comm.peers.peer import Peer
 
+from kivy.logger import Logger
+
+
 class PeerManager:
     
     def __init__(self):
-        
+               
         self._peer_dict = {}
         
         ## Add test server 
@@ -16,6 +19,7 @@ class PeerManager:
     
     def add_peer(self, pid, host, port):
         
+        Logger.debug( "Adding Peer {} , {}@{}".format(pid, host, port) )
         self._peer_dict[pid] = Peer(pid, host, port)
         
     def get_peer(self, pid):
@@ -30,7 +34,7 @@ class PeerManager:
         try:
             self._peer_dict[pid].add_connection(conn)
         except KeyError:
-            print 'Invalid Peer ID.'
+            Logger.error( "Invalid Peer ID." )
             return False
         else:
             return True           
@@ -40,7 +44,7 @@ class PeerManager:
         try:
             stat = self._peer_dict[pid].is_connected()
         except KeyError:
-            print 'Invalid Peer ID.'
+            Logger.error( "Invalid Peer ID." )
             return None
         else:
             if stat:

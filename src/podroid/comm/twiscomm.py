@@ -11,10 +11,12 @@ from podroid.comm.peers.peermanager import PeerManager
 
 from twisted.internet import reactor
 
+from kivy.logger import Logger
+
 class CommService(PeerManager):
     
     def __init__(self, peerid, host, port):
-        
+               
         ## Initialize peer manager
         PeerManager.__init__(self)
                 
@@ -39,7 +41,7 @@ class CommService(PeerManager):
             
             ## Check conn status
             if not cs:
-                conn = self.start_connection(h, p)
+                conn = self.start_connection(pid, h, p)
                 self.add_peer_connection(pid, conn)
             else:
                 pass
@@ -51,22 +53,18 @@ class CommService(PeerManager):
         if conn:
             conn.transport.write(data_class + ':' + data_content)
         else:
-            print 'Connection failed.'
+            Logger.error( "Connection to peer failed. Please try later." )
         
         
     def on_client_connection(self, connection): pass
     
-    def start_connection(self, host='localhost', port=8001):
-        print 'starting conn'
+    def start_connection(self, pid, host='localhost', port=8001):
+        
+        self.logger.debug( "Connecting to pid: {}".format(pid) )
         return reactor.connectTCP(host, port, CommCoreClientFactory(self))
         
     def on_server_connection(self, connection): 
-        print 'Server Connection success!'
+        
+        Logger.debug( "Server Connection success! Connection: {}".format(connection) )
         return connection
-        
-        
-        
-    
-
-    
         

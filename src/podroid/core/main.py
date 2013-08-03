@@ -2,12 +2,15 @@ from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
+from kivy.logger import Logger
 
 ## Add podroid path
 import pythonpath
 pythonpath.AddSysPath('../../')
 
 from podroid.comm.twiscomm import CommService
+
+import logging
 
 class PodDroidApp(App, CommService):
     
@@ -18,6 +21,8 @@ class PodDroidApp(App, CommService):
     undoc_header = "Undocumented commands:"
     nohelp = "*** No help on %s"
     ruler = '='
+    
+    logger = logging.getLogger('podroid.core.main.PodDroidApp')
 
     def build(self):
         ## Start GUI
@@ -238,4 +243,5 @@ class PodDroidApp(App, CommService):
             
                  
 if __name__ == '__main__':
+    
     PodDroidApp().run()
