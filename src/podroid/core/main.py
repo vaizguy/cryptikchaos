@@ -76,10 +76,10 @@ class PodDroidApp(App, CommService):
         "*Send* button (and return key) event call back"
         
         cmd_line = self.textbox.text
-        self.print_message("Processing: %s" % cmd_line)
 
         #if self.connected:
         if len(cmd_line):
+            self.print_message("Processing: %s" % cmd_line)
             self.textbox.text = ""
             return self.exec_command(cmd_line)
         else:
@@ -252,7 +252,7 @@ class PodDroidApp(App, CommService):
         if self.send_data(pid, 'test', msg):
             Logger.debug( "Message sent." )
         else:
-            Logger.error( "Unable to send message." )
+            Logger.error( "Unable to send message." )       
             
 
 if __name__ == '__main__':
