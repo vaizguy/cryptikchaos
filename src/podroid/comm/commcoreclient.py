@@ -3,7 +3,7 @@ from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 
 from kivy.logger import Logger
-
+import base64
 # connection to command server
 from twisted.internet import protocol
 
@@ -15,7 +15,7 @@ class CommCoreClient(protocol.Protocol):
 
     def dataReceived(self, data):
         
-        Logger.debug( "Sending data: {}".format(data) )
+        Logger.debug( "Sending data: {}".format(base64.b64encode(data)) )
 
 class CommCoreClientFactory(protocol.ReconnectingClientFactory):
     

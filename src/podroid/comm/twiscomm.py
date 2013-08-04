@@ -8,17 +8,20 @@ from podroid.comm.commcoreserver import CommCoreServerFactory
 from podroid.comm.commcoreclient import CommCoreClientFactory
 
 from podroid.comm.peers.peermanager import PeerManager
+from podroid.comm.capsule.capsulemanager import CapsuleManager
 
 from twisted.internet import reactor
 
 from kivy.logger import Logger
 
-class CommService(PeerManager):
+class CommService(PeerManager, CapsuleManager):
     
     def __init__(self, peerid, host, port):
                
         ## Initialize peer manager
         PeerManager.__init__(self)
+        ## Initialize capsule manager
+        CapsuleManager.__init__(self)
                 
         self.peerid = peerid
         self.host   = host
@@ -49,9 +52,11 @@ class CommService(PeerManager):
     def send_data(self, pid, data_class, data_content):
 
         conn = self.connect_to_peer(pid)
+        
+        capsule = self.pack_capsule(data_class, data_content, self.peer_host(pid))
 
         if conn:
-            conn.transport.write(data_class + ':' + data_content)
+            conn.transport.write(capsule)
             return True
         else:
             return False

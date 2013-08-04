@@ -1,5 +1,3 @@
-import kivy
-
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.gridlayout import GridLayout
@@ -35,8 +33,9 @@ class ConfirmPopup(GridLayout):
 	
 
 class PopupTest(App):
+
 	def build(self):
-		content = ConfirmPopup(text='Do You Love Kivy?')
+		content = ConfirmPopup(text='Do you love Kivy?')
 		content.bind(on_answer=self._on_answer)
 		self.popup = Popup(title="Answer Question",
 							content=content,

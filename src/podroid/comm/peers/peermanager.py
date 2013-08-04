@@ -55,6 +55,10 @@ class PeerManager:
     def peer_list(self):
         
         return [(pid, peer.get_host(), peer.get_port(), peer.is_connected()) for (pid, peer) in self._peer_dict.iteritems()]
+    
+    def peer_host(self, pid):
+        
+        return self._peer_dict[pid].get_host()
         
         
 if __name__ == '__main__':
