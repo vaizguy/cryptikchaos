@@ -40,20 +40,26 @@ class PodDroidApp(App, CommService):
 
         
     def setup_gui(self):
-        ## Create Textbox
-        self.textbox = TextInput(size_hint_y=.1, multiline=False)
-        self.textbox.bind(on_text_validate=self.handle_input)
+        
         ## Create label
         self.label = Label(text='Welcome to Podnet.\n')
+               
+        ## Create Textbox
+        self.textbox = TextInput(size_hint_y=.15, size_hint_x=.8, multiline=False)
+        self.textbox.bind(on_text_validate=self.handle_input)
+
         ## Create button
-        self.enter_button = Button(text='Enter', ) 
+        self.enter_button = Button(text='Enter', size_hint_y=.15, size_hint_x=.2) 
         self.enter_button.bind(on_press=self.handle_input)
         
-        self.layout = BoxLayout(orientation='vertical')
-        self.layout.add_widget(self.label)
-        self.layout.add_widget(self.textbox)
-        self.layout.add_widget(self.enter_button)
-        return self.layout
+        self.text_input_layout = BoxLayout(orientation='horizontal')
+        self.text_input_layout.add_widget(self.textbox)
+        self.text_input_layout.add_widget(self.enter_button)
+        
+        self.main_layout = BoxLayout(orientation='vertical')
+        self.main_layout.add_widget(self.label)
+        self.main_layout.add_widget(self.text_input_layout)
+        return self.main_layout
 
 
     def on_connection(self, connection):
