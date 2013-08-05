@@ -4,6 +4,7 @@ Created on Aug 3, 2013
 @author: vaizguy
 '''
 from podroid.comm.peers.peer import Peer
+from podroid.config.configuration import *
 
 from kivy.logger import Logger
 
@@ -15,7 +16,9 @@ class PeerManager:
         self._peer_dict = {}
         
         ## Add test server 
-        self._peer_dict[888] = Peer(888, 'localhost', 8888)
+        self._peer_dict[constants.LOCAL_TEST_PEER_ID] = Peer(constants.LOCAL_TEST_PEER_ID, 
+                                                             constants.LOCAL_TEST_HOST, 
+                                                             constants.LOCAL_TEST_PORT)
     
     def add_peer(self, pid, host, port):
         
@@ -50,7 +53,7 @@ class PeerManager:
             if stat:
                 return self._peer_dict[pid].get_connection()
             else:
-                return None                             
+                return None           
         
     def peer_list(self):
         

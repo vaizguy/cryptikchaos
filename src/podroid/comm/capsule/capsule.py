@@ -8,18 +8,20 @@ import struct
 import uuid
 import socket
 
+from podroid.config.configuration import *
+
 class Capsule(object):
     
         def __init__(self, captype='NULL', content='', dest_host='127.0.0.1'):
             
-            if len(content) > 40:
+            if len(content) > constants.CAPS_CONTENT_LEN:
                 raise Exception('OverflowError: Content exceeded capsule limit of 40')
-            if len(captype) > 4:
+            if len(captype) > constants.CAPS_TYPE_LEN:
                 raise Exception('OverflowError: Type exceeded capsule limit of 4')
             if dest_host == "localhost":
-                dest_host = '127.0.0.1'            
+                dest_host = constants.LOCAL_TEST_HOST            
             
-            self._dictionary = {'CAP_ID'      : str( uuid.uuid5(uuid.NAMESPACE_URL, dest_host) )[0:8],
+            self._dictionary = {'CAP_ID'      : str( uuid.uuid5(uuid.NAMESPACE_URL, dest_host) )[0:constants.CAPS_ID_LEN],
                                 'CAP_DESTIP'  : self._ip_to_uint32(dest_host),
                                 'CAP_TYPE'    : captype.upper(),
                                 'CAP_CONTENT' : content,

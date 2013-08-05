@@ -10,6 +10,8 @@ from podroid.comm.commcoreclient import CommCoreClientFactory
 from podroid.comm.peers.peermanager import PeerManager
 from podroid.comm.capsule.capsulemanager import CapsuleManager
 
+from podroid.config.configuration import *
+
 from twisted.internet import reactor
 
 from kivy.logger import Logger
@@ -77,22 +79,18 @@ class CommService(PeerManager, CapsuleManager):
         
     def handle_response(self, response):
         
-        if len(response) != 92:
-            raise Exception('Capsule chunk should be equal to 92B')
+        if len(response) != constants.CAPSULE_SIZE:
+            raise Exception('Capsule chunk should be equal to '+str(constants.CAPSULE_SIZE)+'B')
         
         ## Repsonse handling architecture should be placed here.
         (cid, dest_ip, captype, content, _, chksum) = self.unpack_capsule(response)
 
-        ## Currently the test case is inbuilt into the pod. --## TEST BEGIN ##
-        import uuid, hmac
-        test_string = "Hello World!"
-        test_ip = "127.0.0.1"
-        
-        if captype == 'TEST' and \
-        cid == str( uuid.uuid5(uuid.NAMESPACE_URL, test_ip) )[0:8] and \
-        chksum == hmac.new(test_string).hexdigest() and \
-        content == test_string and \
-        dest_ip == test_ip:
+        ## Currently the test case is inbuilt into the pod. --## TEST BEGIN ##       
+        if captype == constants.LOCAL_TEST_CAPS_TYPE and \
+            cid == constants.LOCAL_TEST_CAPS_ID and \
+         chksum == constants.LOCAL_TEST_CAPS_CHKSUM and \
+        content == constants.LOCAL_TEST_STR and \
+        dest_ip == constants.LOCAL_TEST_HOST:
             Logger.debug( 'Sending Message Test Pass.' )
         else:
             Logger.debug( """
