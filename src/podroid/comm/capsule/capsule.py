@@ -21,7 +21,7 @@ class Capsule(object):
             
             self._dictionary = {'CAP_ID'      : str( uuid.uuid5(uuid.NAMESPACE_URL, dest_host) )[0:8],
                                 'CAP_DESTIP'  : self._ip_to_uint32(dest_host),
-                                'CAP_TYPE'    : captype,
+                                'CAP_TYPE'    : captype.upper(),
                                 'CAP_CONTENT' : content,
                                 'CAP_LEN'     : len(content),
                                 'CAP_CHKSUM'  : hmac.new(content).hexdigest()    }
