@@ -18,6 +18,7 @@ from kivy.logger import Logger
 
 class CommService(PeerManager, CapsuleManager):
     
+    
     def __init__(self, peerid, host, port):
                
         ## Initialize peer manager
@@ -35,9 +36,11 @@ class CommService(PeerManager, CapsuleManager):
         ## Start peer connections
         self._start_peer_connectors()
                
+               
     def _start_server(self):
         
         reactor.listenTCP(self.port, CommCoreServerFactory(self))
+        
         
     def _start_peer_connectors(self):
         
@@ -50,15 +53,12 @@ class CommService(PeerManager, CapsuleManager):
                 self.add_peer_connection(pid, conn)
             else:
                 pass
-        
-    def send_data(self, pid, data_class, data_content):
-
-        conn = self.connect_to_peer(pid)
-        
-        capsule = self.pack_capsule(data_class, data_content, self.peer_host(pid))
+            
+            
+    def _write_into_connection(self, conn, data):
         
         try:
-            conn.transport.write(capsule)
+            conn.transport.write(data)
         except:
             Logger.error( "Connection to peer failed. Please try later." )
             return False
@@ -66,17 +66,32 @@ class CommService(PeerManager, CapsuleManager):
             return True
         
         
+    def send_data(self, pid, data_class, data_content):
+
+        ## Get peer connection
+        conn = self.connect_to_peer(pid)
+        
+        ## Pack data into capsule
+        capsule = self.pack_capsule(data_class, data_content, self.peer_host(pid))
+        
+        ## Send data over connection
+        return self._write_into_connection(conn, capsule)
+        
+        
     def on_client_connection(self, connection): pass
+    
     
     def start_connection(self, pid, host='localhost', port=8000):
         
         Logger.debug( "Connecting to pid: {}".format(pid) )
         return reactor.connectTCP(host, port, CommCoreClientFactory(self))
         
+        
     def on_server_connection(self, connection): 
         
         Logger.debug( "Server Connection success! Connection: {}".format(connection) )
         return connection
+        
         
     def handle_response(self, response):
         
