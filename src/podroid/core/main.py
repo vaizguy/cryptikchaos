@@ -4,7 +4,6 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.logger import Logger
-from kivy.lang import Builder
 
 ## Add podroid path
 import pythonpath

@@ -54,7 +54,7 @@ class CommService(PeerManager, CapsuleManager):
         conn = self.connect_to_peer(pid)
         
         capsule = self.pack_capsule(data_class, data_content, self.peer_host(pid))
-
+        
         if conn:
             conn.transport.write(capsule)
             return True
@@ -75,3 +75,21 @@ class CommService(PeerManager, CapsuleManager):
         Logger.debug( "Server Connection success! Connection: {}".format(connection) )
         return connection
         
+    def handle_response(self, response):
+        
+        if len(response) != 92:
+            raise Exception('Capsule chunk should be equal to 92B')
+        
+        ## Repsonse handling architecture should be placed here.
+        (id, dest_ip, type, content, l, chksum) = self.unpack_capsule(response)
+
+        if type == 'TEST' and id == '9a4a6d7c':
+            if content == 'Hello World!':
+                Logger.debug( 'Test Pass.' )
+            else:
+                Logger.debug( """
+                Test Fail.
+                For test to pass, 
+                1. Test server must be running.
+                2. Command is 'send 888 Hello World!'
+                """ )

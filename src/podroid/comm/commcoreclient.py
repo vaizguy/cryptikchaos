@@ -15,7 +15,13 @@ class CommCoreClient(protocol.Protocol):
 
     def dataReceived(self, data):
         
-        Logger.debug( "Sending data: {}".format(base64.b64encode(data)) )
+        response = self.factory.app.handle_response(data)
+        
+        if response:
+            print response
+                     
+        
+        Logger.debug( "Recieved : {}".format(base64.b64encode(data)) )
 
 class CommCoreClientFactory(protocol.ReconnectingClientFactory):
     
@@ -36,3 +42,4 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
         #self.app.print_message("connection failed")
         Logger.debug( "Connection failed. Reason:".format(reason) )
         protocol.ReconnectingClientFactory.clientConnectionFailed(self, connector,  reason)
+
