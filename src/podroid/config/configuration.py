@@ -47,3 +47,12 @@ constants.LOCAL_TEST_CAPS_ID = str( uuid.uuid5(uuid.NAMESPACE_URL, constants.LOC
 constants.LOCAL_TEST_CAPS_CHKSUM = hmac.new(constants.LOCAL_TEST_STR).hexdigest()
 
 ####-----------------------------------------------------------------------------------------------------------------####
+
+####---Help documentation printer constants--------------------------------------------------------------------------####
+constants.DOC_LEADER   = ""
+constants.DOC_HEADER   = "Documented commands (type help <topic>):"
+constants.MISC_HEADER  = "Miscellaneous help topics:"
+constants.UNDOC_HEADER = "Undocumented commands:"
+constants.NOHELP       = "*** No help on %s"
+constants.RULER        = '='
+####-----------------------------------------------------------------------------------------------------------------####

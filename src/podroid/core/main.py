@@ -14,14 +14,7 @@ from podroid.config.configuration import *
 
 class PodDroidApp(App, CommService):
     
-    ## Help documentation printer variables.
-    doc_leader   = ""
-    doc_header   = "Documented commands (type help <topic>):"
-    misc_header  = "Miscellaneous help topics:"
-    undoc_header = "Undocumented commands:"
-    nohelp       = "*** No help on %s"
-    ruler        = '='
-    
+       
     def build(self):
         ## Start GUI
         root = self.setup_gui()
@@ -134,8 +127,8 @@ class PodDroidApp(App, CommService):
         "Print help topics"
         if cmds:
             self.print_message("%s\n"%str(header))
-            if self.ruler:
-                self.print_message("%s\n"%str(self.ruler * len(header)))
+            if constants.RULER:
+                self.print_message("%s\n"%str(constants.RULER * len(header)))
             self.columnize(cmds, maxcol-1)
             self.print_message("\n")
 
@@ -213,7 +206,7 @@ class PodDroidApp(App, CommService):
                         return
                 except AttributeError:
                     pass
-                self.print_message("%s\n"%str(self.nohelp % (arg,)))
+                self.print_message("%s\n"%str(constants.NOHELP % (arg,)))
                 return
             func()
         else:
@@ -240,10 +233,10 @@ class PodDroidApp(App, CommService):
                         cmds_doc.append(cmd)
                     else:
                         cmds_undoc.append(cmd)
-            self.print_message("%s\n"%str(self.doc_leader))
-            self.print_topics(self.doc_header,   cmds_doc,   80)
-            self.print_topics(self.misc_header,  help_doc.keys(),80)
-            self.print_topics(self.undoc_header, cmds_undoc, 80)
+            self.print_message("%s\n"%str(constants.DOC_LEADER))
+            self.print_topics(constants.DOC_HEADER,   cmds_doc,   80)
+            self.print_topics(constants.MISC_HEADER,  help_doc.keys(),80)
+            self.print_topics(constants.UNDOC_HEADER, cmds_undoc, 80)
             
             
     ## ---------------------------
