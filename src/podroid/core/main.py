@@ -258,7 +258,16 @@ class PodDroidApp(App, CommService):
             Logger.debug( "Message sent." )
         else:
             Logger.error( "Unable to send message." )       
-            
+    
+    def cmd_test(self, cmdline):
+        """
+        Tests the pod with the test server running.
+        All testcases should be run here.
+        Usage: test
+        """
+        
+        ## Check sending of message.
+        self.cmd_send("888 Hello World!") 
 
 if __name__ == '__main__':
     

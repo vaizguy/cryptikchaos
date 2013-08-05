@@ -81,15 +81,24 @@ class CommService(PeerManager, CapsuleManager):
             raise Exception('Capsule chunk should be equal to 92B')
         
         ## Repsonse handling architecture should be placed here.
-        (id, dest_ip, type, content, l, chksum) = self.unpack_capsule(response)
+        (cid, dest_ip, captype, content, _, chksum) = self.unpack_capsule(response)
 
-        if type == 'TEST' and id == '9a4a6d7c':
-            if content == 'Hello World!':
-                Logger.debug( 'Test Pass.' )
-            else:
-                Logger.debug( """
-                Test Fail.
+        ## Currently the test case is inbuilt into the pod. --## TEST BEGIN ##
+        import uuid, hmac
+        test_string = "Hello World!"
+        test_ip = "127.0.0.1"
+        
+        if captype == 'TEST' and \
+        cid == str( uuid.uuid5(uuid.NAMESPACE_URL, test_ip) )[0:8] and \
+        chksum == hmac.new(test_string).hexdigest() and \
+        content == test_string and \
+        dest_ip == test_ip:
+            Logger.debug( 'Sending Message Test Pass.' )
+        else:
+            Logger.debug( """
+                Sending Message Test Fail.
                 For test to pass, 
                 1. Test server must be running.
                 2. Command is 'send 888 Hello World!'
-                """ )
+            """ )
+        ## ----------------------------------------------------## TEST END ##
