@@ -10,6 +10,7 @@ import pythonpath
 pythonpath.AddSysPath('../../')
 
 from podroid.comm.twiscomm import CommService
+from podroid.config.configuration import *
 
 class PodDroidApp(App, CommService):
     
@@ -267,7 +268,7 @@ class PodDroidApp(App, CommService):
         """
         
         ## Check sending of message.
-        self.cmd_send("888 Hello World!") 
+        self.cmd_send(str(constants.LOCAL_TEST_PEER_ID) + " " + constants.LOCAL_TEST_STR) 
 
 if __name__ == '__main__':
     

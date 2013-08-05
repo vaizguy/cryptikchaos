@@ -57,12 +57,13 @@ class CommService(PeerManager, CapsuleManager):
         
         capsule = self.pack_capsule(data_class, data_content, self.peer_host(pid))
         
-        if conn:
+        try:
             conn.transport.write(capsule)
-            return True
-        else:
-            return False
+        except:
             Logger.error( "Connection to peer failed. Please try later." )
+            return False
+        else:
+            return True
         
         
     def on_client_connection(self, connection): pass
