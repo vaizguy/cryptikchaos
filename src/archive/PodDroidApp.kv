@@ -1,0 +1,23 @@
+#:kivy 1.7.1
+
+<ConsoleScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        
+        Label:
+            text: 'Welcome to Podnet.\n'
+        TextInput:
+            size_hint_y: .1
+            multiline: False
+            on_text_validate: root.handle_input
+        Button:
+            text: 'Notifications'
+            on_press: root.manager.current = 'notifications'
+        Button:
+            text: 'Quit'
+
+<NotificationsScreen>:
+    BoxLayout:
+        Button:
+            text: 'Console'
+            on_press: root.manager.current = 'console'
