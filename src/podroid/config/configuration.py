@@ -6,6 +6,8 @@ Created on Aug 5, 2013
 import uuid, hmac
 import constants
 
+####------------------CAPSULE CONSTANTS-----------------------------------------------------------------------------####
+
 ## Capsule Content Length 
 constants.CAPS_CONTENT_LEN = 40
 ## Capsule Type length
@@ -25,6 +27,9 @@ constants.CAPSULE_SIZE = constants.CAPS_CONTENT_LEN + \
                          constants.CAPS_CHKSUM_LEN + \
                          constants.CAPS_CONTENTL_LEN + \
                          constants.CAPS_DESTIP_LEN
+####-----------------------------------------------------------------------------------------------------------------####
+
+####------------------TEST CONSTANTS---------------------------------------------------------------------------------####
 
 ## Test string message
 constants.LOCAL_TEST_STR = "Hello World!"
@@ -40,3 +45,5 @@ constants.LOCAL_TEST_PEER_ID = 888
 constants.LOCAL_TEST_CAPS_ID = str( uuid.uuid5(uuid.NAMESPACE_URL, constants.LOCAL_TEST_HOST) )[0:constants.CAPS_ID_LEN]
 ## Test chksum
 constants.LOCAL_TEST_CAPS_CHKSUM = hmac.new(constants.LOCAL_TEST_STR).hexdigest()
+
+####-----------------------------------------------------------------------------------------------------------------####

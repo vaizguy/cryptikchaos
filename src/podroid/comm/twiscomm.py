@@ -66,7 +66,7 @@ class CommService(PeerManager, CapsuleManager):
             return True
         
         
-    def send_data(self, pid, data_class, data_content):
+    def _transfer_data(self, pid, data_class, data_content):
 
         ## Get peer connection
         conn = self.connect_to_peer(pid)
@@ -76,7 +76,19 @@ class CommService(PeerManager, CapsuleManager):
         
         ## Send data over connection
         return self._write_into_connection(conn, capsule)
+    
+    
+    def pass_message(self, pid, msg):
         
+        ## Assumed Bulk message transfer
+        dtype = "BULK"
+        
+        if msg ==  constants.LOCAL_TEST_STR:
+            dtype = constants.LOCAL_TEST_CAPS_TYPE
+                
+        ## Send message using send data API       
+        return self._transfer_data(pid, dtype, msg)
+       
         
     def on_client_connection(self, connection): pass
     

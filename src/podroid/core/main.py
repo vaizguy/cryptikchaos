@@ -91,6 +91,7 @@ class PodDroidApp(App, CommService):
         else:
             return None
    
+   
     ## CLI methods ##
     def parse_line(self, line):
         "Parse command line."
@@ -244,6 +245,7 @@ class PodDroidApp(App, CommService):
             self.print_topics(self.misc_header,  help_doc.keys(),80)
             self.print_topics(self.undoc_header, cmds_undoc, 80)
             
+            
     ## ---------------------------
     ## Command definitions 
     ## ---------------------------
@@ -254,11 +256,13 @@ class PodDroidApp(App, CommService):
         """
 
         (pid, msg) = ( int(cmdline.split(' ')[0]), ' '.join(cmdline.split(' ')[1:]) )
-        #-#self.tcomm.send_data(888, 'test_class', 'test_data')
-        if self.send_data(pid, 'test', msg):
+        #-#self.tcomm.send_data(888, 'test_class', 'test_data')      
+        
+        if self.pass_message(pid, msg):
             Logger.debug( "Message sent." )
         else:
             Logger.error( "Unable to send message." )       
+    
     
     def cmd_test(self, cmdline):
         """
@@ -269,6 +273,7 @@ class PodDroidApp(App, CommService):
         
         ## Check sending of message.
         self.cmd_send(str(constants.LOCAL_TEST_PEER_ID) + " " + constants.LOCAL_TEST_STR) 
+
 
 if __name__ == '__main__':
     
