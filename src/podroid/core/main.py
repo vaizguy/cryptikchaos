@@ -252,9 +252,9 @@ class PodDroidApp(App, CommService):
         #-#self.tcomm.send_data(888, 'test_class', 'test_data')      
         
         if self.pass_message(pid, msg):
-            Logger.debug( "Message sent." )
+            Logger.debug( "Message sent to peer {}.".format(pid) )
         else:
-            Logger.error( "Unable to send message." )       
+            Logger.error( "Unable to send message. Peer {} is offline.".format(pid) )       
     
     
     def cmd_test(self, cmdline):
