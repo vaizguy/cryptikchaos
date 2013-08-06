@@ -45,7 +45,7 @@ class CommService(PeerManager, CapsuleManager):
     def _start_peer_connections(self):
         
         ## Connect to all peers
-        for (pid, h, p, cs) in self.peer_list():
+        for (pid, h, p, cs) in self.list_peers():
             
             ## Check conn status
             if not cs:
@@ -62,8 +62,11 @@ class CommService(PeerManager, CapsuleManager):
         
         ## Assuming Peer ID <-> Peer IP one to one relation
         pid = self.get_peerid_from_ip(peer_ip)
-
-        return self.update_peer_connection_status(pid, status)
+        
+        if pid:
+            return self.update_peer_connection_status(pid, status)
+        else:
+            return None
         
         
             
@@ -128,7 +131,7 @@ class CommService(PeerManager, CapsuleManager):
         peer_ip = connection.getPeer().host
         
         ## Update peer connection status to DISCONNECTED
-        return self._update_peer_connection_status(peer_ip, False)
+        self._update_peer_connection_status(peer_ip, False)
         
         
     def handle_response(self, response):
