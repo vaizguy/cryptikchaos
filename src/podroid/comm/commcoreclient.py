@@ -9,9 +9,26 @@ from twisted.internet import protocol
 
 class CommCoreClient(protocol.Protocol):
     
+    _peer_host = None
+    _peer_port = None
+    _peer_repr = None
+     
     def connectionMade(self):
         
+        self._peer_host = self.transport.getPeer().host
+        self._peer_port = self.transport.getPeer().port
+        self._peer_repr = self._peer_host + " on " + str(self._peer_port)
+        
+        Logger.debug( "Connection success! Connected to {}".format(self._peer_repr) )
+
         self.factory.app.on_server_connection(self.transport)
+        
+    def connectionLost(self, reason):
+        
+        Logger.warn( "Lost connection with peer {}".format(self._peer_repr) )
+            
+        self.factory.app.on_server_disconnection(self.transport)
+
 
     def dataReceived(self, data):
         
@@ -19,9 +36,9 @@ class CommCoreClient(protocol.Protocol):
         
         if response:
             print response
-                     
         
         Logger.debug( "Recieved : {}".format(base64.b64encode(data)) )
+
 
 class CommCoreClientFactory(protocol.ReconnectingClientFactory):
     
@@ -40,7 +57,7 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
     def buildProtocol(self, addr):
         
         Logger.debug ( "Connected." )
-        Logger.debug ( "Resetting reconnection delay" )
+        Logger.debug ( "Resetting reconnection delay." )
         ## Reset the delay on connection success
         self.resetDelay()
         ## Overridden build protocol
@@ -53,12 +70,12 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
     def clientConnectionLost(self, connector, reason):
         
         #self.app.print_message("connection lost")
-        Logger.debug( "Lost connection.  Reason: {}".format(reason) )
-        protocol.ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
+        Logger.debug( "Lost connection" )
+        return protocol.ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
 
     def clientConnectionFailed(self, connector, reason):
         
         #self.app.print_message("connection failed")
-        Logger.debug( "Connection failed. Reason:".format(reason) )
-        protocol.ReconnectingClientFactory.clientConnectionFailed(self, connector,  reason)
+        Logger.debug( "Connection failed. " )
+        return protocol.ReconnectingClientFactory.clientConnectionFailed(self, connector,  reason)
 

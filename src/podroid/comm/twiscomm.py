@@ -34,7 +34,7 @@ class CommService(PeerManager, CapsuleManager):
         self._start_server()
         
         ## Start peer connections
-        self._start_peer_connectors()
+        self._start_peer_connections()
                
                
     def _start_server(self):
@@ -42,18 +42,30 @@ class CommService(PeerManager, CapsuleManager):
         reactor.listenTCP(self.port, CommCoreServerFactory(self))
         
         
-    def _start_peer_connectors(self):
+    def _start_peer_connections(self):
         
         ## Connect to all peers
         for (pid, h, p, cs) in self.peer_list():
             
             ## Check conn status
             if not cs:
+                ## Start a connection with peer
                 conn = self.start_connection(pid, h, p)
+                ## Save the connection
                 self.add_peer_connection(pid, conn)
             else:
                 pass
             
+            
+    def _update_peer_connection_status(self, peer_ip, status):
+        """Change peer conn status based on connection/disconnection"""
+        
+        ## Assuming Peer ID <-> Peer IP one to one relation
+        pid = self.get_peerid_from_ip(peer_ip)
+
+        return self.update_peer_connection_status(pid, status)
+        
+        
             
     def _write_into_connection(self, conn, data):
         
@@ -80,6 +92,10 @@ class CommService(PeerManager, CapsuleManager):
     
     def pass_message(self, pid, msg):
         
+        ## Check to see peer connection status
+        if not self.get_peer_connection_status(pid):
+            return False
+        
         ## Assumed Bulk message transfer
         dtype = "BULK"
         
@@ -96,13 +112,23 @@ class CommService(PeerManager, CapsuleManager):
     def start_connection(self, pid, host='localhost', port=8000):
         
         Logger.debug( "Connecting to pid: {}".format(pid) )
+        
         return reactor.connectTCP(host, port, CommCoreClientFactory(self))
         
         
     def on_server_connection(self, connection): 
         
-        Logger.debug( "Server Connection success! Connection: {}".format(connection) )
-        return connection
+        peer_ip = connection.getPeer().host
+        
+        ## Update peer connection status to CONNECTED
+        self._update_peer_connection_status(peer_ip, True)
+    
+    def on_server_disconnection(self, connection):
+        
+        peer_ip = connection.getPeer().host
+        
+        ## Update peer connection status to DISCONNECTED
+        return self._update_peer_connection_status(peer_ip, False)
         
         
     def handle_response(self, response):
