@@ -31,6 +31,25 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
         
         self.app = app
 
+
+    def startedConnecting(self, connector):
+        
+        Logger.debug( "Attempting connection..." )
+
+
+    def buildProtocol(self, addr):
+        
+        Logger.debug ( "Connected." )
+        Logger.debug ( "Resetting reconnection delay" )
+        ## Reset the delay on connection success
+        self.resetDelay()
+        ## Overridden build protocol
+        client_protocol = self.protocol()
+        client_protocol.factory = self
+        
+        return client_protocol
+    
+    
     def clientConnectionLost(self, connector, reason):
         
         #self.app.print_message("connection lost")
