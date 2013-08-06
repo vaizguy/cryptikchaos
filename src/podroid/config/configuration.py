@@ -3,8 +3,16 @@ Created on Aug 5, 2013
 
 @author: vaizguy
 '''
-import uuid, hmac
+import uuid
+import hmac
+import os
+
 import constants
+
+####------------------Project Path CONSTANTS------------------------------------------------------------------------####
+constants.PROJECT_PATH = os.path.dirname(os.path.realpath(__file__)) + "/.."
+####----------------------------------------------------------------------------------------------------------------####
+
 
 ####------------------CAPSULE CONSTANTS-----------------------------------------------------------------------------####
 
