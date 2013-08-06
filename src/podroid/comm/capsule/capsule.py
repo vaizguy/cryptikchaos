@@ -80,6 +80,10 @@ class Capsule(object):
             
             return self._uint32_to_ip(self._dictionary['CAP_DESTIP'])
         
+        def gettype(self):
+            
+            return self._dictionary['CAP_TYPE']
+        
         def tuple(self):
             
             return (self._dictionary['CAP_ID'], 
