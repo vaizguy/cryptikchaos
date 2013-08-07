@@ -1,16 +1,23 @@
 '''
 Created on Jul 21, 2013
 
+This is the application level packet that is used as a basis for any
+communications between server and client and vice-versa.
+
 @author: vaizguy
 '''
-import hmac
+
+__author__ = "Arun Vaidya"
+__version__ = 0.1
+
 import struct
-import uuid
 import socket
 
 from podroid.config.configuration import *
 
 class Capsule(object):
+    "Capsule definition."
+    
     
         def __init__(self, captype='NULL', content='', dest_host='127.0.0.1'):
             
@@ -41,7 +48,9 @@ class Capsule(object):
             
             return self._dictionary[key]
         
+        
         def pack(self):
+            "Pack data into capsule. (i.e struct packing)"
             
             return struct.pack("!8sI4s40sL32s", 
                                self._dictionary['CAP_ID'], 
@@ -53,6 +62,7 @@ class Capsule(object):
         
         
         def unpack(self, stream):
+            "Unpack serial data into capsule."
             
             (self._dictionary['CAP_ID'], 
              self._dictionary['CAP_DESTIP'],                                            
@@ -63,6 +73,7 @@ class Capsule(object):
                           
             
         def __str__(self):
+            "String representation of capsule."
             
             string=''
             
@@ -73,18 +84,25 @@ class Capsule(object):
                 
         
         def getid(self):
+            "Return Capsule ID."
             
             return self._dictionary['CAP_ID']
         
+        
         def getip(self):
+            "Return Destination IP."
             
             return self._uint32_to_ip(self._dictionary['CAP_DESTIP'])
         
+        
         def gettype(self):
+            "Return Capsule protocol type."
             
             return self._dictionary['CAP_TYPE']
         
+        
         def tuple(self):
+            "Return capsule in tuple form."
             
             return (self._dictionary['CAP_ID'], 
                     self.getip(),
@@ -93,11 +111,17 @@ class Capsule(object):
                     self._dictionary['CAP_LEN'], 
                     self._dictionary['CAP_CHKSUM'])
         
+        
         def _ip_to_uint32(self, ip):
+            "Convert IPv4 Address into 32bit integer."
+            
             t = socket.inet_aton(ip)
             return struct.unpack("!I", t)[0]
         
+        
         def _uint32_to_ip(self, ipn):
+            "Convert 32bit integer into IP Address."
+            
             t = struct.pack("!I", ipn)
             return socket.inet_ntoa(t)
     

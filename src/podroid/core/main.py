@@ -1,3 +1,15 @@
+'''
+Created on Jul 21, 2013
+
+Podroid is a peer to peer chat application using kivy as the frontend and twisted framework as the 
+backend.
+
+@author: vaizguy
+'''
+
+__author__ = "Arun Vaidya"
+__version__ = 0.1
+
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
@@ -13,26 +25,28 @@ from podroid.comm.twiscomm import CommService
 from podroid.config.configuration import *
 
 class PodDroidApp(App, CommService):
+    """
+    Main kivy app class.
+    Contains both 
+    1. GUI service. (kivy.App)
+    2. Twisted Network service. (twiscomm.CommService)
+    """
     
        
     def build(self):
-        ## Start GUI
+        "Build the kivy App."
+        
+        ## Initiate Kivy GUI
         root = self.setup_gui()
-        ## Start Server
+        
+        ## Initiate Twisted Server & Client services
         CommService.__init__(self, 123, 'localhost', 8000)
-        #-#self.tcomm = self.setup_node()      
+        
         return root
-
-
-    def setup_node(self):
-        self.print_message("Starting Server..")
-        ## Values hard coded for now.
-        #-#comm_service = CommService(123, 'localhost', 8000)
-        self.print_message("Server Started..")
-        #-#return comm_service
 
         
     def setup_gui(self):
+        "Setup the Kivy GUI"
         
         ## Create label
         self.label = Label(text='Welcome to Podnet.\n')
@@ -55,19 +69,9 @@ class PodDroidApp(App, CommService):
         return self.main_layout
 
 
-    def on_connection(self, connection):
-        self.print_message("connected succesfully!")
-        self.connection = connection
-
-
-    def send_message(self, *args):
-        msg = self.textbox.text
-        if msg and self.connection:
-            self.connection.write(str(self.textbox.text))
-            self.textbox.text = ""
-
-
     def print_message(self, msg):
+        "Print a message in the output window."
+        
         self.label.text += msg + "\n"
           
     
@@ -84,8 +88,10 @@ class PodDroidApp(App, CommService):
         else:
             return None
    
-   
-    ## CLI methods ##
+    ## -----------    
+    ## CLI methods 
+    ## ----------- 
+    
     def parse_line(self, line):
         "Parse command line."
         
@@ -119,12 +125,14 @@ class PodDroidApp(App, CommService):
             
     def default_cmd(self, cmd):
         'If command not found'
+        
         self.print_message('Invalid Command "%s"\n' % cmd)        
         #self.logger.error('Command "%s" not found', cmd)         
         
         
     def print_topics(self, header, cmds, maxcol):
         "Print help topics"
+        
         if cmds:
             self.print_message("%s\n"%str(header))
             if constants.RULER:
@@ -139,6 +147,7 @@ class PodDroidApp(App, CommService):
         Each column is only as wide as necessary.
         Columns are separated by two spaces (one was not legible enough).
         """
+        
         if not list:
             self.print_message("<empty>\n")
             return
@@ -194,6 +203,7 @@ class PodDroidApp(App, CommService):
         """
         Displays all available command information.
         Usage: help [command]"""
+        
         if arg:
             # XXX check arg syntax
             try:
@@ -242,6 +252,7 @@ class PodDroidApp(App, CommService):
     ## ---------------------------
     ## Command definitions 
     ## ---------------------------
+    
     def cmd_send(self, cmdline):
         """
         Send message to other peers using peerid.

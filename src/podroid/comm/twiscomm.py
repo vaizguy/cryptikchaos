@@ -1,8 +1,13 @@
 '''
 Created on Jul 21, 2013
 
+Twisted network service.
+
 @author: vaizguy
 '''
+
+__author__ = "Arun Vaidya"
+__version__ = 0.1
 
 from podroid.comm.commcoreserver import CommCoreServerFactory
 from podroid.comm.commcoreclient import CommCoreClientFactory
@@ -17,9 +22,14 @@ from twisted.internet import reactor
 from kivy.logger import Logger
 
 class CommService(PeerManager, CapsuleManager):
+    """
+    Twisted communications service.
+    Contains both server and client code.
+    """
     
     
     def __init__(self, peerid, host, port):
+        "Initialize communication layer."
                
         ## Initialize peer manager
         PeerManager.__init__(self)
@@ -38,11 +48,13 @@ class CommService(PeerManager, CapsuleManager):
                
                
     def _start_server(self):
+        "Start twisted server listener."
         
         reactor.listenTCP(self.port, CommCoreServerFactory(self))
         
         
     def _start_peer_connections(self):
+        "Start peer connections on start."
         
         ## Connect to all peers
         for (pid, h, p, cs) in self.list_peers():
@@ -58,7 +70,7 @@ class CommService(PeerManager, CapsuleManager):
             
             
     def _update_peer_connection_status(self, peer_ip, status):
-        """Change peer conn status based on connection/disconnection"""
+        "Change peer conn status based on connection/disconnection"
         
         ## Assuming Peer ID <-> Peer IP one to one relation
         pid = self.get_peerid_from_ip(peer_ip)
@@ -71,6 +83,7 @@ class CommService(PeerManager, CapsuleManager):
         
             
     def _write_into_connection(self, conn, data):
+        "Write into twisted connection transport."
         
         try:
             conn.transport.write(data)
@@ -82,6 +95,7 @@ class CommService(PeerManager, CapsuleManager):
         
         
     def _transfer_data(self, pid, data_class, data_content):
+        "Transfer data to client with peer id."
 
         ## Get peer connection
         conn = self.connect_to_peer(pid)
@@ -92,8 +106,12 @@ class CommService(PeerManager, CapsuleManager):
         ## Send data over connection
         return self._write_into_connection(conn, capsule)
     
+    ## ------------------------------------------------
+    ## Define Protocol Code here
+    ## ------------------------------------------------
     
     def pass_message(self, pid, msg):
+        "Pass message to client. Capsule Type: BULK"
         
         ## Check to see peer connection status
         if not self.get_peer_connection_status(pid):
@@ -107,12 +125,15 @@ class CommService(PeerManager, CapsuleManager):
                            
         ## Send message using send data API       
         return self._transfer_data(pid, dtype, msg)
-       
+    
+     ## ------------------------------------------------
+      
         
     def on_client_connection(self, connection): pass
     
     
     def start_connection(self, pid, host='localhost', port=8000):
+        "Start connection with server."
         
         Logger.debug( "Connecting to pid: {}".format(pid) )
         
@@ -120,6 +141,7 @@ class CommService(PeerManager, CapsuleManager):
         
         
     def on_server_connection(self, connection): 
+        "Executed on successful server connection."
         
         peer_ip = connection.getPeer().host
         
@@ -127,6 +149,7 @@ class CommService(PeerManager, CapsuleManager):
         self._update_peer_connection_status(peer_ip, True)
     
     def on_server_disconnection(self, connection):
+        "Executed on successful server disconnection."
         
         peer_ip = connection.getPeer().host
         
@@ -135,6 +158,7 @@ class CommService(PeerManager, CapsuleManager):
         
         
     def handle_response(self, response):
+        "Handle response from server"
         
         if len(response) != constants.CAPSULE_SIZE:
             raise Exception('Capsule chunk should be equal to '+str(constants.CAPSULE_SIZE)+'B')

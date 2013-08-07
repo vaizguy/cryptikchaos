@@ -4,8 +4,14 @@ Created on Aug 3, 2013
 @author: vaizguy
 '''
 
+__author__ = "Arun Vaidya"
+__version__ = 0.1
+
 import collections
 
+## Taken from 
+## http://stackoverflow.com/questions/3387691/python-how-to-perfectly-override-a-dict
+## Jochen Ritzel 's solution.
 class TransformedDict(collections.MutableMapping):
     """Represents the Peer attributes"""
 
@@ -33,6 +39,7 @@ class TransformedDict(collections.MutableMapping):
 
 
 class Peer(TransformedDict):
+    "Peer dictionary, holds the peer attributes."
     
     def __getitem__(self, key):
         

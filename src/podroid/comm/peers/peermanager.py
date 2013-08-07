@@ -1,6 +1,8 @@
 '''
 Created on Aug 3, 2013
 
+Peer manager is used to Handle the peer information.
+
 @author: vaizguy
 '''
 from podroid.comm.peers.peer import Peer
@@ -10,6 +12,8 @@ from kivy.logger import Logger
 
 import shelve
         
+__author__ = "Arun Vaidya"
+__version__ = 0.1
 
 class PeerManager:
     
@@ -35,6 +39,7 @@ class PeerManager:
         
         
     def add_peer(self, pid, host, port):
+        "Add peer to database."
         
         Logger.debug( "Adding Peer {} , {}@{}".format(pid, host, port) )
         
@@ -51,6 +56,7 @@ class PeerManager:
 
         
     def get_peer(self, pid):
+        "Get peer from db."
         
         if str(pid) in self._peer_dict.keys():
             return self._peer_dict[str(pid)]
@@ -59,6 +65,7 @@ class PeerManager:
         
         
     def add_peer_connection(self, pid, conn):
+        "Add a peer connection."
         
         try:
             self.peer_connections[pid] = conn
@@ -70,6 +77,7 @@ class PeerManager:
                   
 
     def connect_to_peer(self, pid):
+        "Get stored peer connection from pid."
         
         try:
             stat = self.get_peer_connection_status(pid)
@@ -84,6 +92,7 @@ class PeerManager:
         
         
     def update_peer_connection_status(self, pid, status):
+        "Update peer's connection status."
 
         if status in (True, False):
             ## Set new connection status
@@ -96,6 +105,7 @@ class PeerManager:
     
     
     def list_peers(self):
+        "Returns a list of all the peers"
         
         peerlist = []
         
@@ -109,11 +119,13 @@ class PeerManager:
                
     
     def peer_host(self, pid):
+        "Returns a peer's IPv4 address."
         
         return self._peer_dict[str(pid)]["PEER_IP"]
     
     
     def get_peerid_from_ip(self, peer_ip):
+        "Get a peerid from stored IP addresses. Assumes 1to1 relation."        
 
         for (pid, ip, _, _) in self.list_peers():
             if ip == peer_ip:
@@ -123,11 +135,13 @@ class PeerManager:
             
     
     def get_peer_connection_status(self, pid):
+        "Get the peer connection status."
         
         return self._peer_dict[str(pid)]["PEER_CONN_STATUS"]
     
     
     def get_peer_connection(self, pid):
+        "Get the peer connection."
         
         return self.peer_connections[pid]
 

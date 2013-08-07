@@ -1,3 +1,14 @@
+'''
+Created on Jul 21, 2013
+
+Twisted network server core. TODO
+
+@author: vaizguy
+'''
+
+__author__ = "Arun Vaidya"
+__version__ = 0.1
+
 # install_twisted_rector must be called before importing  and using the reactor
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()

@@ -1,9 +1,10 @@
 '''
 Created on Aug 5, 2013
 
-@author: vaizguy
+@author: Alex Martelli
 '''
 
+## Code taken from Alex Martelli's python constant recipe.
 class _const:
     
     ## ConstError Exception class

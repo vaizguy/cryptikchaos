@@ -1,8 +1,15 @@
 '''
 Created on Aug 5, 2013
 
+Contains all unchangable constants used accross application.
+Must be changed with care.
+
 @author: vaizguy
 '''
+
+__author__ = "Arun Vaidya"
+__version__ = 0.1
+
 import uuid
 import hmac
 import os
