@@ -137,7 +137,10 @@ class PeerManager:
     def get_peer_connection_status(self, pid):
         "Get the peer connection status."
         
-        return self._peer_dict[str(pid)]["PEER_CONN_STATUS"]
+        if str(pid) in self._peer_dict.keys():
+            return self._peer_dict[str(pid)]["PEER_CONN_STATUS"]
+        else:
+            return False
     
     
     def get_peer_connection(self, pid):
@@ -145,7 +148,6 @@ class PeerManager:
         
         return self.peer_connections[pid]
 
-        
         
 if __name__ == '__main__':
     pm = PeerManager(constants.PROJECT_PATH + "/db/test_peerlist_db")

@@ -74,6 +74,8 @@ class PodDroidApp(App, CommService):
         self.text_input_layout.add_widget(self.enter_button)
         
         self.main_layout = BoxLayout(orientation='vertical')
+        self.main_layoutminimum_height=self.main_layout.setter('height')
+        
         self.main_layout.add_widget(self.scroll_label)
         self.main_layout.add_widget(self.text_input_layout)
         return self.main_layout
@@ -269,9 +271,14 @@ class PodDroidApp(App, CommService):
         Send message to other peers using peerid.
         Usage: send <pid> <message>
         """
-
-        (pid, msg) = ( int(cmdline.split(' ')[0]), ' '.join(cmdline.split(' ')[1:]) )
-        #-#self.tcomm.send_data(888, 'test_class', 'test_data')      
+        try:
+            (pid, msg) = ( int(cmdline.split(' ')[0]), ' '.join(cmdline.split(' ')[1:]) )
+        except:
+            self.print_message("Incorrect Command Use.")
+            self.cmd_help("send")
+            return None
+        else:
+            pass
         
         if self.pass_message(pid, msg):
             Logger.debug( "Message sent to peer {}.".format(pid) )
