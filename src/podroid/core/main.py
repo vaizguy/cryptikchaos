@@ -50,9 +50,11 @@ class PodDroidApp(App, CommService):
         "Setup the Kivy GUI"
         
         ## Create label
-        self.scroll_label = ScrollView()
+        self.scroll_label = ScrollView(size_hint=(None, None),
+                                       size=(400, 400),
+                                       pos_hint={'center_x':0.3, 'center_y':0.3})
         ## Create label
-        self.label = Label(text=constants.GUI_WELCOME_MSG, halign='left', size_hint=(None, None))
+        self.label = Label(text=constants.GUI_WELCOME_MSG, halign='left', size_hint_y= None, height=40)
         self.label.bind(texture_size = self.label.setter('size'))
         
         self.scroll_label.do_scroll_y = True
@@ -60,8 +62,8 @@ class PodDroidApp(App, CommService):
         
         ## Create Textbox
         self.textbox = TextInput(size_hint_y=.15, size_hint_x=.8, multiline=False)
+        self.textbox.focus = True
         self.textbox.bind(on_text_validate=self.handle_input)
-        self.textbox.text = constants.GUI_LABEL_PROMPT
 
         ## Create button
         self.enter_button = Button(text='Enter', size_hint_y=.15, size_hint_x=.2) 
@@ -80,7 +82,7 @@ class PodDroidApp(App, CommService):
     def print_message(self, msg):
         "Print a message in the output window."
         
-        self.label.text += '  ' + msg.strip("  ") + "\n"
+        self.label.text += constants.GUI_LABEL_LEFT_PADDING + msg.strip(" ") + "\n"
           
     
     def handle_input(self, *args):
@@ -89,14 +91,11 @@ class PodDroidApp(App, CommService):
         ## Total text input entered by user
         cmd_line = self.textbox.text
         
-        ## Strip prompt text
-        formatted_cmd_line = cmd_line.strip(constants.GUI_LABEL_PROMPT)
-
         #if self.connected:
         if len(cmd_line):
-            self.print_message( "{}".format(cmd_line) )
-            self.textbox.text = constants.GUI_LABEL_PROMPT
-            return self.exec_command(formatted_cmd_line)
+            self.print_message( "{}".format(constants.GUI_LABEL_PROMPT_SYM + cmd_line) )
+            self.textbox.text = ""
+            return self.exec_command(cmd_line)
         else:
             return None
    
