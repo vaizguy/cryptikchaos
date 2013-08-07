@@ -58,7 +58,7 @@ class TwistedServerApp(App):
         c_rx.unpack(serial)
         c_rx_type = c_rx.gettype()
 
-        self.label.text  = "received:  %s\n" % str(c_rx)
+        self.label.text  += "received:  %s\n" % str(c_rx)
 
         if c_rx_type == "PING":
             rsp =  "PONG" ## Legacy
