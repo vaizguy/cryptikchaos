@@ -14,6 +14,7 @@ import pythonpath
 pythonpath.AddSysPath('../../')
 
 from podroid.comm.capsule.capsule import Capsule
+from podroid.config.configuration import *
 
 class PodroidTestProtocol(protocol.Protocol):
 
@@ -62,12 +63,12 @@ class TwistedServerApp(App):
         if c_rx_type == "PING":
             rsp =  "PONG" ## Legacy
             
-        elif c_rx_type == "TEST":
+        elif c_rx_type == constants.LOCAL_TEST_CAPS_TYPE:
             pass ## Resend the same msg.
         
-        elif c_rx_type == "BULK":  ## TODO ## NOT WORKNG
+        elif c_rx_type == constants.PROTO_BULK_TYPE:  ## TODO ## NOT WORKNG
             dip = c_rx.getip()
-            c_tx = Capsule(captype="MACK", content='', dest_host=dip)
+            c_tx = Capsule(captype=constants.PROTO_MACK_TYPE, content='', dest_host=dip)
             rsp = c_tx.pack()
             
         self.label.text += "responded: %s\n" % rsp

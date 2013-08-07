@@ -100,7 +100,7 @@ class CommService(PeerManager, CapsuleManager):
             return False
         
         ## Assumed Bulk message transfer
-        dtype = "BULK"
+        dtype = constants.PROTO_BULK_TYPE
         
         if msg ==  constants.LOCAL_TEST_STR:
             dtype = constants.LOCAL_TEST_CAPS_TYPE
@@ -145,10 +145,10 @@ class CommService(PeerManager, CapsuleManager):
         ## Currently the test case is inbuilt into the pod. --## TEST BEGIN ## 
         if captype == constants.LOCAL_TEST_CAPS_TYPE:
             
-            if cid == constants.LOCAL_TEST_CAPS_ID and \
-              chksum == constants.LOCAL_TEST_CAPS_CHKSUM and \
-              content == constants.LOCAL_TEST_STR and \
-              dest_ip == constants.LOCAL_TEST_HOST:
+            if cid     == constants.LOCAL_TEST_CAPS_ID     and \
+               chksum  == constants.LOCAL_TEST_CAPS_CHKSUM and \
+               content == constants.LOCAL_TEST_STR         and \
+               dest_ip == constants.LOCAL_TEST_HOST:
                 Logger.debug( "Sending Message Test Pass." )
             else:
                 Logger.debug( """
@@ -158,7 +158,7 @@ class CommService(PeerManager, CapsuleManager):
                 2. Command is 'send 888 Hello World!'
                 """ )
                 
-        elif captype == "MACK":
+        elif captype == constants.PROTO_MACK_TYPE:
             Logger.debug( "Message ACK recieved from {}".format(dest_ip) )
             
         ## ----------------------------------------------------## TEST END ##
