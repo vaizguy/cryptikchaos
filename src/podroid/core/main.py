@@ -52,7 +52,7 @@ class PodDroidApp(App, CommService):
         ## Create label
         self.scroll_label = ScrollView()
         ## Create label
-        self.label = Label(text='  P0DN3T v.1\n  ------', halign='left', size_hint=(None, None))
+        self.label = Label(text=constants.GUI_WELCOME_MSG, halign='left', size_hint=(None, None))
         self.label.bind(texture_size = self.label.setter('size'))
         
         self.scroll_label.do_scroll_y = True

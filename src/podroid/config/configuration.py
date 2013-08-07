@@ -17,6 +17,10 @@ import os
 import constants
 
 ####------------------GUI Attribute CONSTANTS-----------------------------------------------------------------------####
+constants.GUI_WELCOME_MSG = """
+  P0DN3T v.1
+  ---------------
+"""
 constants.GUI_LABEL_PROMPT_SYM = ">>"
 constants.GUI_LABEL_LEFT_PADDING = "  "
 constants.GUI_LABEL_PROMPT = constants.GUI_LABEL_LEFT_PADDING + constants.GUI_LABEL_PROMPT_SYM
