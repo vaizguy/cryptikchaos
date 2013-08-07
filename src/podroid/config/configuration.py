@@ -16,6 +16,13 @@ import os
 
 import constants
 
+####------------------GUI Attribute CONSTANTS-----------------------------------------------------------------------####
+constants.GUI_LABEL_PROMPT_SYM = ">>"
+constants.GUI_LABEL_LEFT_PADDING = "  "
+constants.GUI_LABEL_PROMPT = constants.GUI_LABEL_LEFT_PADDING + constants.GUI_LABEL_PROMPT_SYM
+
+####----------------------------------------------------------------------------------------------------------------####
+
 ####------------------Project Path CONSTANTS------------------------------------------------------------------------####
 constants.PROJECT_PATH = os.path.dirname(os.path.realpath(__file__)) + "/.."
 ####----------------------------------------------------------------------------------------------------------------####

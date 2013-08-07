@@ -16,6 +16,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.logger import Logger
+from kivy.uix.scrollview import ScrollView
 
 ## Add podroid path
 import pythonpath
@@ -49,11 +50,18 @@ class PodDroidApp(App, CommService):
         "Setup the Kivy GUI"
         
         ## Create label
-        self.label = Label(text='Welcome to Podnet.\n')
-               
+        self.scroll_label = ScrollView()
+        ## Create label
+        self.label = Label(text='Welcome to Podnet.\n', halign='left', size_hint=(None, None))
+        self.label.bind(texture_size = self.label.setter('size'))
+        
+        self.scroll_label.do_scroll_y = True
+        self.scroll_label.add_widget(self.label)
+        
         ## Create Textbox
         self.textbox = TextInput(size_hint_y=.15, size_hint_x=.8, multiline=False)
         self.textbox.bind(on_text_validate=self.handle_input)
+        self.textbox.text = constants.GUI_LABEL_PROMPT
 
         ## Create button
         self.enter_button = Button(text='Enter', size_hint_y=.15, size_hint_x=.2) 
@@ -64,7 +72,7 @@ class PodDroidApp(App, CommService):
         self.text_input_layout.add_widget(self.enter_button)
         
         self.main_layout = BoxLayout(orientation='vertical')
-        self.main_layout.add_widget(self.label)
+        self.main_layout.add_widget(self.scroll_label)
         self.main_layout.add_widget(self.text_input_layout)
         return self.main_layout
 
@@ -72,19 +80,23 @@ class PodDroidApp(App, CommService):
     def print_message(self, msg):
         "Print a message in the output window."
         
-        self.label.text += msg + "\n"
+        self.label.text += '  ' + msg.strip("  ") + "\n"
           
     
     def handle_input(self, *args):
         "*Send* button (and return key) event call back"
         
+        ## Total text input entered by user
         cmd_line = self.textbox.text
+        
+        ## Strip prompt text
+        formatted_cmd_line = cmd_line.strip(constants.GUI_LABEL_PROMPT)
 
         #if self.connected:
         if len(cmd_line):
-            self.print_message("Processing: %s" % cmd_line)
-            self.textbox.text = ""
-            return self.exec_command(cmd_line)
+            self.print_message( "{}".format(cmd_line) )
+            self.textbox.text = constants.GUI_LABEL_PROMPT
+            return self.exec_command(formatted_cmd_line)
         else:
             return None
    
