@@ -21,6 +21,8 @@ from twisted.internet import reactor
 
 from kivy.logger import Logger
 
+import base64
+
 class CommService(PeerManager, CapsuleManager):
     """
     Twisted communications service.
@@ -105,32 +107,7 @@ class CommService(PeerManager, CapsuleManager):
         
         ## Send data over connection
         return self._write_into_connection(conn, capsule)
-    
-    ## ------------------------------------------------
-    ## Define Protocol Code here
-    ## ------------------------------------------------
-    
-    def pass_message(self, pid, msg):
-        "Pass message to client. Capsule Type: BULK"
-        
-        ## Check to see peer connection status
-        if not self.get_peer_connection_status(pid):
-            return False
-        
-        ## Assumed Bulk message transfer
-        dtype = constants.PROTO_BULK_TYPE
-        
-        if msg ==  constants.LOCAL_TEST_STR:
-            dtype = constants.LOCAL_TEST_CAPS_TYPE
-                           
-        ## Send message using send data API       
-        return self._transfer_data(pid, dtype, msg)
-    
-     ## ------------------------------------------------
-      
-        
-    def on_client_connection(self, connection): pass
-    
+       
     
     def start_connection(self, pid, host='localhost', port=8000):
         "Start connection with server."
@@ -147,6 +124,7 @@ class CommService(PeerManager, CapsuleManager):
         
         ## Update peer connection status to CONNECTED
         self._update_peer_connection_status(peer_ip, True)
+    
     
     def on_server_disconnection(self, connection):
         "Executed on successful server disconnection."
@@ -185,4 +163,61 @@ class CommService(PeerManager, CapsuleManager):
         elif captype == constants.PROTO_MACK_TYPE:
             Logger.debug( "Message ACK recieved from {}".format(dest_ip) )
             
-        ## ----------------------------------------------------## TEST END ##
+        
+    ## ------------------------------------------------
+    ## Define Client Protocol defined here
+    ## ------------------------------------------------
+    
+    def pass_message(self, pid, msg):
+        "Pass message to client. Capsule Type: BULK"
+        
+        ## Check to see peer connection status
+        if not self.get_peer_connection_status(pid):
+            return False
+        
+        ## Assumed Bulk message transfer
+        dtype = constants.PROTO_BULK_TYPE
+        
+        if msg ==  constants.LOCAL_TEST_STR:
+            dtype = constants.LOCAL_TEST_CAPS_TYPE
+                           
+        ## Send message using send data API       
+        return self._transfer_data(pid, dtype, msg)
+    
+    ## ------------------------------------------------
+     
+    ## ------------------------------------------------
+    ## Server Protocols defined here
+    ## ------------------------------------------------
+    
+    def on_client_connection(self, connection): pass
+    
+    
+    def handle_recieved_data(self, serial):
+        
+        Logger.debug( "Handling Capsule : {}".format(base64.b64encode(serial)) )
+        
+        ## Response
+        rsp = serial
+        
+        ## Unpack capsule
+        c_rx = Capsule()
+        c_rx.unpack(serial)
+        c_rx_type = c_rx.gettype()
+
+        self.label.text  = "received:  %s\n" % str(c_rx)
+
+        if c_rx_type == "PING":
+            rsp =  "PONG" ## Legacy
+            
+        elif c_rx_type == constants.LOCAL_TEST_CAPS_TYPE:
+            pass ## Resend the same msg.
+        
+        elif c_rx_type == constants.PROTO_BULK_TYPE:  ## TODO ## NOT WORKNG
+            dip = c_rx.getip()
+            c_tx = Capsule(captype=constants.PROTO_MACK_TYPE, content='', dest_host=dip)
+            rsp = c_tx.pack()
+            
+        self.label.text += "responded: %s\n" % rsp
+
+        return rsp
