@@ -103,7 +103,6 @@ class PeerManager:
             raise Exception("Invalid Peer Connection Status, must be True or False.")
         
     
-    
     def list_peers(self):
         "Returns a list of all the peers"
         
@@ -116,7 +115,21 @@ class PeerManager:
             peerlist.append((p_info["PEER_ID"], p_info["PEER_IP"], p_info["PEER_PORT"], p_info["PEER_CONN_STATUS"]))
             
         return peerlist
-               
+    
+    def list_live_peers(self):
+        "Returns a list of all online peers"
+        
+        peerlist = []
+
+        for k in self._peer_dict.keys():
+            ## Get peer attributes
+            p_info = self._peer_dict[k]
+            
+            if self.get_peer_connection_status(k):
+                ## Append as tuples (peer id, peer host, peer port, peer status)
+                peerlist.append((p_info["PEER_ID"], p_info["PEER_IP"], p_info["PEER_PORT"], p_info["PEER_CONN_STATUS"]))
+            
+        return peerlist
     
     def peer_host(self, pid):
         "Returns a peer's IPv4 address."

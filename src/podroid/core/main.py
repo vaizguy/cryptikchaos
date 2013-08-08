@@ -24,6 +24,7 @@ pythonpath.AddSysPath('../../')
 
 from podroid.comm.twiscomm import CommService
 from podroid.config.configuration import *
+from podroid.libs.Table.prettytable import PrettyTable
 
 class PodDroidApp(App, CommService):
     """
@@ -83,6 +84,9 @@ class PodDroidApp(App, CommService):
 
     def print_message(self, msg):
         "Print a message in the output window."
+        
+        ## Convert to string       
+        msg = str(msg)
         
         self.label.text += constants.GUI_LABEL_LEFT_PADDING + msg.strip(" ") + "\n"
           
@@ -295,6 +299,22 @@ class PodDroidApp(App, CommService):
         
         ## Check sending of message.
         self.cmd_send(str(constants.LOCAL_TEST_PEER_ID) + " " + constants.LOCAL_TEST_STR) 
+        
+    
+    def cmd_peers(self, cmdline):
+        """
+        View live peers.
+        Usage: peers
+        """
+        
+        self.print_message("List of live peers:")
+        plist = self.list_live_peers()
+        table = PrettyTable(["ID", "IP", "PORT", "STATUS"])
+        
+        for r in plist:
+            table.add_row(r)
+            
+        self.print_message(table)
 
 
 if __name__ == '__main__':
