@@ -75,11 +75,11 @@ class CommService(PeerManager, CapsuleManager):
                 pass
             
             
-    def _update_peer_connection_status(self, peer_ip, status):
+    def _update_peer_connection_status(self, peer_ip, peer_port, status):
         "Change peer conn status based on connection/disconnection"
         
         ## Assuming Peer ID <-> Peer IP one to one relation
-        pid = self.get_peerid_from_ip(peer_ip)
+        pid = self.get_peerid_from_ip(peer_ip, peer_port)
         
         if pid:
             return self.update_peer_connection_status(pid, status)
@@ -88,11 +88,11 @@ class CommService(PeerManager, CapsuleManager):
         
         
             
-    def _write_into_connection(self, conn, data):
+    def _write_into_connection(self, conn, stream):
         "Write into twisted connection transport."
         
         try:
-            conn.transport.write(data)
+            conn.transport.write(stream)
         except:
             Logger.error( "Connection to peer failed. Please try later." )
             return False
@@ -107,14 +107,16 @@ class CommService(PeerManager, CapsuleManager):
         conn = self.connect_to_peer(pid)
         
         ## Pack data into capsule
-        capsule = self.pack_capsule(data_class, data_content, self.peer_host(pid))
+        stream = self.pack_capsule(data_class, data_content, self.peer_host(pid), self.host)
         
         ## Send data over connection
-        return self._write_into_connection(conn, capsule)
+        return self._write_into_connection(conn, stream)
     
     def _print(self, dip, msg):
         
-        print_string = constants.GUI_LABEL_PROMPT + dip + " : " + msg
+        peer_id = str( self.get_peerid_from_ip(dip, 8000) )
+        
+        print_string = constants.GUI_LABEL_PROMPT + peer_id + " : " + msg
         
         if self._printer:
             self._printer(print_string)
@@ -134,18 +136,20 @@ class CommService(PeerManager, CapsuleManager):
         "Executed on successful server connection."
         
         peer_ip = connection.getPeer().host
+        peer_port = connection.getPeer().port
         
         ## Update peer connection status to CONNECTED
-        self._update_peer_connection_status(peer_ip, True)
+        self._update_peer_connection_status(peer_ip, peer_port, True)
     
     
     def on_server_disconnection(self, connection):
         "Executed on successful server disconnection."
         
         peer_ip = connection.getPeer().host
-        
+        peer_port = connection.getPeer().port
+
         ## Update peer connection status to DISCONNECTED
-        self._update_peer_connection_status(peer_ip, False)
+        self._update_peer_connection_status(peer_ip, peer_port, False)
         
         
     def handle_response(self, response):
@@ -153,17 +157,19 @@ class CommService(PeerManager, CapsuleManager):
         
         if len(response) != constants.CAPSULE_SIZE:
             raise Exception('Capsule chunk should be equal to '+str(constants.CAPSULE_SIZE)+'B')
+            return None
         
         ## Repsonse handling architecture should be placed here.
-        (cid, dest_ip, captype, content, _, chksum) = self.unpack_capsule(response)
+        (cid, dest_ip, src_ip, captype, content, _, chksum) = self.unpack_capsule(response)
         
         ## Currently the test case is inbuilt into the pod. --## TEST BEGIN ## 
         if captype == constants.LOCAL_TEST_CAPS_TYPE:
             
-            if cid     == constants.LOCAL_TEST_CAPS_ID     and \
-               chksum  == constants.LOCAL_TEST_CAPS_CHKSUM and \
-               content == constants.LOCAL_TEST_STR         and \
-               dest_ip == constants.LOCAL_TEST_HOST:
+            if (cid     == constants.LOCAL_TEST_CAPS_ID    and 
+               chksum  == constants.LOCAL_TEST_CAPS_CHKSUM and 
+               content == constants.LOCAL_TEST_STR         and 
+               dest_ip == constants.LOCAL_TEST_HOST        and 
+               src_ip  == constants.LOCAL_TEST_HOST           ):
                 Logger.debug( "Sending Message Test Pass." )
             else:
                 Logger.debug( """
@@ -174,7 +180,7 @@ class CommService(PeerManager, CapsuleManager):
                 """ )
                 
         elif captype == constants.PROTO_MACK_TYPE:
-            Logger.debug( "Message ACK recieved from {}".format(dest_ip) )
+            Logger.debug( "Message ACK recieved from {}".format(src_ip) )
             
         
     ## ------------------------------------------------
@@ -214,12 +220,9 @@ class CommService(PeerManager, CapsuleManager):
         rsp = serial
         
         ## Unpack capsule
-        (cid, dip, c_rx_type, msg, _, _) = self.unpack_capsule(serial)
-        
+        (cid, dip, sip, c_rx_type, msg, _, _) = self.unpack_capsule(serial)
+               
         Logger.debug("Received: {}".format( b64encode(serial)) )
-        
-        ## Source IP should be added into capsule
-        sip = dip ## TODO 
 
         if c_rx_type == "PING":
             rsp =  "PONG" ## Legacy
@@ -233,7 +236,7 @@ class CommService(PeerManager, CapsuleManager):
             if msg: ## integrity check
                 ## Message reciept successful
                 self._print(sip, msg)
-                rsp = self.pack_capsule(captype=constants.PROTO_MACK_TYPE, capcontent='', dest_host=dip)
+                rsp = self.pack_capsule(captype=constants.PROTO_MACK_TYPE, capcontent='', dest_host=sip, src_host=dip)
             else:
                 ## Request for message again
                 Logger.error("Tampered capsule received.")

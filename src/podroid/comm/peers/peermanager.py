@@ -41,6 +41,10 @@ class PeerManager:
     def add_peer(self, pid, host, port):
         "Add peer to database."
         
+        ## localhost - 127.0.0.1 mapping.
+        if host == "localhost":
+            host = constants.LOCAL_TEST_HOST
+        
         Logger.debug( "Adding Peer {} , {}@{}".format(pid, host, port) )
         
         ## Peer dictionary structure defined here
@@ -137,11 +141,12 @@ class PeerManager:
         return self._peer_dict[str(pid)]["PEER_IP"]
     
     
-    def get_peerid_from_ip(self, peer_ip):
+    def get_peerid_from_ip(self, peer_ip, peer_port=8000):
         "Get a peerid from stored IP addresses. Assumes 1to1 relation."        
 
-        for (pid, ip, _, _) in self.list_peers():
-            if ip == peer_ip:
+        for (pid, ip, port, _) in self.list_peers():
+            print pid, ip, port
+            if ip == peer_ip and port == peer_port:
                 return int(pid)
             
         return None ## Add relevent catch

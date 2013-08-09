@@ -21,10 +21,10 @@ class CapsuleManager:
         self.capsule_dict = {}
         
         
-    def pack_capsule(self, captype='NULL', capcontent='', dest_host='127.0.0.1'):
+    def pack_capsule(self, captype="NULL", capcontent='', dest_host="127.0.0.1", src_host="127.0.0.1"):
         "Pack data into capsule."
         
-        capsule = Capsule(captype, capcontent, dest_host)
+        capsule = Capsule(captype, capcontent, dest_host, src_host)
         
         self.capsule_dict[capsule.getid()] = capsule
         

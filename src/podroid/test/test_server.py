@@ -44,7 +44,12 @@ class TwistedServerApp(App, CommService):
         
         ## Initiate Twisted Server
         CommService.__init__(self, 888, "localhost", 8888, clientinit=False, printer=self.print_message)
+        
+        ## Add local peer used for testing.
+        self.add_peer(123, "localhost", 8000)
+        
         self.label = Label(text="server started\n")
+        
         return self.label
     
     def print_message(self, msg):

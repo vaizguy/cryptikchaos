@@ -49,14 +49,17 @@ constants.CAPS_CHKSUM_LEN = 32
 ## Capsule content length byte length
 constants.CAPS_CONTENTL_LEN = 4
 ## Capsule IP integer repr length
-constants.CAPS_DESTIP_LEN = 4
+constants.CAPS_DST_IP_LEN = 4
+constants.CAPS_SCR_IP_LEN = 4
+
 ## Capsule size
 constants.CAPSULE_SIZE = constants.CAPS_CONTENT_LEN + \
                          constants.CAPS_TYPE_LEN + \
                          constants.CAPS_ID_LEN + \
                          constants.CAPS_CHKSUM_LEN + \
                          constants.CAPS_CONTENTL_LEN + \
-                         constants.CAPS_DESTIP_LEN
+                         constants.CAPS_DST_IP_LEN + \
+                         constants.CAPS_SCR_IP_LEN
 ####-----------------------------------------------------------------------------------------------------------------####
 
 ####------------------TEST CONSTANTS---------------------------------------------------------------------------------####

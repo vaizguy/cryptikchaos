@@ -19,17 +19,23 @@ class Capsule(object):
     "Capsule definition."
     
     
-    def __init__(self, captype='NULL', content='', dest_host='127.0.0.1'):
+    def __init__(self, captype="NULL", content='', dest_host="127.0.0.1", src_host="127.0.0.1"):
         
+        ## Check attribute memory boundaries.
         if len(content) > constants.CAPS_CONTENT_LEN:
             raise Exception('OverflowError: Content exceeded capsule limit of 40')
         if len(captype) > constants.CAPS_TYPE_LEN:
             raise Exception('OverflowError: Type exceeded capsule limit of 4')
+        
+        ## localhost - 127.0.0.1 mapping.
         if dest_host == "localhost":
-            dest_host = constants.LOCAL_TEST_HOST            
+            dest_host = constants.LOCAL_TEST_HOST
+        if src_host == "localhost":
+            src_host = constants.LOCAL_TEST_HOST          
         
         self._dictionary = {'CAP_ID'      : str( uuid.uuid5(uuid.NAMESPACE_URL, dest_host) )[0:constants.CAPS_ID_LEN],
-                            'CAP_DESTIP'  : self._ip_to_uint32(dest_host),
+                            'CAP_DSTIP'   : self._ip_to_uint32(dest_host),
+                            'CAP_SCRIP'   : self._ip_to_uint32(src_host),
                             'CAP_TYPE'    : captype.upper(),
                             'CAP_CONTENT' : content,
                             'CAP_LEN'     : len(content),
@@ -52,9 +58,10 @@ class Capsule(object):
     def pack(self):
         "Pack data into capsule. (i.e struct packing)"
         
-        return struct.pack("!8sI4s40sL32s", 
+        return struct.pack("!8sII4s40sL32s", 
                            self._dictionary['CAP_ID'], 
-                           self._dictionary['CAP_DESTIP'],                               
+                           self._dictionary['CAP_DSTIP'],         
+                           self._dictionary['CAP_SCRIP'],                               
                            self._dictionary['CAP_TYPE'], 
                            self._dictionary['CAP_CONTENT'], 
                            self._dictionary['CAP_LEN'], 
@@ -65,11 +72,12 @@ class Capsule(object):
         "Unpack serial data into capsule."
         
         (self._dictionary['CAP_ID'], 
-         self._dictionary['CAP_DESTIP'],                                            
+         self._dictionary['CAP_DSTIP'],       
+         self._dictionary['CAP_SRCIP'],                        
          self._dictionary['CAP_TYPE'], 
          self._dictionary['CAP_CONTENT'], 
          self._dictionary['CAP_LEN'], 
-         self._dictionary['CAP_CHKSUM']) = struct.unpack("!8sI4s40sL32s", stream)
+         self._dictionary['CAP_CHKSUM']) = struct.unpack("!8sII4s40sL32s", stream)
                       
         
     def __str__(self):
@@ -89,15 +97,21 @@ class Capsule(object):
         return self._dictionary["CAP_ID"]
     
     
-    def getip(self):
+    def getdip(self):
         "Return Destination IP."
         
-        return self._uint32_to_ip(self._dictionary["CAP_DESTIP"])
+        return self._uint32_to_ip(self._dictionary["CAP_DSTIP"])
+ 
     
-    
+    def getsip(self):
+        "Return Destination IP."
+        
+        return self._uint32_to_ip(self._dictionary["CAP_SRCIP"])
+
+
     def gettype(self):
         "Return Capsule protocol type."
-        
+
         return self._dictionary["CAP_TYPE"]
     
     def getcontent(self):
@@ -106,13 +120,14 @@ class Capsule(object):
             return self._dictionary["CAP_CONTENT"][0:self._dictionary['CAP_LEN']]
         else:
             return None
-    
-    
+
+
     def tuple(self):
         "Return capsule in tuple form."
         
         return (self._dictionary['CAP_ID'], 
-                self.getip(),
+                self.getdip(),
+                self.getsip(),
                 self._dictionary['CAP_TYPE'], 
                 self.getcontent(), 
                 self._dictionary['CAP_LEN'], 
