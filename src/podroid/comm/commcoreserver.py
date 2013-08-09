@@ -15,9 +15,10 @@ install_twisted_reactor()
 
 from twisted.internet import protocol
 
-## Server backend to pocess the commands
+
 class CommCoreServer(protocol.Protocol):
 
+    "Server backend to pocess the commands"
 
     def dataReceived(self, data):
 
@@ -28,12 +29,9 @@ class CommCoreServer(protocol.Protocol):
 
 
 class CommCoreServerFactory(protocol.Factory):
-    
-    protocol = CommCoreServer
 
+    protocol = CommCoreServer
 
     def __init__(self, app):
 
         self.app = app
-
-

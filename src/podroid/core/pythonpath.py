@@ -6,8 +6,11 @@ Taken from activestate code recipices.
 
 @author: Robin Parmer, ActiveCode
 '''
+
+
 def AddSysPath(new_path):
-    import sys, os
+    import sys
+    import os
 
     # standardise
     new_path = os.path.abspath(new_path)
@@ -20,7 +23,7 @@ def AddSysPath(new_path):
     do = -1
     if os.path.exists(new_path):
         do = 1
-        
+
         # check against all paths currently available
         for x in sys.path:
             x = os.path.abspath(x)

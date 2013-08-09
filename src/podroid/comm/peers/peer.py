@@ -9,15 +9,18 @@ __version__ = 0.1
 
 import collections
 
-## Taken from 
-## http://stackoverflow.com/questions/3387691/python-how-to-perfectly-override-a-dict
-## Jochen Ritzel 's solution.
+# Taken from
+# http://goo.gl/mRJseB
+# Jochen Ritzel 's solution.
+
+
 class TransformedDict(collections.MutableMapping):
+
     """Represents the Peer attributes"""
 
     def __init__(self, *args, **kwargs):
         self.store = dict()
-        self.update(dict(*args, **kwargs)) # use the free update to set keys
+        self.update(dict(*args, **kwargs))  # use the free update to set keys
 
     def __getitem__(self, key):
         return self.store[self.__keytransform__(key)]
@@ -39,28 +42,27 @@ class TransformedDict(collections.MutableMapping):
 
 
 class Peer(TransformedDict):
+
     "Peer dictionary, holds the peer attributes."
-    
+
     def __getitem__(self, key):
-        
+
         if key in ("PEER_ID", "PEER_IP", "PEER_PORT", "PEER_CONN_STATUS"):
             return TransformedDict.__getitem__(self, key)
         else:
             raise Exception("Invalid peer attribute.")
-        
-        
-if __name__ == "__main__":
-    
-    peer = Peer({
-                 "PEER_ID"         : 888, 
-                 "PEER_IP"         : "127.0.0.1",
-                 "PEER_PORT"       : 8888,
-                 "PEER_CONN_STATUS": False,
-                })
-    
-    print peer
-    
-    import cPickle
-    print cPickle.loads(cPickle.dumps( peer )) == peer    
-    
 
+
+if __name__ == "__main__":
+
+    peer = Peer({
+                "PEER_ID": 888,
+                "PEER_IP": "127.0.0.1",
+                "PEER_PORT": 8888,
+                "PEER_CONN_STATUS": False,
+                })
+
+    print peer
+
+    import cPickle
+    print cPickle.loads(cPickle.dumps(peer)) == peer

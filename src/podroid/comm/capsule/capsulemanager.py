@@ -1,7 +1,7 @@
 '''
 Created on Aug 4, 2013
 
-Handles packing and unpacking of capsules to be sent 
+Handles packing and unpacking of capsules to be sent
 over the air.
 
 @author: vaizguy
@@ -12,37 +12,36 @@ __version__ = 0.1
 
 from podroid.comm.capsule.capsule import Capsule
 
+
 class CapsuleManager:
+
     "Capsule manager class."
-    
-    
+
     def __init__(self):
-        
+
         self.capsule_dict = {}
-        
-        
-    def pack_capsule(self, captype="NULL", capcontent='', dest_host="127.0.0.1", src_host="127.0.0.1"):
+
+    def pack_capsule(self, captype="NULL", capcontent='',
+                     dest_host="127.0.0.1", src_host="127.0.0.1"):
         "Pack data into capsule."
-        
+
         capsule = Capsule(captype, capcontent, dest_host, src_host)
-        
+
         self.capsule_dict[capsule.getid()] = capsule
-        
+
         return capsule.pack()
-    
+
     def unpack_capsule(self, serial):
         "Unpack serial data into capsule."
-        
+
         capsule = Capsule()
         capsule.unpack(serial)
-        
+
         self.capsule_dict[capsule.getid()] = capsule
-        
+
         return capsule.tuple()
 
-        
     def get_capsule(self, cid):
         "Return capsule data in form of tuple."
-        
+
         return self.capsule_dict[cid].tuple()
-    
