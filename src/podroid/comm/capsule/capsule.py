@@ -86,19 +86,26 @@ class Capsule(object):
     def getid(self):
         "Return Capsule ID."
         
-        return self._dictionary['CAP_ID']
+        return self._dictionary["CAP_ID"]
     
     
     def getip(self):
         "Return Destination IP."
         
-        return self._uint32_to_ip(self._dictionary['CAP_DESTIP'])
+        return self._uint32_to_ip(self._dictionary["CAP_DESTIP"])
     
     
     def gettype(self):
         "Return Capsule protocol type."
         
-        return self._dictionary['CAP_TYPE']
+        return self._dictionary["CAP_TYPE"]
+    
+    def getcontent(self):
+        "Return capsule content if its integrity is maintained."
+        if (hmac.new(self._dictionary["CAP_CONTENT"]).hexdigest() == self._dictionary["CAP_CHKSUM"]):
+            return self._dictionary["CAP_CONTENT"][0:self._dictionary['CAP_LEN']]
+        else:
+            return None
     
     
     def tuple(self):
@@ -107,7 +114,7 @@ class Capsule(object):
         return (self._dictionary['CAP_ID'], 
                 self.getip(),
                 self._dictionary['CAP_TYPE'], 
-                self._dictionary['CAP_CONTENT'][0:self._dictionary['CAP_LEN']], 
+                self.getcontent(), 
                 self._dictionary['CAP_LEN'], 
                 self._dictionary['CAP_CHKSUM'])
     
