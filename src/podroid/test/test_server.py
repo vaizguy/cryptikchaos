@@ -13,8 +13,8 @@ from base64 import b64encode
 import pythonpath
 pythonpath.AddSysPath('../../')
 
-from podroid.comm.capsule.capsule import Capsule
 from podroid.config.configuration import *
+from podroid.comm.twiscomm import CommService
 
 class PodroidTestProtocol(protocol.Protocol):
 
@@ -38,42 +38,18 @@ class PodroidTestFactory(protocol.Factory):
 from kivy.app import App
 from kivy.uix.label import Label
 
-class TwistedServerApp(App):
-
+class TwistedServerApp(App, CommService):
+           
     def build(self):
-
+        
+        ## Initiate Twisted Server
+        CommService.__init__(self, 888, "localhost", 8888, clientinit=False, printer=self.print_message)
         self.label = Label(text="server started\n")
-        reactor.listenTCP(8888, PodroidTestFactory(self))
         return self.label
-
-    def handle_recieved_data(self, serial):
+    
+    def print_message(self, msg):
         
-        Logger.debug( "Handling {}".format(b64encode(serial)) )
-        
-        ## Response
-        rsp = serial
-        
-        ## Unpack capsule
-        c_rx = Capsule()
-        c_rx.unpack(serial)
-        c_rx_type = c_rx.gettype()
-
-        self.label.text  += "received:  %s\n" % str(c_rx)
-
-        if c_rx_type == "PING":
-            rsp =  "PONG" ## Legacy
-            
-        elif c_rx_type == constants.LOCAL_TEST_CAPS_TYPE:
-            pass ## Resend the same msg.
-        
-        elif c_rx_type == constants.PROTO_BULK_TYPE:  ## TODO ## NOT WORKNG
-            dip = c_rx.getip()
-            c_tx = Capsule(captype=constants.PROTO_MACK_TYPE, content='', dest_host=dip)
-            rsp = c_tx.pack()
-            
-        self.label.text += "responded: %s\n" % rsp
-
-        return rsp
+        self.label.text += msg + '\n'
 
 
 if __name__ == '__main__':

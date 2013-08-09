@@ -21,7 +21,7 @@ from twisted.internet import reactor
 
 from kivy.logger import Logger
 
-import base64
+from base64 import b64encode
 
 class CommService(PeerManager, CapsuleManager):
     """
@@ -30,7 +30,7 @@ class CommService(PeerManager, CapsuleManager):
     """
     
     
-    def __init__(self, peerid, host, port):
+    def __init__(self, peerid, host, port, serverinit=True, clientinit=True, printer=None):
         "Initialize communication layer."
                
         ## Initialize peer manager
@@ -41,12 +41,16 @@ class CommService(PeerManager, CapsuleManager):
         self.peerid = peerid
         self.host   = host
         self.port   = port
+        
+        self._printer = printer
                  
         ## Start the listener
-        self._start_server()
+        if serverinit:
+            self._start_server()
         
         ## Start peer connections
-        self._start_peer_connections()
+        if clientinit:
+            self._start_peer_connections()
                
                
     def _start_server(self):
@@ -107,6 +111,15 @@ class CommService(PeerManager, CapsuleManager):
         
         ## Send data over connection
         return self._write_into_connection(conn, capsule)
+    
+    def _print(self, dip, msg):
+        
+        print_string = constants.GUI_LABEL_PROMPT + dip + " : " + msg
+        
+        if self._printer:
+            self._printer(print_string)
+        else:
+            Logger.info(print_string)
        
     
     def start_connection(self, pid, host='localhost', port=8000):
@@ -195,29 +208,37 @@ class CommService(PeerManager, CapsuleManager):
     
     def handle_recieved_data(self, serial):
         
-        Logger.debug( "Handling Capsule : {}".format(base64.b64encode(serial)) )
+        Logger.debug( "Handling Capsule : {}".format(b64encode(serial)) )
         
         ## Response
         rsp = serial
         
         ## Unpack capsule
-        c_rx = Capsule()
-        c_rx.unpack(serial)
-        c_rx_type = c_rx.gettype()
-
-        self.label.text  = "received:  %s\n" % str(c_rx)
+        (cid, dip, c_rx_type, msg, _, _) = self.unpack_capsule(serial)
+        
+        Logger.debug("Received: {}".format( b64encode(serial)) )
+        
+        ## Source IP should be added into capsule
+        sip = dip ## TODO 
 
         if c_rx_type == "PING":
             rsp =  "PONG" ## Legacy
             
         elif c_rx_type == constants.LOCAL_TEST_CAPS_TYPE:
+            self._print(sip, msg)
             pass ## Resend the same msg.
         
-        elif c_rx_type == constants.PROTO_BULK_TYPE:  ## TODO ## NOT WORKNG
-            dip = c_rx.getip()
-            c_tx = Capsule(captype=constants.PROTO_MACK_TYPE, content='', dest_host=dip)
-            rsp = c_tx.pack()
+        elif c_rx_type == constants.PROTO_BULK_TYPE:
             
-        self.label.text += "responded: %s\n" % rsp
+            if msg: ## integrity check
+                ## Message reciept successful
+                self._print(sip, msg)
+                rsp = self.pack_capsule(captype=constants.PROTO_MACK_TYPE, capcontent='', dest_host=dip)
+            else:
+                ## Request for message again
+                Logger.error("Tampered capsule received.")
+                pass
+
+        Logger.debug( "Responded: {}".format( b64encode(rsp)) )
 
         return rsp
