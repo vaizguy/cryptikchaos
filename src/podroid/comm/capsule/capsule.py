@@ -41,19 +41,20 @@ class Capsule(object):
         if src_host == "localhost":
             src_host = constants.LOCAL_TEST_HOST
 
+        # Generate uid
+        uid = str(
+            uuid.uuid5(uuid.NAMESPACE_URL, dest_host)
+        )[0:constants.CAPS_ID_LEN]
+
+        # Populate capsule fields
         self._dictionary = {
-            'CAP_ID':
-            str(
-                uuid.uuid5(
-                    uuid.NAMESPACE_URL, dest_host
-                )
-            )[0:constants.CAPS_ID_LEN],
-            'CAP_DSTIP': self._ip_to_uint32(dest_host),
-            'CAP_SCRIP': self._ip_to_uint32(src_host),
-            'CAP_TYPE': captype.upper(),
+            'CAP_ID'     : uid,
+            'CAP_DSTIP'  : self._ip_to_uint32(dest_host),
+            'CAP_SCRIP'  : self._ip_to_uint32(src_host),
+            'CAP_TYPE'   : captype.upper(),
             'CAP_CONTENT': content,
-            'CAP_LEN': len(content),
-            'CAP_CHKSUM': hmac.new(content).hexdigest()}
+            'CAP_LEN'    : len(content),
+            'CAP_CHKSUM' : hmac.new(content).hexdigest()}
 
     def __setitem__(self, key, item):
 

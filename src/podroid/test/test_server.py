@@ -51,7 +51,7 @@ class TwistedServerApp(App, CommService):
             printer=self.print_message)
 
         # Add local peer used for testing.
-        self.add_peer(123, "localhost", 8000)
+        self.add_peer(constants.PEER_ID, "localhost", 8000)
 
         self.label = Label(text="server started\n")
 

@@ -28,6 +28,8 @@ from podroid.comm.twiscomm import CommService
 from podroid.config.configuration import *
 from podroid.libs.Table.prettytable import PrettyTable
 
+import uuid
+
 
 class PodDroidApp(App, CommService):
 
@@ -45,9 +47,10 @@ class PodDroidApp(App, CommService):
         root = self.setup_gui()
 
         # Initiate Twisted Server & Client services
-        CommService.__init__(self, 123,
-                             "localhost",
-                             8000,
+        CommService.__init__(self, 
+                             peerid=constants.PEER_ID,
+                             host="localhost",
+                             port=constants.PEER_PORT,
                              printer=self.print_message)
 
         return root

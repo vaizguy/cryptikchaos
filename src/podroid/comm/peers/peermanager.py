@@ -152,7 +152,6 @@ class PeerManager:
         "Get a peerid from stored IP addresses. Assumes 1to1 relation."
 
         for (pid, ip, port, _) in self.list_peers():
-            print pid, ip, port
             if ip == peer_ip and port == peer_port:
                 return int(pid)
 

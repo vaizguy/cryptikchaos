@@ -95,12 +95,20 @@ class CommService(PeerManager, CapsuleManager):
             return False
         else:
             return True
+        
+    def _router(self, pid):
+        "Router decides bes route to peer"
+        
+        return pid
 
     def _transfer_data(self, pid, data_class, data_content):
         "Transfer data to client with peer id."
+        
+        # Get peer route.
+        peer_route = self._router(pid)
 
         # Get peer connection
-        conn = self.connect_to_peer(pid)
+        conn = self.connect_to_peer(peer_route)
 
         # Pack data into capsule
         stream = self.pack_capsule(
@@ -114,7 +122,7 @@ class CommService(PeerManager, CapsuleManager):
 
     def _print(self, dip, msg):
 
-        peer_id = str(self.get_peerid_from_ip(dip, 8000))
+        peer_id = str(self.get_peerid_from_ip(dip, constants.PEER_PORT))
 
         print_string = constants.GUI_LABEL_PROMPT + peer_id + " : " + msg
 
@@ -123,7 +131,7 @@ class CommService(PeerManager, CapsuleManager):
         else:
             Logger.info(print_string)
 
-    def start_connection(self, pid, host='localhost', port=8000):
+    def start_connection(self, pid, host='localhost', port=constants.PEER_PORT):
         "Start connection with server."
 
         Logger.debug("Connecting to pid: {}".format(pid))

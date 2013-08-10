@@ -17,6 +17,7 @@ import os
 import constants
 
 # ------------------GUI Attribute CONSTANTS-------------------------------####
+
 constants.GUI_WELCOME_MSG = """
   P0DN3T v.1
   ---------------
@@ -25,14 +26,15 @@ constants.GUI_LABEL_PROMPT_SYM = ">>"
 constants.GUI_LABEL_LEFT_PADDING = "  "
 constants.GUI_LABEL_PROMPT = constants.GUI_LABEL_LEFT_PADDING + \
     constants.GUI_LABEL_PROMPT_SYM
-
 # ------------------------------------------------------------------------####
 
 # ------------------Project Path CONSTANTS--------------------------------####
+
 constants.PROJECT_PATH = os.path.dirname(os.path.realpath(__file__)) + "/.."
 # ------------------------------------------------------------------------####
 
 # ------------------Protocol Capsule type CONSTANTS-----------------------####
+
 constants.PROTO_BULK_TYPE = "BULK"
 constants.PROTO_MACK_TYPE = "MACK"
 # ------------------------------------------------------------------------####
@@ -82,10 +84,10 @@ constants.LOCAL_TEST_CAPS_ID = str(
 # Test chksum
 constants.LOCAL_TEST_CAPS_CHKSUM = hmac.new(
     constants.LOCAL_TEST_STR).hexdigest()
-
 # ------------------------------------------------------------------------####
 
 # ---Help documentation printer constants---------------------------------####
+
 constants.DOC_LEADER = ""
 constants.DOC_HEADER = "Documented commands (type help <topic>):"
 constants.MISC_HEADER = "Miscellaneous help topics:"
@@ -93,3 +95,12 @@ constants.UNDOC_HEADER = "Undocumented commands:"
 constants.NOHELP = "*** No help on %s"
 constants.RULER = '='
 # ------------------------------------------------------------------------####
+
+# ---peer attribute constants---------------------------------------------####
+
+constants.PEER_ID = uuid.getnode()
+constants.PEER_PORT = 8000
+# ------------------------------------------------------------------------####
+
+
+
