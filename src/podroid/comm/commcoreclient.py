@@ -17,17 +17,21 @@ from kivy.logger import Logger
 import base64
 # connection to command server
 from twisted.internet import protocol
+from twisted.protocols.basic import LineReceiver
 
 
-class CommCoreClient(protocol.Protocol):
+class CommCoreClientProtocol(LineReceiver):
 
     """
     Communications core client protocol code.
     """
-
-    _peer_host = None
-    _peer_port = None
-    _peer_repr = None
+    
+    def __init__(self, factory):
+        
+        self._peer_host = None
+        self._peer_port = None
+        self._peer_repr = None
+        self.factory    = factory
 
     def connectionMade(self):
         "Run when connection is established with server."
@@ -48,20 +52,20 @@ class CommCoreClient(protocol.Protocol):
 
         self.factory.app.on_server_disconnection(self.transport)
 
-    def dataReceived(self, data):
+    def lineReceived(self, line):
         "Run when response is recieved from server."
 
-        response = self.factory.app.handle_response(data)
+        response = self.factory.app.handle_response(line)
 
         if response:
             print response
 
-        Logger.debug("Recieved : {}".format(base64.b64encode(data)))
+        Logger.debug("Recieved : {}".format(base64.b64encode(line)))
 
 
 class CommCoreClientFactory(protocol.ReconnectingClientFactory):
 
-    protocol = CommCoreClient
+    protocol = CommCoreClientProtocol
 
     def __init__(self, app):
 
@@ -82,16 +86,17 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
         self.resetDelay()
 
         # Overridden build protocol
-        client_protocol = self.protocol()
-        client_protocol.factory = self
-
-        return client_protocol
+        #client_protocol = self.protocol()
+        #client_protocol.factory = self
+        #return client_protocol
+        
+        return CommCoreClientProtocol(self)
 
     def clientConnectionLost(self, connector, reason):
         "Run when connection with server is lost."
 
         #self.app.print_message("connection lost")
-        Logger.debug("Lost connection")
+        Logger.debug("Lost connection: {}".format(reason.getErrorMessage()))
 
         return protocol.ReconnectingClientFactory.clientConnectionLost(
             self, connector, reason
@@ -101,8 +106,11 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
         "Run when attempt to connect with server fails."
 
         #self.app.print_message("connection failed")
-        Logger.debug("Connection failed. ")
+        Logger.debug("Connection failed. {}".format(reason.getErrorMessage()))
 
         return protocol.ReconnectingClientFactory.clientConnectionFailed(
             self, connector, reason
         )
+
+
+

@@ -17,7 +17,7 @@ from podroid.comm.capsule.capsulemanager import CapsuleManager
 
 from podroid.config.configuration import *
 
-from twisted.internet import reactor
+from twisted.internet import reactor, defer
 
 from kivy.logger import Logger
 
@@ -36,7 +36,7 @@ class CommService(PeerManager, CapsuleManager):
         "Initialize communication layer."
 
         # Initialize peer manager
-        PeerManager.__init__(self)
+        PeerManager.__init__(self, peerid)
         # Initialize capsule manager
         CapsuleManager.__init__(self)
 
@@ -85,11 +85,16 @@ class CommService(PeerManager, CapsuleManager):
         else:
             return None
 
+    def _sendLine(self, conn, line):
+        "Implementing sendLine method locally."
+
+        return conn.transport.write(line + '\r\n')
+
     def _write_into_connection(self, conn, stream):
         "Write into twisted connection transport."
-
+        
         try:
-            conn.transport.write(stream)
+            self._sendLine(conn, stream)
         except:
             Logger.error("Connection to peer failed. Please try later.")
             return False
@@ -101,7 +106,7 @@ class CommService(PeerManager, CapsuleManager):
         
         return pid
 
-    def _transfer_data(self, pid, data_class, data_content):
+    def _transfer_data(self, pid, data_class, data_content, desthost=None):
         "Transfer data to client with peer id."
         
         # Get peer route.
@@ -110,13 +115,16 @@ class CommService(PeerManager, CapsuleManager):
         # Get peer connection
         conn = self.connect_to_peer(peer_route)
 
+        if not desthost:
+            desthost = self.peer_host(pid)
+
         # Pack data into capsule
         stream = self.pack_capsule(
             data_class,
             data_content,
-            self.peer_host(pid),
+            desthost,
             self.host)
-
+        
         # Send data over connection
         return self._write_into_connection(conn, stream)
 
@@ -207,7 +215,35 @@ class CommService(PeerManager, CapsuleManager):
 
         # Send message using send data API
         return self._transfer_data(pid, dtype, msg)
+    
+    def add_peer_to_swarm(self, pid, host):
+        "Adds a new user through auth request chain"
+        
+        # Check if peer is present
+        if self.get_peer(pid):
+            self._print(self.peerid, "Peer already in list.")
+            return False
+        
+        # Start a connection with peer
+        conn = self.start_connection(pid, host, 8888)
 
+        # Save the connection
+        self.add_peer_connection(pid, conn)
+        
+        # Pack data into capsule
+        stream = self.pack_capsule(
+            "AUTH",
+            str(self.peerid),
+            host,
+            self.host)
+        
+        Logger.debug("Sending auth.")
+
+        # Send message using send data API
+        self._write_into_connection(conn, stream)
+
+        return True
+        
     # ------------------------------------------------
 
     # ------------------------------------------------
@@ -216,6 +252,7 @@ class CommService(PeerManager, CapsuleManager):
 
     def on_client_connection(self, connection):
         pass
+
 
     def handle_recieved_data(self, serial):
 
@@ -226,6 +263,11 @@ class CommService(PeerManager, CapsuleManager):
 
         # Unpack capsule
         (cid, dip, sip, c_rx_type, msg, _, _) = self.unpack_capsule(serial)
+        
+        pid = self.get_peerid_from_ip(sip)
+        
+        if not self.get_peer(pid):
+            Logger.error("Got message from unknown pid, {}".format(pid))
 
         Logger.debug("Received: {}".format(b64encode(serial)))
 
@@ -250,6 +292,10 @@ class CommService(PeerManager, CapsuleManager):
                 # Request for message again
                 Logger.error("Tampered capsule received.")
                 pass
+            
+        elif c_rx_type == "AUTH":
+            
+            Logger.debug( "Recieved auth request. {}".format(msg))
 
         Logger.debug("Responded: {}".format(b64encode(rsp)))
 

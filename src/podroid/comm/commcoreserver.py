@@ -13,24 +13,56 @@ __version__ = 0.1
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 
+from kivy.logger import Logger
+
 from twisted.internet import protocol
+from podroid.config.configuration import *
+from base64 import b64encode
+from twisted.protocols.basic import LineReceiver
+from podroid.comm.capsule.capsulemanager import CapsuleManager
 
 
-class CommCoreServer(protocol.Protocol):
+class CommCoreServerProtocol(LineReceiver):
 
     "Server backend to pocess the commands"
+    
+    def __init__(self):
+        
+        self._peer_host = None
+        self._peer_port = None
+        self._peer_repr = None
 
-    def dataReceived(self, data):
+    def connectionMade(self):
+        "Run when connection is established with server."
 
-        response = self.factory.app.handle_recieved_data(data)
+        self._peer_host = self.transport.getPeer().host
+        self._peer_port = self.transport.getPeer().port
+        self._peer_repr = self._peer_host + " on " + str(self._peer_port)
+
+        Logger.debug(
+            "Connection success! Connected to {}".format(self._peer_repr))
+
+        self.factory.app.on_server_connection(self.transport)
+
+    def connectionLost(self, reason):
+        "Run when connection is lost with server."
+
+        Logger.error("Lost connection with peer {}".format(self._peer_repr))
+
+        self.factory.app.on_server_disconnection(self.transport)
+
+    def lineReceived(self, line):
+
+        response = self.factory.app.handle_recieved_data(line)
 
         if response:
-            self.transport.write(response)
+            #self.transport.write(response)
+            self.sendLine(response)
 
 
 class CommCoreServerFactory(protocol.Factory):
 
-    protocol = CommCoreServer
+    protocol = CommCoreServerProtocol
 
     def __init__(self, app):
 

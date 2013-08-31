@@ -18,7 +18,11 @@ __version__ = 0.1
 
 class PeerManager:
 
-    def __init__(self, peerfile=constants.PROJECT_PATH + "/db/peers_db"):
+    def __init__(self, peerid):
+        
+        peerfile = constants.PROJECT_PATH + "/db/"+ str(peerid) +"_db"
+        
+        self.my_peerid = peerid
 
         self._peer_dict = shelve.open(
             peerfile,
@@ -27,14 +31,10 @@ class PeerManager:
             writeback=True)
 
         # Add test server
-        self._peer_dict[str(
-            constants.LOCAL_TEST_PEER_ID
-        )] = Peer({
-                  "PEER_ID": constants.LOCAL_TEST_PEER_ID,
-                  "PEER_IP": constants.LOCAL_TEST_HOST,
-                  "PEER_PORT": constants.LOCAL_TEST_PORT,
-                  "PEER_CONN_STATUS": False,
-                  })
+        self.add_peer(pid=constants.LOCAL_TEST_PEER_ID, 
+                      host=constants.LOCAL_TEST_HOST, 
+                      port=constants.LOCAL_TEST_PORT
+                      )
 
         self.peer_connections = {}
 
