@@ -17,15 +17,16 @@ class CapsuleManager:
 
     "Capsule manager class."
 
-    def __init__(self):
+    def __init__(self, peerkey):
 
         self.capsule_dict = {}
+        self.peer_key = peerkey
 
     def pack_capsule(self, captype="NULL", capcontent='',
                      dest_host="127.0.0.1", src_host="127.0.0.1"):
         "Pack data into capsule."
 
-        capsule = Capsule(captype, capcontent, dest_host, src_host)
+        capsule = Capsule(self.peer_key, captype, capcontent, dest_host, src_host)
 
         self.capsule_dict[capsule.getid()] = capsule
 

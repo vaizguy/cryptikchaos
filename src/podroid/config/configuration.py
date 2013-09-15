@@ -13,7 +13,7 @@ __version__ = 0.1
 import uuid
 import hmac
 import os
-
+import hashlib
 import constants
 
 # ------------------GUI Attribute CONSTANTS-------------------------------####
@@ -54,6 +54,8 @@ constants.CAPS_CONTENTL_LEN = 4
 # Capsule IP integer repr length
 constants.CAPS_DST_IP_LEN = 4
 constants.CAPS_SCR_IP_LEN = 4
+# Capsule peer key hash length
+constants.CAPS_PKEY_HASH_LEN = 128
 
 # Capsule size
 constants.CAPSULE_SIZE = constants.CAPS_CONTENT_LEN + \
@@ -62,7 +64,8 @@ constants.CAPSULE_SIZE = constants.CAPS_CONTENT_LEN + \
     constants.CAPS_CHKSUM_LEN + \
     constants.CAPS_CONTENTL_LEN + \
     constants.CAPS_DST_IP_LEN + \
-    constants.CAPS_SCR_IP_LEN
+    constants.CAPS_SCR_IP_LEN + \
+    constants.CAPS_PKEY_HASH_LEN
 # ------------------------------------------------------------------------####
 
 # ------------------TEST CONSTANTS----------------------------------------####
@@ -77,6 +80,9 @@ constants.LOCAL_TEST_HOST = "127.0.0.1"
 constants.LOCAL_TEST_PORT = 8888
 # Local Test PEer ID
 constants.LOCAL_TEST_PEER_ID = 888
+# Local Test keys
+constants.LOCAL_TEST_CLIENT_KEY = hashlib.sha512("TEST_CLIENT_KEY").hexdigest()
+constants.LOCAL_TEST_SERVER_KEY = hashlib.sha512("TEST_SERVER_KEY").hexdigest()
 # Test ID
 constants.LOCAL_TEST_CAPS_ID = str(
     uuid.uuid5(uuid.NAMESPACE_URL,

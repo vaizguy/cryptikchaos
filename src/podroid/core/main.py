@@ -49,7 +49,8 @@ class PodDroidApp(App, CommService):
         # Initiate Twisted Server & Client services
         CommService.__init__(self, 
                              peerid=constants.PEER_ID,
-                             host="localhost",
+                             peerkey=constants.LOCAL_TEST_CLIENT_KEY,
+                             host=constants.LOCAL_TEST_HOST,
                              port=constants.PEER_PORT,
                              printer=self.print_message)
 
@@ -355,7 +356,7 @@ class PodDroidApp(App, CommService):
 
         self.print_message("List of live peers:")
         plist = self.list_live_peers()
-        table = PrettyTable(["ID", "IP", "PORT", "STATUS"])
+        table = PrettyTable(["ID", "KEY", "IP", "PORT", "STATUS"])
 
         for r in plist:
             table.add_row(r)

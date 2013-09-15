@@ -18,11 +18,12 @@ __version__ = 0.1
 
 class PeerManager:
 
-    def __init__(self, peerid):
+    def __init__(self, peerid, peerkey):
         
         peerfile = constants.PROJECT_PATH + "/db/"+ str(peerid) +"_db"
         
         self.my_peerid = peerid
+        self.my_key = peerkey
 
         self._peer_dict = shelve.open(
             peerfile,
@@ -30,9 +31,10 @@ class PeerManager:
             protocol=None,
             writeback=True)
 
-        # Add test server
+        ## Add test server
         self.add_peer(pid=constants.LOCAL_TEST_PEER_ID, 
-                      host=constants.LOCAL_TEST_HOST, 
+                      key=constants.LOCAL_TEST_SERVER_KEY,
+                      host=constants.LOCAL_TEST_HOST,
                       port=constants.LOCAL_TEST_PORT
                       )
 
@@ -42,7 +44,7 @@ class PeerManager:
 
         self._peer_dict.close()
 
-    def add_peer(self, pid, host, port):
+    def add_peer(self, pid, key, host, port):
         "Add peer to database."
 
         # localhost - 127.0.0.1 mapping.
@@ -54,6 +56,7 @@ class PeerManager:
         # Peer dictionary structure defined here
         self._peer_dict[str(pid)] = Peer({
             "PEER_ID": pid,
+            "PEER_KEY" : key,
             "PEER_IP": host,
             "PEER_PORT": port,
             "PEER_CONN_STATUS": False,
@@ -118,6 +121,7 @@ class PeerManager:
             # Append as tuples (peer id, peer host, peer port, peer status)
             peerlist.append(
                 (p_info["PEER_ID"],
+                 p_info["PEER_KEY"][0:3] + "XXXX",
                  p_info["PEER_IP"],
                  p_info["PEER_PORT"],
                  p_info["PEER_CONN_STATUS"]))
@@ -137,6 +141,7 @@ class PeerManager:
                 # Append as tuples (peer id, peer host, peer port, peer status)
                 peerlist.append(
                     (p_info["PEER_ID"],
+                     p_info["PEER_KEY"][0:3] + "XXXX",
                      p_info["PEER_IP"],
                      p_info["PEER_PORT"],
                      p_info["PEER_CONN_STATUS"]))
@@ -151,7 +156,7 @@ class PeerManager:
     def get_peerid_from_ip(self, peer_ip, peer_port=8000):
         "Get a peerid from stored IP addresses. Assumes 1to1 relation."
 
-        for (pid, ip, port, _) in self.list_peers():
+        for (pid, _, ip, port, _) in self.list_peers():
             if ip == peer_ip and port == peer_port:
                 return int(pid)
 
@@ -169,6 +174,14 @@ class PeerManager:
         "Get the peer connection."
 
         return self.peer_connections[pid]
+    
+    def get_peer_key(self, pid):
+        "Get the peers key"
+        
+        if str(pid) in self._peer_dict.keys():
+            return self._peer_dict[str(pid)]["PEER_KEY"]
+        else:
+            return None
 
 
 if __name__ == '__main__':

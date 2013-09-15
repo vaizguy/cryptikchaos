@@ -16,10 +16,7 @@ install_twisted_reactor()
 from kivy.logger import Logger
 
 from twisted.internet import protocol
-from podroid.config.configuration import *
-from base64 import b64encode
 from twisted.protocols.basic import LineReceiver
-from podroid.comm.capsule.capsulemanager import CapsuleManager
 
 
 class CommCoreServerProtocol(LineReceiver):
@@ -43,7 +40,7 @@ class CommCoreServerProtocol(LineReceiver):
             "Connection success! Connected to {}".format(self._peer_repr))
 
         self.factory.app.on_server_connection(self.transport)
-
+        
     def connectionLost(self, reason):
         "Run when connection is lost with server."
 

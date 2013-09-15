@@ -44,15 +44,20 @@ class TwistedServerApp(App, CommService):
         # Initiate Twisted Server
         CommService.__init__(
             self,
-            888,
-            "localhost",
-            8888,
+            peerid=constants.LOCAL_TEST_PEER_ID,
+            peerkey=constants.LOCAL_TEST_SERVER_KEY,
+            host=constants.LOCAL_TEST_HOST,
+            port=constants.LOCAL_TEST_PORT,
             clientinit=False,
             printer=self.print_message)
-
+        
         # Add local peer used for testing.
-        self.add_peer(constants.PEER_ID, "localhost", 8000)
-
+        self.add_peer(pid=constants.PEER_ID, 
+                      key=constants.LOCAL_TEST_CLIENT_KEY,
+                      host=constants.LOCAL_TEST_HOST,
+                      port=constants.PEER_PORT
+                      )
+        
         self.label = Label(text="server started\n")
 
         return self.label

@@ -20,7 +20,7 @@ class Capsule(object):
 
     "Capsule definition."
 
-    def __init__(self, captype="NULL", content='',
+    def __init__(self, key=None, captype="NULL", content='',
                  dest_host="127.0.0.1", src_host="127.0.0.1"):
 
         # Check length of content.
@@ -54,7 +54,9 @@ class Capsule(object):
             'CAP_TYPE'   : captype.upper(),
             'CAP_CONTENT': content,
             'CAP_LEN'    : len(content),
-            'CAP_CHKSUM' : hmac.new(content).hexdigest()}
+            'CAP_CHKSUM' : hmac.new(content).hexdigest(),
+            'CAP_PKEY'   : key
+            }
 
     def __setitem__(self, key, item):
 
@@ -71,14 +73,15 @@ class Capsule(object):
         "Pack data into capsule. (i.e struct packing)"
 
         return struct.pack(
-            "!8sII4s40sL32s",
+            "!8sII4s40sL32s128s",
             self._dictionary['CAP_ID'],
             self._dictionary['CAP_DSTIP'],
             self._dictionary['CAP_SCRIP'],
             self._dictionary['CAP_TYPE'],
             self._dictionary['CAP_CONTENT'],
             self._dictionary['CAP_LEN'],
-            self._dictionary['CAP_CHKSUM']
+            self._dictionary['CAP_CHKSUM'],
+            self._dictionary['CAP_PKEY']
         )
 
     def unpack(self, stream):
@@ -91,8 +94,9 @@ class Capsule(object):
             self._dictionary['CAP_TYPE'],
             self._dictionary['CAP_CONTENT'],
             self._dictionary['CAP_LEN'],
-            self._dictionary['CAP_CHKSUM']
-        ) = struct.unpack("!8sII4s40sL32s", stream)
+            self._dictionary['CAP_CHKSUM'],
+            self._dictionary['CAP_PKEY']
+        ) = struct.unpack("!8sII4s40sL32s128s", stream)
 
     def __str__(self):
         "String representation of capsule."
@@ -144,7 +148,8 @@ class Capsule(object):
             self._dictionary['CAP_TYPE'],
             self.getcontent(),
             self._dictionary['CAP_LEN'],
-            self._dictionary['CAP_CHKSUM']
+            self._dictionary['CAP_CHKSUM'],
+            self._dictionary['CAP_PKEY'].strip('\b')
         )
 
     def _ip_to_uint32(self, ip):

@@ -31,18 +31,19 @@ class CommService(PeerManager, CapsuleManager):
     Contains both server and client code.
     """
 
-    def __init__(self, peerid, host, port,
+    def __init__(self, peerid, peerkey, host, port,
                  serverinit=True, clientinit=True, printer=None):
         "Initialize communication layer."
-
-        # Initialize peer manager
-        PeerManager.__init__(self, peerid)
-        # Initialize capsule manager
-        CapsuleManager.__init__(self)
 
         self.peerid = peerid
         self.host = host
         self.port = port
+        self.peerkey = peerkey
+        
+        # Initialize peer manager
+        PeerManager.__init__(self, peerid, self.peerkey)
+        # Initialize capsule manager
+        CapsuleManager.__init__(self, self.peerkey)
 
         self._printer = printer
 
@@ -63,7 +64,7 @@ class CommService(PeerManager, CapsuleManager):
         "Start peer connections on start."
 
         # Connect to all peers
-        for (pid, h, p, cs) in self.list_peers():
+        for (pid, _, h, p, cs, ) in self.list_peers():
 
             # Check conn status
             if not cs:
@@ -175,8 +176,21 @@ class CommService(PeerManager, CapsuleManager):
 
         # Repsonse handling architecture should be placed here.
         (cid, dest_ip, src_ip, captype, content,
-         _, chksum) = self.unpack_capsule(response)
-
+         _, chksum, pkey) = self.unpack_capsule(response)
+         
+        ## Get stored peer key
+        src_pid = self.get_peerid_from_ip(src_ip)
+        ## It maybe from Test server if None
+        if not src_pid:
+            src_pid = self.get_peerid_from_ip(src_ip, 8888)
+            
+        stored_pkey = self.get_peer_key(src_pid)
+        
+        ## Check message authenticity
+        if (pkey != stored_pkey):
+            Logger.debug("Capsule unauthenticated.")
+            return None
+        
         # Currently the test case is inbuilt into the pod. --## TEST BEGIN ##
         if captype == constants.LOCAL_TEST_CAPS_TYPE:
 
@@ -185,7 +199,9 @@ class CommService(PeerManager, CapsuleManager):
                content == constants.LOCAL_TEST_STR and
                dest_ip == constants.LOCAL_TEST_HOST and
                src_ip == constants.LOCAL_TEST_HOST):
-                Logger.debug("Sending Message Test Pass.")
+                Logger.debug("Simple Message Transfer Test Passed.")
+                self._print(src_pid, 
+                    "Simple Message Transfer Test Passed.")
             else:
                 Logger.debug("""
                 Sending Message Test Fail.
@@ -193,7 +209,9 @@ class CommService(PeerManager, CapsuleManager):
                 1. Test server must be running.
                 2. Command is 'send 888 Hello World!'
                 """)
-
+                self._print(src_pid, 
+                   "Simple Message Transfer Test Failed.")
+               
         elif captype == constants.PROTO_MACK_TYPE:
             Logger.debug("Message ACK recieved from {}".format(src_ip))
 
@@ -229,6 +247,8 @@ class CommService(PeerManager, CapsuleManager):
 
         # Save the connection
         self.add_peer_connection(pid, conn)
+
+        Logger.debug("Sending auth.")
         
         # Pack data into capsule
         stream = self.pack_capsule(
@@ -237,13 +257,10 @@ class CommService(PeerManager, CapsuleManager):
             host,
             self.host)
         
-        Logger.debug("Sending auth.")
-
+        print dir(conn)
         # Send message using send data API
-        self._write_into_connection(conn, stream)
-
-        return True
-        
+        return self._write_into_connection(conn, stream)
+                
     # ------------------------------------------------
 
     # ------------------------------------------------
@@ -262,12 +279,21 @@ class CommService(PeerManager, CapsuleManager):
         rsp = serial
 
         # Unpack capsule
-        (cid, dip, sip, c_rx_type, msg, _, _) = self.unpack_capsule(serial)
+        (cid, dest_ip, src_ip, c_rx_type, msg, _, _, 
+            pkey) = self.unpack_capsule(serial)
+                
+        ## Get stored peer key
+        src_pid = self.get_peerid_from_ip(src_ip)
+        stored_pkey = self.get_peer_key(src_pid)
         
-        pid = self.get_peerid_from_ip(sip)
-        
-        if not self.get_peer(pid):
-            Logger.error("Got message from unknown pid, {}".format(pid))
+        ## Check message authenticity
+        if (pkey != stored_pkey):
+            Logger.debug("Capsule unauthenticated.")
+            return None
+
+                
+        if not self.get_peer(src_pid):
+            Logger.error("Got message from unknown pid, {}".format(src_pid))
 
         Logger.debug("Received: {}".format(b64encode(serial)))
 
@@ -275,19 +301,24 @@ class CommService(PeerManager, CapsuleManager):
             rsp = "PONG"  # Legacy
 
         elif c_rx_type == constants.LOCAL_TEST_CAPS_TYPE:
-            self._print(sip, msg)
-            pass  # Resend the same msg.
-
+            self._print(src_ip, msg)
+            ## Repack capsule maintaining the same content
+            rsp = self.pack_capsule(
+                captype=c_rx_type,
+                capcontent=msg,
+                dest_host=src_ip,
+                src_host=dest_ip)
+            
         elif c_rx_type == constants.PROTO_BULK_TYPE:
 
             if msg:  # integrity check
                 # Message reciept successful
-                self._print(sip, msg)
+                self._print(src_ip, msg)
                 rsp = self.pack_capsule(
                     captype=constants.PROTO_MACK_TYPE,
                     capcontent='',
-                    dest_host=sip,
-                    src_host=dip)
+                    dest_host=src_ip,
+                    src_host=dest_ip)
             else:
                 # Request for message again
                 Logger.error("Tampered capsule received.")
