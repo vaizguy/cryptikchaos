@@ -129,11 +129,11 @@ class CommService(PeerManager, CapsuleManager):
         # Send data over connection
         return self._write_into_connection(conn, stream)
 
-    def _print(self, dip, msg):
-
-        peer_id = str(self.get_peerid_from_ip(dip, constants.PEER_PORT))
-
-        print_string = constants.GUI_LABEL_PROMPT + peer_id + " : " + msg
+    def _print(self, dip, msg, port=constants.PEER_PORT):
+       
+        peer_id = self.get_peerid_from_ip(dip, port)
+        
+        print_string = constants.GUI_LABEL_PROMPT + str(peer_id) + " : " + msg
 
         if self._printer:
             self._printer(print_string)
@@ -200,8 +200,8 @@ class CommService(PeerManager, CapsuleManager):
                dest_ip == constants.LOCAL_TEST_HOST and
                src_ip == constants.LOCAL_TEST_HOST):
                 Logger.debug("Simple Message Transfer Test Passed.")
-                self._print(src_pid, 
-                    "Simple Message Transfer Test Passed.")
+                self._print(src_ip, 
+                    "Simple Message Transfer Test Passed.", constants.LOCAL_TEST_PORT)
             else:
                 Logger.debug("""
                 Sending Message Test Fail.
