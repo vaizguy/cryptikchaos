@@ -9,13 +9,13 @@ Twisted network service.
 __author__ = "Arun Vaidya"
 __version__ = 0.1
 
-from podroid.comm.commcoreserver import CommCoreServerFactory
-from podroid.comm.commcoreclient import CommCoreClientFactory
+from cryptikchaos.comm.commcoreserver import CommCoreServerFactory
+from cryptikchaos.comm.commcoreclient import CommCoreClientFactory
 
-from podroid.comm.peers.peermanager import PeerManager
-from podroid.comm.capsule.capsulemanager import CapsuleManager
+from cryptikchaos.comm.peers.peermanager import PeerManager
+from cryptikchaos.comm.capsule.capsulemanager import CapsuleManager
 
-from podroid.config.configuration import *
+from cryptikchaos.config.configuration import *
 
 from twisted.internet import reactor, defer
 

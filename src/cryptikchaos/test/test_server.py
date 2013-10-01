@@ -6,12 +6,12 @@ install_twisted_reactor()
 
 from twisted.internet import protocol
 
-# Add podroid path
+# Add cryptikchaos path
 import pythonpath
 pythonpath.AddSysPath('../../')
 
-from podroid.config.configuration import *
-from podroid.comm.twiscomm import CommService
+from cryptikchaos.config.configuration import *
+from cryptikchaos.comm.twiscomm import CommService
 
 
 class PodroidTestProtocol(protocol.Protocol):

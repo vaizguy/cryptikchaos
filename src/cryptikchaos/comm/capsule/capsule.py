@@ -13,7 +13,7 @@ __version__ = 0.1
 import struct
 import socket
 
-from podroid.config.configuration import *
+from cryptikchaos.config.configuration import *
 
 
 class Capsule(object):

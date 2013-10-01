@@ -10,7 +10,7 @@ over the air.
 __author__ = "Arun Vaidya"
 __version__ = 0.1
 
-from podroid.comm.capsule.capsule import Capsule
+from cryptikchaos.comm.capsule.capsule import Capsule
 
 
 class CapsuleManager:

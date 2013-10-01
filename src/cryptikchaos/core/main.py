@@ -20,13 +20,13 @@ from kivy.uix.button import Button
 from kivy.logger import Logger
 from kivy.uix.scrollview import ScrollView
 
-# Add podroid path
+# Add cryptikchaos path
 import pythonpath
 pythonpath.AddSysPath('../../')
 
-from podroid.comm.twiscomm import CommService
-from podroid.config.configuration import *
-from podroid.libs.Table.prettytable import PrettyTable
+from cryptikchaos.comm.twiscomm import CommService
+from cryptikchaos.config.configuration import *
+from cryptikchaos.libs.Table.prettytable import PrettyTable
 
 import uuid
 

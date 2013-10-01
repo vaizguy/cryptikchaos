@@ -5,8 +5,8 @@ Peer manager is used to Handle the peer information.
 
 @author: vaizguy
 '''
-from podroid.comm.peers.peer import Peer
-from podroid.config.configuration import *
+from cryptikchaos.comm.peers.peer import Peer
+from cryptikchaos.config.configuration import *
 
 from kivy.logger import Logger
 
