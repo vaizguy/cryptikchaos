@@ -8,16 +8,21 @@ Instructions:
 
 In Terminal:
 
-Go to the cryptikchaos/core dir and run
+To run the test environment to test client commands go to src/cryptikchaos/test and run
 ```
-python main.py
-```
-Also to run a test server to test commands go to cryptikchaos/test and run
-```
-python test_server.py
+./run_test_env.sh
 ```
 
 Type "help" in app console for command help.
 
-To check if messages are getting sent succesfully to test_server,
-In app console enter command "test".
+To add test server enter;
+```
+addpeer 888 localhost
+```
+into the command text box.
+
+Then to test successful message exchange enter;
+```
+test
+```
+as command, you will get ">>888: Simple Message Transfer Test Passed." as output.
