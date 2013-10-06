@@ -19,7 +19,7 @@ To add test server enter;
 ```
 addpeer 888 localhost
 ```
-into the command text box.
+into the app console.
 
 Then to test successful message exchange enter;
 ```
