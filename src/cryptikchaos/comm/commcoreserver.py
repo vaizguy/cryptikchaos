@@ -44,13 +44,13 @@ class CommCoreServerProtocol(LineReceiver):
     def connectionLost(self, reason):
         "Run when connection is lost with server."
 
-        Logger.error("Lost connection with peer {}".format(self._peer_repr))
+        Logger.warn("Lost connection with peer {}".format(self._peer_repr))
 
         self.factory.app.on_server_disconnection(self.transport)
 
     def lineReceived(self, line):
-
-        response = self.factory.app.handle_recieved_data(line)
+        
+        response = self.factory.app.handle_recieved_data(line, self.transport)
 
         if response:
             #self.transport.write(response)

@@ -32,11 +32,11 @@ class PeerManager:
             writeback=True)
 
         ## Add test server
-        self.add_peer(pid=constants.LOCAL_TEST_PEER_ID, 
-                      key=constants.LOCAL_TEST_SERVER_KEY,
-                      host=constants.LOCAL_TEST_HOST,
-                      port=constants.LOCAL_TEST_PORT
-                      )
+        #self.add_peer(pid=constants.LOCAL_TEST_PEER_ID, 
+        #              key=constants.LOCAL_TEST_SERVER_KEY,
+        #              host=constants.LOCAL_TEST_HOST,
+        #              port=constants.LOCAL_TEST_PORT
+        #              )
 
         self.peer_connections = {}
 
@@ -64,7 +64,14 @@ class PeerManager:
 
         # Sync DB
         self._peer_dict.sync()
-
+    
+    def delete_peer(self, pid):
+        "Remove unauth peer."
+        
+        del self._peer_dict[str(pid)]        
+        # Sync DB
+        self._peer_dict.sync()
+        
     def get_peer(self, pid):
         "Get peer from db."
 
@@ -153,6 +160,7 @@ class PeerManager:
 
         return self._peer_dict[str(pid)]["PEER_IP"]
 
+    ## Need to simplify mapping TODO 
     def get_peerid_from_ip(self, peer_ip, peer_port=8000):
         "Get a peerid from stored IP addresses. Assumes 1to1 relation."
 

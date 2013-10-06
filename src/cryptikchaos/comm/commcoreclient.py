@@ -55,13 +55,12 @@ class CommCoreClientProtocol(LineReceiver):
     def lineReceived(self, line):
         "Run when response is recieved from server."
 
+        Logger.debug("CLIENT: Recieved : {}".format(base64.b64encode(line)))
+
         response = self.factory.app.handle_response(line)
 
         if response:
             print response
-
-        Logger.debug("Recieved : {}".format(base64.b64encode(line)))
-
 
 class CommCoreClientFactory(protocol.ReconnectingClientFactory):
 

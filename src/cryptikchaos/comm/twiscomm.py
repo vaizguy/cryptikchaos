@@ -11,6 +11,8 @@ __version__ = 0.1
 
 from cryptikchaos.comm.commcoreserver import CommCoreServerFactory
 from cryptikchaos.comm.commcoreclient import CommCoreClientFactory
+from cryptikchaos.comm.commcoreauth   import CommCoreAuthFactory
+
 
 from cryptikchaos.comm.peers.peermanager import PeerManager
 from cryptikchaos.comm.capsule.capsulemanager import CapsuleManager
@@ -22,6 +24,8 @@ from twisted.internet import reactor, defer
 from kivy.logger import Logger
 
 from base64 import b64encode
+
+import traceback
 
 
 class CommService(PeerManager, CapsuleManager):
@@ -69,18 +73,23 @@ class CommService(PeerManager, CapsuleManager):
             # Check conn status
             if not cs:
                 # Start a connection with peer
-                conn = self.start_connection(pid, h, p)
-                # Save the connection
-                self.add_peer_connection(pid, conn)
+                #conn = self.start_connection(pid, h, p)
+                self.start_connection(pid, h, p)
+                ## Save the connection
+                #self.add_peer_connection(pid, conn)
             else:
                 pass
 
-    def _update_peer_connection_status(self, peer_ip, peer_port, status):
+    def _update_peer_connection_status(self, peer_ip, peer_port, status, conn):
         "Change peer conn status based on connection/disconnection"
-
+        
         # Assuming Peer ID <-> Peer IP one to one relation
         pid = self.get_peerid_from_ip(peer_ip, peer_port)
-
+        
+        # Add the peer connection if it doesnt exist
+        if status:
+            self.add_peer_connection(pid, conn)
+        
         if pid:
             return self.update_peer_connection_status(pid, status)
         else:
@@ -89,21 +98,27 @@ class CommService(PeerManager, CapsuleManager):
     def _sendLine(self, conn, line):
         "Implementing sendLine method locally."
 
-        return conn.transport.write(line + '\r\n')
+        try:
+            r = conn.sendLine(line)
+        except:
+            r = conn.write(line + '\r\n')
+        else:
+            return r
 
     def _write_into_connection(self, conn, stream):
         "Write into twisted connection transport."
-        
+
         try:
             self._sendLine(conn, stream)
         except:
             Logger.error("Connection to peer failed. Please try later.")
+            print traceback.format_exc()
             return False
         else:
             return True
         
     def _router(self, pid):
-        "Router decides bes route to peer"
+        "Router decides best route to peer"
         
         return pid
 
@@ -139,14 +154,31 @@ class CommService(PeerManager, CapsuleManager):
             self._printer(print_string)
         else:
             Logger.info(print_string)
-
+            
     def start_connection(self, pid, host='localhost', port=constants.PEER_PORT):
         "Start connection with server."
 
         Logger.debug("Connecting to pid: {}".format(pid))
 
-        return reactor.connectTCP(host, port, CommCoreClientFactory(self))
+        #return reactor.connectTCP(host, port, CommCoreClientFactory(self))
+        if reactor.connectTCP(host, port, CommCoreClientFactory(self)):
+            return True
+        else:
+            return False
+        
+    def start_authentication(self, pid, host='localhost', port=constants.PEER_PORT):
+        "Start connection with server."
 
+        Logger.debug(
+            "Attempting connection to pid: {} for authentication.".format(pid)
+        )
+
+        #return reactor.connectTCP(host, port, CommCoreClientFactory(self))
+        if reactor.connectTCP(host, port, CommCoreAuthFactory(self)):
+            return True
+        else:
+            return False
+        
     def on_server_connection(self, connection):
         "Executed on successful server connection."
 
@@ -154,7 +186,7 @@ class CommService(PeerManager, CapsuleManager):
         peer_port = connection.getPeer().port
 
         # Update peer connection status to CONNECTED
-        self._update_peer_connection_status(peer_ip, peer_port, True)
+        self._update_peer_connection_status(peer_ip, peer_port, True, connection)
 
     def on_server_disconnection(self, connection):
         "Executed on successful server disconnection."
@@ -163,8 +195,22 @@ class CommService(PeerManager, CapsuleManager):
         peer_port = connection.getPeer().port
 
         # Update peer connection status to DISCONNECTED
-        self._update_peer_connection_status(peer_ip, peer_port, False)
+        self._update_peer_connection_status(peer_ip, peer_port, False, None)
+   
+    def on_server_authentication(self, connection):
+        
+        peer_ip = connection.getPeer().host
+        peer_port = connection.getPeer().port
 
+        # Pack data into capsule
+        stream = self.pack_capsule(
+            "AUTH",
+            str(self.peerid),
+            peer_ip,
+            self.host)
+        
+        return self._write_into_connection(connection, stream)
+    
     def handle_response(self, response):
         "Handle response from server"
 
@@ -177,13 +223,19 @@ class CommService(PeerManager, CapsuleManager):
         # Repsonse handling architecture should be placed here.
         (cid, dest_ip, src_ip, captype, content,
          _, chksum, pkey) = self.unpack_capsule(response)
-         
-        ## Get stored peer key
-        src_pid = self.get_peerid_from_ip(src_ip)
+        
+        ## Default pid, port, incl because test pod has the same ip
+        ## but different port. Need to simplify mapping TODO
+        src_pid = constants.PEER_ID
+        src_port = constants.PEER_PORT
+                 
         ## It maybe from Test server if None
-        if not src_pid:
-            src_pid = self.get_peerid_from_ip(src_ip, 8888)
-            
+        if not self.get_peerid_from_ip(src_ip):
+            src_pid = self.get_peerid_from_ip(src_ip, constants.LOCAL_TEST_PORT)
+            src_port = constants.LOCAL_TEST_PORT
+        else:
+            src_pid = self.get_peerid_from_ip(src_ip)
+                       
         stored_pkey = self.get_peer_key(src_pid)
         
         ## Check message authenticity
@@ -209,11 +261,39 @@ class CommService(PeerManager, CapsuleManager):
                 1. Test server must be running.
                 2. Command is 'send 888 Hello World!'
                 """)
-                self._print(src_pid, 
+                self._print(src_ip, 
                    "Simple Message Transfer Test Failed.")
                
         elif captype == constants.PROTO_MACK_TYPE:
             Logger.debug("Message ACK recieved from {}".format(src_ip))
+            
+    def handle_auth_response(self, response):
+        "Handle authentication response to add peer."
+        
+        # Repsonse handling architecture should be placed here.
+        (cid, dest_ip, src_ip, captype, content,
+         _, chksum, pkey) = self.unpack_capsule(response)
+         
+        src_port = constants.PEER_PORT
+
+        ## It maybe from Test server if None
+        if not self.get_peerid_from_ip(src_ip):
+            src_port = constants.LOCAL_TEST_PORT
+                   
+        if captype == "AACK":
+            ## Extract peer id
+            pid = int(content)
+            ## Add peer
+            self.add_peer(pid, pkey, src_ip, src_port)
+            ## Add peer connection
+            self._update_peer_connection_status(src_ip, src_port, False, None)
+            ## Connect to peer using normal connection this should refresh
+            ## the connection in db to normal client conn from auth conn 
+            self.start_connection(pid, src_ip, src_port)
+            return True
+        
+        return False
+     
 
     # ------------------------------------------------
     # Define Client Protocol defined here
@@ -233,34 +313,30 @@ class CommService(PeerManager, CapsuleManager):
 
         # Send message using send data API
         return self._transfer_data(pid, dtype, msg)
-    
+       
     def add_peer_to_swarm(self, pid, host):
         "Adds a new user through auth request chain"
+        
+        port = constants.PEER_PORT                
+        # Assign port based on pid
+        if pid == 888:
+            port = constants.LOCAL_TEST_PORT
+
         
         # Check if peer is present
         if self.get_peer(pid):
             self._print(self.peerid, "Peer already in list.")
             return False
+        else:
+            # Add peer
+            #self.add_peer_unauth(pid, host, port)
+            pass
         
         # Start a connection with peer
-        conn = self.start_connection(pid, host, 8888)
-
-        # Save the connection
-        self.add_peer_connection(pid, conn)
-
-        Logger.debug("Sending auth.")
-        
-        # Pack data into capsule
-        stream = self.pack_capsule(
-            "AUTH",
-            str(self.peerid),
-            host,
-            self.host)
-        
-        print dir(conn)
-        # Send message using send data API
-        return self._write_into_connection(conn, stream)
-                
+        if not self.start_authentication(pid, host, port):
+            return False
+        else:
+            return True
     # ------------------------------------------------
 
     # ------------------------------------------------
@@ -271,7 +347,7 @@ class CommService(PeerManager, CapsuleManager):
         pass
 
 
-    def handle_recieved_data(self, serial):
+    def handle_recieved_data(self, serial, connection):
 
         Logger.debug("Handling Capsule : {}".format(b64encode(serial)))
 
@@ -287,13 +363,12 @@ class CommService(PeerManager, CapsuleManager):
         stored_pkey = self.get_peer_key(src_pid)
         
         ## Check message authenticity
-        if (pkey != stored_pkey):
+        if (c_rx_type != "AUTH" and pkey != stored_pkey):
             Logger.debug("Capsule unauthenticated.")
             return None
-
                 
         if not self.get_peer(src_pid):
-            Logger.error("Got message from unknown pid, {}".format(src_pid))
+            Logger.error("Unknown pid @{} attempting contact.".format(src_ip))
 
         Logger.debug("Received: {}".format(b64encode(serial)))
 
@@ -326,7 +401,26 @@ class CommService(PeerManager, CapsuleManager):
             
         elif c_rx_type == "AUTH":
             
-            Logger.debug( "Recieved auth request. {}".format(msg))
+            Logger.debug( "Recieved auth request from Peer: {}".format(msg))
+                       
+            ## Extract peer id
+            pid = int(msg) # Need to check if peerid format is followed. TODO
+            
+            ## Add peer
+            self.add_peer(pid=pid, 
+                          key=pkey, 
+                          host=src_ip, 
+                          port=constants.PEER_PORT)
+            
+            ## Add peer connection and change status
+            self._update_peer_connection_status(src_ip, constants.PEER_PORT, True, connection)
+
+            ## Send current peer info
+            rsp = self.pack_capsule(
+                    captype="AACK",
+                    capcontent=str(self.peerid),
+                    dest_host=src_ip,
+                    src_host=self.host)
 
         Logger.debug("Responded: {}".format(b64encode(rsp)))
 

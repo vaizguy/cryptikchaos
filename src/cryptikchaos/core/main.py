@@ -302,19 +302,17 @@ class PodDroidApp(App, CommService):
     def cmd_addpeer(self, cmdline):
         """
         Add new peer.
-        Usage: addpeer <pid> <host>
+        Usage: addpeer <pid> <host> <port>
         """
         try:
-            (pid, host) = (
-                int(cmdline.split(' ')[0]), cmdline.split(' ')[1])
+            (pid, host) = (int(cmdline.split(' ')[0]), cmdline.split(' ')[1])
         except:
             self.print_message("Incorrect Command Use.")
             self.cmd_help("addpeer")
             return None
         else:
-            pass
-        
-        self.add_peer_to_swarm(pid, host)     
+            self.print_message("Adding Peer {}.".format(pid))
+            self.add_peer_to_swarm(pid, host)   
 
     def cmd_send(self, cmdline):
         """
@@ -343,7 +341,6 @@ class PodDroidApp(App, CommService):
         All testcases should be run here.
         Usage: test
         """
-
         # Check sending of message.
         self.cmd_send(
             str(constants.LOCAL_TEST_PEER_ID) + " " + constants.LOCAL_TEST_STR)
