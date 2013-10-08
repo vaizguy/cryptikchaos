@@ -312,7 +312,19 @@ class PodDroidApp(App, CommService):
             return None
         else:
             self.print_message("Adding Peer {}.".format(pid))
-            self.add_peer_to_swarm(pid, host)   
+            self.add_peer_to_swarm(pid, host)
+            
+    def cmd_addtest(self, cmdline):
+        """
+        Add test server.
+        Usage: addtest
+        """
+        self.print_message(
+            "Adding Test server {}@{}".format(
+                constants.LOCAL_TEST_HOST, constants.LOCAL_TEST_PORT
+                )
+        )
+        self.add_peer_to_swarm(888, "localhost")
 
     def cmd_send(self, cmdline):
         """

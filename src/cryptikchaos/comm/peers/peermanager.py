@@ -31,13 +31,6 @@ class PeerManager:
             protocol=None,
             writeback=True)
 
-        ## Add test server
-        #self.add_peer(pid=constants.LOCAL_TEST_PEER_ID, 
-        #              key=constants.LOCAL_TEST_SERVER_KEY,
-        #              host=constants.LOCAL_TEST_HOST,
-        #              port=constants.LOCAL_TEST_PORT
-        #              )
-
         self.peer_connections = {}
 
     def __del__(self):

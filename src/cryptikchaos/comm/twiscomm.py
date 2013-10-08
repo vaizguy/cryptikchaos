@@ -72,11 +72,7 @@ class CommService(PeerManager, CapsuleManager):
 
             # Check conn status
             if not cs:
-                # Start a connection with peer
-                #conn = self.start_connection(pid, h, p)
                 self.start_connection(pid, h, p)
-                ## Save the connection
-                #self.add_peer_connection(pid, conn)
             else:
                 pass
 
@@ -173,7 +169,6 @@ class CommService(PeerManager, CapsuleManager):
             "Attempting connection to pid: {} for authentication.".format(pid)
         )
 
-        #return reactor.connectTCP(host, port, CommCoreClientFactory(self))
         if reactor.connectTCP(host, port, CommCoreAuthFactory(self)):
             return True
         else:
@@ -342,11 +337,6 @@ class CommService(PeerManager, CapsuleManager):
     # ------------------------------------------------
     # Server Protocols defined here
     # ------------------------------------------------
-
-    def on_client_connection(self, connection):
-        pass
-
-
     def handle_recieved_data(self, serial, connection):
 
         Logger.debug("Handling Capsule : {}".format(b64encode(serial)))

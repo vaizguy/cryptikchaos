@@ -17,7 +17,7 @@ Type "help" in app console for command help.
 
 To add test server enter;
 ```
-addpeer 888 localhost
+addtest
 ```
 into the app console.
 
@@ -25,4 +25,6 @@ Then to test successful message exchange enter;
 ```
 test
 ```
-as command, you will get ">>888: Simple Message Transfer Test Passed." as output.
+into the app console, you will get ">>888: Simple Message Transfer Test Passed." as output on 
+your test server.
+This signifies successful data exchange between client and test server.
