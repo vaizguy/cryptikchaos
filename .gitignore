@@ -43,4 +43,4 @@ Thumbs.db
 *.pyc
 
 # Project db files #
-/home/vaizguy/workspace/cryptikchaos/src/cryptikchaos/db/*_db
+*_db
