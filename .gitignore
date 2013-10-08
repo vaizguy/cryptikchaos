@@ -42,4 +42,4 @@ Thumbs.db
 .pydevproject
 
 # Project db files #
-/home/vaizguy/workspace/cryptikchaos/src/cryptikchaos/db/*
+/home/vaizguy/workspace/cryptikchaos/src/cryptikchaos/db/*_db
