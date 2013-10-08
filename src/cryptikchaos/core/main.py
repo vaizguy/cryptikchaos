@@ -25,13 +25,14 @@ import pythonpath
 pythonpath.AddSysPath('../../')
 
 from cryptikchaos.comm.twiscomm import CommService
+from cryptikchaos.gui.kivygui import GUIService
 from cryptikchaos.config.configuration import *
 from cryptikchaos.libs.Table.prettytable import PrettyTable
 
 import uuid
 
 
-class PodDroidApp(App, CommService):
+class PodDroidApp(GUIService, CommService):
 
     """
     Main kivy app class.
@@ -44,7 +45,7 @@ class PodDroidApp(App, CommService):
         "Build the kivy App."
 
         # Initiate Kivy GUI
-        root = self.setup_gui()
+        root = GUIService.build(self)
 
         # Initiate Twisted Server & Client services
         CommService.__init__(self, 
@@ -55,64 +56,6 @@ class PodDroidApp(App, CommService):
                              printer=self.print_message)
 
         return root
-
-    def setup_gui(self):
-        "Setup the Kivy GUI"
-
-        # Create label
-        self.scroll_label = ScrollView(
-            pos_hint={
-                'center_x': 0.3,
-                'center_y': 0.3
-            }
-        )
-
-        # Create label
-        self.label = Label(
-            text=constants.GUI_WELCOME_MSG,
-            halign='left',
-            size_hint_y=None,
-            height="40dp"
-        )
-
-        self.label.bind(texture_size=self.label.setter('size'))
-
-        self.scroll_label.do_scroll_y = True
-        self.scroll_label.add_widget(self.label)
-
-        # Create Textbox
-        self.textbox = TextInput(
-            size_hint_y=.1,
-            size_hint_x=.8,
-            multiline=False
-        )
-        self.textbox.focus = True
-        self.textbox.bind(on_text_validate=self.handle_input)
-
-        # Create button
-        self.enter_button = Button(
-            text='Enter',
-            size_hint_y=.1,
-            size_hint_x=.2
-        )
-        self.enter_button.bind(on_press=self.handle_input)
-
-        self.text_input_layout = BoxLayout(
-            orientation='horizontal',
-            size_hint=(1, 1)
-        )
-
-        self.text_input_layout.add_widget(self.textbox)
-        self.text_input_layout.add_widget(self.enter_button)
-
-        self.main_layout = BoxLayout(
-            orientation='vertical',
-            height="50dp"
-        )
-
-        self.main_layout.add_widget(self.scroll_label)
-        self.main_layout.add_widget(self.text_input_layout)
-        return self.main_layout
 
     def print_message(self, msg):
         "Print a message in the output window."
