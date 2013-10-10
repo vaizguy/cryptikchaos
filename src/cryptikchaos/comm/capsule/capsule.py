@@ -12,6 +12,7 @@ __version__ = 0.1
 
 import struct
 import socket
+import zlib
 
 from cryptikchaos.config.configuration import *
 
@@ -72,7 +73,8 @@ class Capsule(object):
     def pack(self):
         "Pack data into capsule. (i.e struct packing)"
 
-        return struct.pack(
+        # Pack the data into capsule
+        stream = struct.pack(
             "!8sII4s40sL32s128s",
             self._dictionary['CAP_ID'],
             self._dictionary['CAP_DSTIP'],
@@ -83,9 +85,23 @@ class Capsule(object):
             self._dictionary['CAP_CHKSUM'],
             self._dictionary['CAP_PKEY']
         )
+        
+        # Compress stream
+        stream_zip = zlib.compress(stream)
+        
+        return stream_zip
 
     def unpack(self, stream):
         "Unpack serial data into capsule."
+        
+        # Decompress data stream
+        stream_unzip = zlib.decompress(stream)
+        
+        # Check if data is of expected chunk size
+        if len(stream_unzip) != constants.CAPSULE_SIZE:
+            raise Exception(
+                'Capsule chunk should be equal to {}Bytes'.format(
+                    constants.CAPSULE_SIZE) )
 
         (
             self._dictionary['CAP_ID'],
@@ -96,7 +112,7 @@ class Capsule(object):
             self._dictionary['CAP_LEN'],
             self._dictionary['CAP_CHKSUM'],
             self._dictionary['CAP_PKEY']
-        ) = struct.unpack("!8sII4s40sL32s128s", stream)
+        ) = struct.unpack("!8sII4s40sL32s128s", stream_unzip)
 
     def __str__(self):
         "String representation of capsule."

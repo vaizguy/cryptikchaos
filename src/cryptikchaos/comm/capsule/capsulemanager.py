@@ -36,11 +36,14 @@ class CapsuleManager:
         "Unpack serial data into capsule."
 
         capsule = Capsule()
-        capsule.unpack(serial)
-
-        self.capsule_dict[capsule.getid()] = capsule
-
-        return capsule.tuple()
+        
+        try:
+            capsule.unpack(serial)
+        except:
+            raise Exception()
+        else:
+            self.capsule_dict[capsule.getid()] = capsule
+            return capsule.tuple()
 
     def get_capsule(self, cid):
         "Return capsule data in form of tuple."

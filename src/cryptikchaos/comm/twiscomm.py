@@ -208,16 +208,17 @@ class CommService(PeerManager, CapsuleManager):
     
     def handle_response(self, response):
         "Handle response from server"
-
-        if len(response) != constants.CAPSULE_SIZE:
-            raise Exception(
-                'Capsule chunk should be equal to ' + str(
-                    constants.CAPSULE_SIZE) + 'B')
-            return None
-
+        
         # Repsonse handling architecture should be placed here.
-        (cid, dest_ip, src_ip, captype, content,
-         _, chksum, pkey) = self.unpack_capsule(response)
+        # Unpack received stream
+        try:
+            (cid, dest_ip, src_ip, captype, content,
+                 _, chksum, pkey) = self.unpack_capsule(response)
+        except:
+            raise Exception("Error: Could not unpack capsule. Response Unhandled.")
+            return None
+        else:
+            pass
         
         ## Default pid, port, incl because test pod has the same ip
         ## but different port. Need to simplify mapping TODO
@@ -228,7 +229,8 @@ class CommService(PeerManager, CapsuleManager):
             src_pid = self.get_peerid_from_ip(src_ip, constants.LOCAL_TEST_PORT)
         else:
             src_pid = self.get_peerid_from_ip(src_ip)
-                       
+        
+        # Get previously stored public key
         stored_pkey = self.get_peer_key(src_pid)
         
         ## Check message authenticity
