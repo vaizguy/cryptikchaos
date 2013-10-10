@@ -199,7 +199,7 @@ class CommService(PeerManager, CapsuleManager):
 
         # Pack data into capsule
         stream = self.pack_capsule(
-            "AUTH",
+            constants.PROTO_AUTH_TYPE,
             str(self.peerid),
             peer_ip,
             self.host)
@@ -222,12 +222,10 @@ class CommService(PeerManager, CapsuleManager):
         ## Default pid, port, incl because test pod has the same ip
         ## but different port. Need to simplify mapping TODO
         src_pid = constants.PEER_ID
-        src_port = constants.PEER_PORT
                  
         ## It maybe from Test server if None
         if not self.get_peerid_from_ip(src_ip):
             src_pid = self.get_peerid_from_ip(src_ip, constants.LOCAL_TEST_PORT)
-            src_port = constants.LOCAL_TEST_PORT
         else:
             src_pid = self.get_peerid_from_ip(src_ip)
                        
@@ -275,7 +273,7 @@ class CommService(PeerManager, CapsuleManager):
         if not self.get_peerid_from_ip(src_ip):
             src_port = constants.LOCAL_TEST_PORT
                    
-        if captype == "AACK":
+        if captype == constants.PROTO_AACK_TYPE:
             ## Extract peer id
             pid = int(content)
             ## Add peer
@@ -353,7 +351,7 @@ class CommService(PeerManager, CapsuleManager):
         stored_pkey = self.get_peer_key(src_pid)
         
         ## Check message authenticity
-        if (c_rx_type != "AUTH" and pkey != stored_pkey):
+        if (c_rx_type != constants.PROTO_AUTH_TYPE and pkey != stored_pkey):
             Logger.debug("Capsule unauthenticated.")
             return None
                 
@@ -389,7 +387,7 @@ class CommService(PeerManager, CapsuleManager):
                 Logger.error("Tampered capsule received.")
                 pass
             
-        elif c_rx_type == "AUTH":
+        elif c_rx_type == constants.PROTO_AUTH_TYPE:
             
             Logger.debug( "Recieved auth request from Peer: {}".format(msg))
                        
@@ -407,7 +405,7 @@ class CommService(PeerManager, CapsuleManager):
 
             ## Send current peer info
             rsp = self.pack_capsule(
-                    captype="AACK",
+                    captype=constants.PROTO_AACK_TYPE,
                     capcontent=str(self.peerid),
                     dest_host=src_ip,
                     src_host=self.host)

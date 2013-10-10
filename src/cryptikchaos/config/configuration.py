@@ -37,6 +37,9 @@ constants.PROJECT_PATH = os.path.dirname(os.path.realpath(__file__)) + "/.."
 
 constants.PROTO_BULK_TYPE = "BULK"
 constants.PROTO_MACK_TYPE = "MACK"
+
+constants.PROTO_AUTH_TYPE = "AUTH"
+constants.PROTO_AACK_TYPE = "AACK"
 # ------------------------------------------------------------------------####
 
 # ------------------CAPSULE CONSTANTS-------------------------------------####

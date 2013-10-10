@@ -10,16 +10,6 @@ frontend and twisted framework as the backend.
 __author__ = "Arun Vaidya"
 __version__ = 0.1
 
-from kivy.app import App
-from kivy.uix.label import Label
-from kivy.uix.textinput import TextInput
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
-
-from kivy.uix.button import Button
-from kivy.logger import Logger
-from kivy.uix.scrollview import ScrollView
-
 # Add cryptikchaos path
 import pythonpath
 pythonpath.AddSysPath('../../')
@@ -30,6 +20,8 @@ from cryptikchaos.config.configuration import *
 from cryptikchaos.libs.Table.prettytable import PrettyTable
 
 import uuid
+
+from kivy.logger import Logger
 
 
 class PodDroidApp(GUIService, CommService):
@@ -118,16 +110,16 @@ class PodDroidApp(GUIService, CommService):
     def default_cmd(self, cmd):
         'If command not found'
 
-        self.print_message('Invalid Command "%s"\n' % cmd)
-        #self.logger.error('Command "%s" not found', cmd)
+        self.print_message('Invalid Command "{}"\n'.format(cmd))
+        Logger.error('Command "%s" not found', cmd)
 
     def print_topics(self, header, cmds, maxcol):
         "Print help topics"
 
         if cmds:
-            self.print_message("%s\n" % str(header))
+            self.print_message("{}\n".format(str(header)))
             if constants.RULER:
-                self.print_message("%s\n" % str(constants.RULER * len(header)))
+                self.print_message("{}\n".format(str(constants.RULER * len(header))))
             self.columnize(cmds, maxcol - 1)
             self.print_message("\n")
 
