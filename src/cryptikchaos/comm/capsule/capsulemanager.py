@@ -8,7 +8,7 @@ over the air.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.1
+__version__ = 0.2
 
 from cryptikchaos.comm.capsule.capsule import Capsule
 

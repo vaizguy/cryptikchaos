@@ -1,8 +1,11 @@
 '''
 Created on Oct 10, 2013
 
-@author: root
+@author: vaizguy
 '''
+
+__author__ = "Arun Vaidya"
+__version__ = 0.2
 
 from cryptikchaos.config.configuration import *
 

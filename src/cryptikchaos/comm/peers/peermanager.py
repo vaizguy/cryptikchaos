@@ -13,7 +13,7 @@ from kivy.logger import Logger
 import shelve
 
 __author__ = "Arun Vaidya"
-__version__ = 0.1
+__version__ = 0.2
 
 
 class PeerManager:

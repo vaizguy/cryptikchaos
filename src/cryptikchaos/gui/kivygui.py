@@ -3,6 +3,10 @@ Created on Oct 8, 2013
 
 @author: vaizguy
 '''
+
+__author__ = "Arun Vaidya"
+__version__ = 0.2
+
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput

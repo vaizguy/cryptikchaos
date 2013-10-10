@@ -7,7 +7,7 @@ Twisted network server core. TODO
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.1
+__version__ = 0.2
 
 # install_twisted_rector must be called before importing  and using the reactor
 from kivy.support import install_twisted_reactor
