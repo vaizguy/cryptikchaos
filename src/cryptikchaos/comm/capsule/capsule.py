@@ -15,7 +15,7 @@ import socket
 import zlib
 
 from cryptikchaos.config.configuration import *
-
+from cryptikchaos.exceptions.capsuleExceptions import *
 
 class Capsule(object):
 
@@ -99,9 +99,7 @@ class Capsule(object):
         
         # Check if data is of expected chunk size
         if len(stream_unzip) != constants.CAPSULE_SIZE:
-            raise Exception(
-                'Capsule chunk should be equal to {}Bytes'.format(
-                    constants.CAPSULE_SIZE) )
+            raise CapsuleOverflowError()
 
         (
             self._dictionary['CAP_ID'],

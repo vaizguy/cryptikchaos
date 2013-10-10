@@ -215,7 +215,7 @@ class CommService(PeerManager, CapsuleManager):
             (cid, dest_ip, src_ip, captype, content,
                  _, chksum, pkey) = self.unpack_capsule(response)
         except:
-            raise Exception("Error: Could not unpack capsule. Response Unhandled.")
+            raise 
             return None
         else:
             pass

@@ -40,7 +40,7 @@ class CapsuleManager:
         try:
             capsule.unpack(serial)
         except:
-            raise Exception()
+            raise
         else:
             self.capsule_dict[capsule.getid()] = capsule
             return capsule.tuple()
