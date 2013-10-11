@@ -46,6 +46,12 @@ class PeerManager:
 
         Logger.debug("Adding Peer {} , {}@{}".format(pid, host, port))
 
+        if str(pid) in self._peer_dict:
+            Logger.warn("Peer {} already exists. No changes made.".format(pid))
+            return None
+        else:
+            Logger.debug("Adding Peer {} , {}@{}".format(pid, host, port))
+        
         # Peer dictionary structure defined here
         self._peer_dict[str(pid)] = Peer({
             "PEER_ID": pid,
@@ -154,7 +160,7 @@ class PeerManager:
         return self._peer_dict[str(pid)]["PEER_IP"]
 
     ## Need to simplify mapping TODO 
-    def get_peerid_from_ip(self, peer_ip, peer_port=8000):
+    def get_peerid_from_ip(self, peer_ip, peer_port=constants.PEER_PORT):
         "Get a peerid from stored IP addresses. Assumes 1to1 relation."
 
         for (pid, _, ip, port, _) in self.list_peers():
