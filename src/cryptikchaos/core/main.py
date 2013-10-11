@@ -298,14 +298,19 @@ class PodDroidApp(GUIService, CommService):
         Usage: peers
         """
 
-        self.print_message("List of live peers:")
         plist = self.list_live_peers()
-        table = PrettyTable(["ID", "KEY", "IP", "PORT", "STATUS"])
+        
+        if plist:
+            self.print_message("List of live peers:")
 
-        for r in plist:
-            table.add_row(r)
+            table = PrettyTable(["ID", "KEY", "IP", "PORT", "STATUS"])
 
-        self.print_message(table)
+            for r in plist:
+                table.add_row(r)
+
+            self.print_message(table)
+        else:
+            self.print_message("No live peers.")
 
 
 if __name__ == '__main__':
