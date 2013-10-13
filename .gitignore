@@ -44,3 +44,6 @@ Thumbs.db
 
 # Project db files #
 *_db
+
+# Adding archived code
+archive/*
