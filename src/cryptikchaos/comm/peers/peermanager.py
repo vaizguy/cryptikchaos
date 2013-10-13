@@ -35,7 +35,13 @@ class PeerManager:
 
     def __del__(self):
 
-        self._peer_dict.close()
+        try:
+            self._peer_dict.close()
+        except AttributeError:
+            pass
+        else:
+            pass
+            
 
     def add_peer(self, pid, key, host, port):
         "Add peer to database."
