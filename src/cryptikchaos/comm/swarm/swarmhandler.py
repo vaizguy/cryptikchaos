@@ -5,7 +5,7 @@ Peer manager is used to Handle the peer information.
 
 @author: vaizguy
 '''
-from cryptikchaos.comm.peers.peer import Peer
+from cryptikchaos.comm.swarm.peer import Peer
 from cryptikchaos.config.configuration import *
 
 from kivy.logger import Logger
@@ -16,7 +16,7 @@ __author__ = "Arun Vaidya"
 __version__ = 0.2
 
 
-class PeerManager:
+class SwarmHandler:
 
     def __init__(self, peerid, peerkey):
         
