@@ -34,7 +34,7 @@ class PodDroidApp(GUIService, CommService):
 
     def build(self):
         "Build the kivy App."
-
+        
         # Initiate Kivy GUI
         root = GUIService.build(self)
 
@@ -55,6 +55,7 @@ class PodDroidApp(GUIService, CommService):
 
         # Cleanup env
         CommService.__del__(self)
+        
     def print_message(self, msg, peerid=None):
         "Print a message in the output window."
 
@@ -64,21 +65,23 @@ class PodDroidApp(GUIService, CommService):
         if not peerid:
             peerid = self.my_peerid
 
-        self.label.text += constants.GUI_LABEL_LEFT_PADDING + \
+        text = constants.GUI_LABEL_LEFT_PADDING + \
             constants.GUI_LABEL_PROMPT_SYM + \
             str(peerid) + ": " + \
             msg.strip(" ") + "\n"
-
-    def handle_input(self, *args):
+            
+        self.append_text(text)
+                        
+    #def handle_input(self, *args):
+    def handle_input(self, console_input):
         "*Send* button (and return key) event call back"
 
         # Total text input entered by user
-        cmd_line = self.textbox.text
+        cmd_line = console_input.text
 
-        # if self.connected:
         if len(cmd_line):
             self.print_message(cmd_line)
-            self.textbox.text = ""
+            console_input.text = ""
             return self.exec_command(cmd_line)
         else:
             return None
@@ -104,15 +107,13 @@ class PodDroidApp(GUIService, CommService):
 
         if cmd_line is not None:
             (cmd, args) = self.parse_line(cmd_line)
-            # print cmd, args
+
             # Search for command
             try:
                 func = getattr(self, 'cmd_' + cmd)
             except AttributeError:
                 return self.default_cmd(cmd)
             else:
-                #self.logger.info("Executing: '%s' Args: '%s'", cmd, args)
-                # print args
                 return func(args)
 
     def default_cmd(self, cmd):
