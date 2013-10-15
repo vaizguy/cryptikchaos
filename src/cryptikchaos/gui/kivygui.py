@@ -20,9 +20,9 @@ from kivy.uix.scrollview import ScrollView
 from cryptikchaos.config.configuration import *
 
 class GUIService(App):
-    
+
     def build(self):
-        
+
         "Build the kivy App."
 
         # Initiate Kivy GUI

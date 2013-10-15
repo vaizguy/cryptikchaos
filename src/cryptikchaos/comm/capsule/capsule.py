@@ -85,18 +85,18 @@ class Capsule(object):
             self._dictionary['CAP_CHKSUM'],
             self._dictionary['CAP_PKEY']
         )
-        
+
         # Compress stream
         stream_zip = zlib.compress(stream)
-        
+
         return stream_zip
 
     def unpack(self, stream):
         "Unpack serial data into capsule."
-        
+
         # Decompress data stream
         stream_unzip = zlib.decompress(stream)
-        
+
         # Check if data is of expected chunk size
         if len(stream_unzip) != constants.CAPSULE_SIZE:
             raise CapsuleOverflowError()

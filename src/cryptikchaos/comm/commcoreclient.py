@@ -25,9 +25,9 @@ class CommCoreClientProtocol(LineReceiver):
     """
     Communications core client protocol code.
     """
-    
+
     def __init__(self, factory):
-        
+
         self._peer_host = None
         self._peer_port = None
         self._peer_repr = None
@@ -88,7 +88,7 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
         #client_protocol = self.protocol()
         #client_protocol.factory = self
         #return client_protocol
-        
+
         return CommCoreClientProtocol(self)
 
     def clientConnectionLost(self, connector, reason):

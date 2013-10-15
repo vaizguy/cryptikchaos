@@ -39,7 +39,7 @@ class PodDroidApp(GUIService, CommService):
         root = GUIService.build(self)
 
         # Initiate Twisted Server & Client services
-        CommService.__init__(self, 
+        CommService.__init__(self,
                              peerid=constants.PEER_ID,
                              peerkey=constants.LOCAL_TEST_CLIENT_KEY,
                              host=constants.LOCAL_TEST_HOST,
@@ -47,21 +47,20 @@ class PodDroidApp(GUIService, CommService):
                              printer=self.print_message)
 
         return root
-    
+
     def start(self):
-        
+
         # Run the GUI
         self.run()
-        
-        # Cleanup env
-        CommService.__del__(self)     
 
+        # Cleanup env
+        CommService.__del__(self)
     def print_message(self, msg, peerid=None):
         "Print a message in the output window."
 
         # Convert to string
         msg = str(msg)
-        
+
         if not peerid:
             peerid = self.my_peerid
 
@@ -242,7 +241,7 @@ class PodDroidApp(GUIService, CommService):
     # ---------------------------
     # Command definitions
     # ---------------------------
-    
+
     def cmd_addpeer(self, cmdline):
         """
         Add new peer.
@@ -257,7 +256,7 @@ class PodDroidApp(GUIService, CommService):
         else:
             self.print_message("Adding Peer {}.".format(pid))
             self.add_peer_to_swarm(pid, host)
-            
+
     def cmd_addtest(self, cmdline):
         """
         Add test server.
@@ -308,7 +307,7 @@ class PodDroidApp(GUIService, CommService):
         """
 
         plist = self.list_live_peers()
-        
+
         if plist:
             table = PrettyTable(["ID", "KEY", "IP", "PORT", "STATUS"])
 
@@ -318,14 +317,14 @@ class PodDroidApp(GUIService, CommService):
             self.print_message("List of live peers:" + '\n' + str(table))
         else:
             self.print_message("No live peers.")
-            
+
     def cmd_graphswarm(self, cmdline):
         """
         View connected peers in graph format.
         Requires: Networkx python graph library.
         Usage: graphswarm
         """
-        
+
         if self.build_swarm_graph():
             self.print_message("Generated peer graph.")
         else:

@@ -20,9 +20,9 @@ import shelve
 class SwarmHandler:
 
     def __init__(self, peerid, peerkey):
-        
+
         peerfile = constants.PROJECT_PATH + "/db/"+ str(peerid) +"_db"
-        
+
         self.my_peerid = peerid
         self.my_key = peerkey
 
@@ -36,20 +36,19 @@ class SwarmHandler:
         self.peer_connections = {}
 
     def __del__(self):
-        
+
         # Closing all connections
         Logger.info("Closing all connections.")
 
         # Remove peer connections
         for pid in self.list_peer_ids():
-            # Update peer connection status 
+            # Update peer connection status
             self.update_peer_connection_status(pid, False)
             # Remove existing connection objects
             self.peer_connections[pid] = None
-            
+
         # Close peer dict
         self._peer_dict.close()
-            
 
     def add_peer(self, pid, key, host, port):
         "Add peer to database."
@@ -65,7 +64,7 @@ class SwarmHandler:
             return None
         else:
             Logger.debug("Adding Peer {} , {}@{}".format(pid, host, port))
-        
+
         # Peer dictionary structure defined here
         self._peer_dict[str(pid)] = Peer({
             "PEER_ID": pid,
@@ -77,14 +76,14 @@ class SwarmHandler:
 
         # Sync DB
         self._peer_dict.sync()
-    
+
     def delete_peer(self, pid):
         "Remove unauth peer."
-        
-        del self._peer_dict[str(pid)]        
+
+        del self._peer_dict[str(pid)]
         # Sync DB
         self._peer_dict.sync()
-        
+
     def get_peer(self, pid):
         "Get peer from db."
 
@@ -129,15 +128,15 @@ class SwarmHandler:
         else:
             raise Exception(
                 "Invalid Peer Connection Status, must be True or False.")
-            
+
     def list_peer_ids(self):
         "Returns a list of all peer IDs present in swarm."
-        
+
         return self._peer_dict.keys()
-    
+
     def build_swarm_graph(self):
         "Return visual graph of entire swarm"
-        
+
         try:
             import networkx as nx
             import matplotlib.pyplot as plt
@@ -147,19 +146,19 @@ class SwarmHandler:
         else:
             # Create graph
             swarm_graph = nx.Graph()
-            
+
             # Populate graph
             for pid in self.list_peer_ids():
                 swarm_graph.add_edge(self.my_peerid, pid)
-            
+
             # Plot circular graph
             nx.draw_circular(swarm_graph)
-            
+
             # Show graph plot
             plt.show()
-            
+
             return True
-                
+
     def list_peers(self):
         "Returns a list of all the peers"
 
@@ -203,7 +202,7 @@ class SwarmHandler:
 
         return self._peer_dict[str(pid)]["PEER_IP"]
 
-    ## Need to simplify mapping TODO 
+    ## Need to simplify mapping TODO
     def get_peerid_from_ip(self, peer_ip, peer_port=constants.PEER_PORT):
         "Get a peerid from stored IP addresses. Assumes 1to1 relation."
 
@@ -225,10 +224,10 @@ class SwarmHandler:
         "Get the peer connection."
 
         return self.peer_connections[pid]
-    
+
     def get_peer_key(self, pid):
         "Get the peers key"
-        
+
         if str(pid) in self._peer_dict.keys():
             return self._peer_dict[str(pid)]["PEER_KEY"]
         else:

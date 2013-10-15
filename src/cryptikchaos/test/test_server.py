@@ -60,7 +60,7 @@ class TwistedServerApp(App, CommService):
             port=constants.LOCAL_TEST_PORT,
             clientinit=False,
             printer=self.print_message)
-        
+
         self.label = Label(text="Server started\n")
 
         return self.label
@@ -70,7 +70,7 @@ class TwistedServerApp(App, CommService):
 
         # Convert to string
         msg = str(msg)
-        
+
         if not peerid:
             peerid = constants.LOCAL_TEST_PEER_ID
 

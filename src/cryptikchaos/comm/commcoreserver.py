@@ -22,9 +22,9 @@ from twisted.protocols.basic import LineReceiver
 class CommCoreServerProtocol(LineReceiver):
 
     "Server backend to pocess the commands"
-    
+
     def __init__(self):
-        
+
         self._peer_host = None
         self._peer_port = None
         self._peer_repr = None
@@ -40,7 +40,7 @@ class CommCoreServerProtocol(LineReceiver):
             "Connection success! Connected to {}".format(self._peer_repr))
 
         self.factory.app.on_client_connection(self.transport)
-        
+
     def connectionLost(self, reason):
         "Run when connection is lost with server."
 
@@ -49,7 +49,7 @@ class CommCoreServerProtocol(LineReceiver):
         self.factory.app.on_client_disconnection(self.transport)
 
     def lineReceived(self, line):
-        
+
         response = self.factory.app.handle_recieved_data(line, self.transport)
 
         if response:
