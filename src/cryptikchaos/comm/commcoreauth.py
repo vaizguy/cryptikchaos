@@ -45,7 +45,6 @@ class CommCoreAuthProtocol(LineReceiver):
         
         self.factory.app.on_server_authentication(self.transport)
 
-
     def connectionLost(self, reason):
         "Run when connection is lost with server."
 
@@ -53,7 +52,7 @@ class CommCoreAuthProtocol(LineReceiver):
             "Peer Authentication connection terminated : {}".format(self._peer_repr)
         )
 
-        self.factory.app.on_server_disconnection(self.transport)
+        self.factory.app.on_server_auth_close(self.transport)
 
     def lineReceived(self, line):
         "Run when response is recieved from server."

@@ -241,6 +241,27 @@ class CommService(SwarmHandler, CapsuleManager):
         
         return self._write_into_connection(connection, stream)
     
+    def on_server_auth_close(self, connection):
+        
+        peer_ip = connection.getPeer().host
+        peer_port = connection.getPeer().port
+                
+        self._print("Authentication successful to {}@{}".format(peer_ip, peer_port))
+    
+    def on_client_connection(self, connection):
+        
+        peer_ip = connection.getPeer().host
+        peer_port = connection.getPeer().port
+                
+        self._print("Client {}@{} connected.".format(peer_ip, peer_port))        
+    
+    def on_client_disconnection(self, connection):
+        
+        peer_ip = connection.getPeer().host
+        peer_port = connection.getPeer().port
+                
+        self._print("Client {}@{} disconnected.".format(peer_ip, peer_port))
+    
     def handle_response(self, response):
         "Handle response from server"
         
