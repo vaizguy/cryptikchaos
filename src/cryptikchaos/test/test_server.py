@@ -65,10 +65,19 @@ class TwistedServerApp(App, CommService):
 
         return self.label
 
-    def print_message(self, msg):
+    def print_message(self, msg, peerid=None):
+        "Print a message in the output window."
 
-        self.label.text += msg + '\n'
+        # Convert to string
+        msg = str(msg)
+        
+        if not peerid:
+            peerid = constants.LOCAL_TEST_PEER_ID
 
+        self.label.text += constants.GUI_LABEL_LEFT_PADDING + \
+            constants.GUI_LABEL_PROMPT_SYM + \
+            str(peerid) + ": " + \
+            msg.strip(" ") + "\n"
 
 if __name__ == '__main__':
     TwistedServerApp().run()

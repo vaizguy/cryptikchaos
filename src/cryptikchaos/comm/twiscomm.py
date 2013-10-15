@@ -154,13 +154,14 @@ class CommService(SwarmHandler, CapsuleManager):
         peer_id = self.get_peerid_from_ip(dip, port)
         
         # Pack the message
-        print_string = constants.GUI_LABEL_PROMPT + str(peer_id) + " : " + msg
+        if not peer_id:
+            peer_id = self.my_peerid          
 
         # Print the message
         if self._printer:
-            self._printer(print_string)
+            self._printer(msg, peer_id)
         else:
-            Logger.info(print_string)
+            Logger.info(msg)
             
     def start_connection(self, pid, host='localhost', port=constants.PEER_PORT):
         "Start connection with server."
@@ -193,7 +194,11 @@ class CommService(SwarmHandler, CapsuleManager):
         peer_id = self.get_peerid_from_ip(peer_ip, peer_port)
 
         # Announce successful server connection
-        self._print("Connected to PID:{}--{}@{}".format(peer_id, peer_ip, peer_port), peer_ip, peer_port)
+        self._print(
+            "Connected to PID:{}--{}@{}".format(peer_id, peer_ip, peer_port), 
+            peer_ip, 
+            peer_port
+        )
 
         # Update peer connection status to CONNECTED
         self._update_peer_connection_status(peer_ip, peer_port, True, connection)
@@ -205,8 +210,12 @@ class CommService(SwarmHandler, CapsuleManager):
         peer_port = connection.getPeer().port
         peer_id = self.get_peerid_from_ip(peer_ip, peer_port)
 
-        # Announce successful server connection
-        self._print("Disconnected from PID:{}--{}@{}".format(peer_id, peer_ip, peer_port), peer_ip, peer_port)        
+        # Announce successful server disconnection
+        self._print(
+            "Disconnected from PID:{}--{}@{}".format(peer_id, peer_ip, peer_port), 
+            peer_ip, 
+            peer_port
+        )        
 
         # Update peer connection status to DISCONNECTED
         self._update_peer_connection_status(peer_ip, peer_port, False, None)
@@ -215,7 +224,14 @@ class CommService(SwarmHandler, CapsuleManager):
         
         peer_ip = connection.getPeer().host
         peer_port = connection.getPeer().port
-
+        
+        # Authenticate server connection
+        self._print(
+            "Authenticating connection to {}@{}".format(peer_ip, peer_port), 
+            peer_ip, 
+            peer_port
+        )      
+        
         # Pack data into capsule
         stream = self.pack_capsule(
             constants.PROTO_AUTH_TYPE,

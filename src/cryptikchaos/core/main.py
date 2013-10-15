@@ -56,13 +56,18 @@ class PodDroidApp(GUIService, CommService):
         # Cleanup env
         CommService.__del__(self)     
 
-    def print_message(self, msg):
+    def print_message(self, msg, peerid=None):
         "Print a message in the output window."
 
         # Convert to string
         msg = str(msg)
+        
+        if not peerid:
+            peerid = self.my_peerid
 
         self.label.text += constants.GUI_LABEL_LEFT_PADDING + \
+            constants.GUI_LABEL_PROMPT_SYM + \
+            str(peerid) + ": " + \
             msg.strip(" ") + "\n"
 
     def handle_input(self, *args):
@@ -73,10 +78,7 @@ class PodDroidApp(GUIService, CommService):
 
         # if self.connected:
         if len(cmd_line):
-            self.print_message(
-                "{}".format(
-                    constants.GUI_LABEL_PROMPT_SYM +
-                    cmd_line))
+            self.print_message(cmd_line)
             self.textbox.text = ""
             return self.exec_command(cmd_line)
         else:
@@ -308,14 +310,12 @@ class PodDroidApp(GUIService, CommService):
         plist = self.list_live_peers()
         
         if plist:
-            self.print_message("List of live peers:")
-
             table = PrettyTable(["ID", "KEY", "IP", "PORT", "STATUS"])
 
             for r in plist:
                 table.add_row(r)
 
-            self.print_message(table)
+            self.print_message("List of live peers:" + '\n' + str(table))
         else:
             self.print_message("No live peers.")
             
