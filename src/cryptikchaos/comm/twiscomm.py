@@ -19,7 +19,7 @@ from cryptikchaos.comm.capsule.capsulemanager import CapsuleManager
 
 from cryptikchaos.config.configuration import *
 
-from twisted.internet import reactor, defer
+from twisted.internet import reactor
 
 from kivy.logger import Logger
 
@@ -147,12 +147,16 @@ class CommService(SwarmHandler, CapsuleManager):
         # Send data over connection
         return self._write_into_connection(conn, stream)
 
-    def _print(self, dip, msg, port=constants.PEER_PORT):
+    def _print(self, msg, dip=constants.PEER_HOST, port=constants.PEER_PORT):
+        "Print message on console with peer id."
        
+        # Get peer ID
         peer_id = self.get_peerid_from_ip(dip, port)
         
+        # Pack the message
         print_string = constants.GUI_LABEL_PROMPT + str(peer_id) + " : " + msg
 
+        # Print the message
         if self._printer:
             self._printer(print_string)
         else:
@@ -183,9 +187,13 @@ class CommService(SwarmHandler, CapsuleManager):
         
     def on_server_connection(self, connection):
         "Executed on successful server connection."
-
+        
         peer_ip = connection.getPeer().host
         peer_port = connection.getPeer().port
+        peer_id = self.get_peerid_from_ip(peer_ip, peer_port)
+
+        # Announce successful server connection
+        self._print("Connected to PID:{}--{}@{}".format(peer_id, peer_ip, peer_port), peer_ip, peer_port)
 
         # Update peer connection status to CONNECTED
         self._update_peer_connection_status(peer_ip, peer_port, True, connection)
@@ -195,6 +203,10 @@ class CommService(SwarmHandler, CapsuleManager):
 
         peer_ip = connection.getPeer().host
         peer_port = connection.getPeer().port
+        peer_id = self.get_peerid_from_ip(peer_ip, peer_port)
+
+        # Announce successful server connection
+        self._print("Disconnected from PID:{}--{}@{}".format(peer_id, peer_ip, peer_port), peer_ip, peer_port)        
 
         # Update peer connection status to DISCONNECTED
         self._update_peer_connection_status(peer_ip, peer_port, False, None)
@@ -255,8 +267,11 @@ class CommService(SwarmHandler, CapsuleManager):
                dest_ip == constants.LOCAL_TEST_HOST and
                src_ip == constants.LOCAL_TEST_HOST):
                 Logger.debug("Simple Message Transfer Test Passed.")
-                self._print(src_ip, 
-                    "Simple Message Transfer Test Passed.", constants.LOCAL_TEST_PORT)
+                self._print( 
+                    "Simple Message Transfer Test Passed.",
+                     src_ip,
+                     constants.LOCAL_TEST_PORT
+                )
             else:
                 Logger.debug("""
                 Sending Message Test Fail.
@@ -264,8 +279,10 @@ class CommService(SwarmHandler, CapsuleManager):
                 1. Test server must be running.
                 2. Command is 'send 888 Hello World!'
                 """)
-                self._print(src_ip, 
-                   "Simple Message Transfer Test Failed.")
+                self._print( 
+                   "Simple Message Transfer Test Failed.",
+                   src_ip
+                )
                
         elif captype == constants.PROTO_MACK_TYPE:
             Logger.debug("Message ACK recieved from {}".format(src_ip))
@@ -328,7 +345,9 @@ class CommService(SwarmHandler, CapsuleManager):
         
         # Check if peer is present
         if self.get_peer(pid):
-            self._print(self.peerid, "Peer already in list.")
+            self._print(
+                "Peer already in list."
+            )
             return False
         else:
             # Add peer
@@ -374,7 +393,7 @@ class CommService(SwarmHandler, CapsuleManager):
             rsp = "PONG"  # Legacy
 
         elif c_rx_type == constants.LOCAL_TEST_CAPS_TYPE:
-            self._print(src_ip, msg)
+            self._print(msg, src_ip)
             ## Repack capsule maintaining the same content
             rsp = self.pack_capsule(
                 captype=c_rx_type,
@@ -386,7 +405,7 @@ class CommService(SwarmHandler, CapsuleManager):
 
             if msg:  # integrity check
                 # Message reciept successful
-                self._print(src_ip, msg)
+                self._print(msg, src_ip)
                 rsp = self.pack_capsule(
                     captype=constants.PROTO_MACK_TYPE,
                     capcontent='',

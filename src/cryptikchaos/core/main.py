@@ -19,7 +19,6 @@ from cryptikchaos.gui.kivygui import GUIService
 from cryptikchaos.config.configuration import *
 from cryptikchaos.libs.Table.prettytable import PrettyTable
 
-import uuid
 
 from kivy.logger import Logger
 

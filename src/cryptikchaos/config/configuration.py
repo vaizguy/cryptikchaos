@@ -109,6 +109,7 @@ constants.RULER = '='
 
 constants.PEER_ID = uuid.getnode()
 constants.PEER_PORT = 8000
+constants.PEER_HOST = "127.0.0.1"
 # ------------------------------------------------------------------------####
 
 

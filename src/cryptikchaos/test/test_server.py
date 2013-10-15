@@ -1,4 +1,7 @@
 '''
+Test Sever used to test the server side protocol.
+To Run:
+python test_server.py
 
 @author: vaizguy
 '''
@@ -8,7 +11,6 @@ __version__ = 0.2
 
 # install_twisted_rector must be called before importing  and using the reactor
 from kivy.support import install_twisted_reactor
-from kivy import Logger
 
 install_twisted_reactor()
 
@@ -59,7 +61,7 @@ class TwistedServerApp(App, CommService):
             clientinit=False,
             printer=self.print_message)
         
-        self.label = Label(text="server started\n")
+        self.label = Label(text="Server started\n")
 
         return self.label
 
