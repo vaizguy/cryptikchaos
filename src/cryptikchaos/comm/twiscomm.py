@@ -58,6 +58,13 @@ class CommService(SwarmHandler, CapsuleManager):
         # Start peer connections
         if clientinit:
             self._start_peer_connections()
+            
+    def __del__(self):
+        
+        # Close swarm handler 
+        SwarmHandler.__del__(self)
+        # Close capsule manager
+        CapsuleManager.__del__(self)
 
     def _start_server(self):
         "Start twisted server listener."
@@ -235,6 +242,7 @@ class CommService(SwarmHandler, CapsuleManager):
         
         ## Check message authenticity
         if (pkey != stored_pkey):
+            print pkey, stored_pkey
             Logger.debug("Capsule unauthenticated.")
             return None
         

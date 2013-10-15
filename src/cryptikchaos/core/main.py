@@ -48,6 +48,14 @@ class PodDroidApp(GUIService, CommService):
                              printer=self.print_message)
 
         return root
+    
+    def start(self):
+        
+        # Run the GUI
+        self.run()
+        
+        # Cleanup env
+        CommService.__del__(self)     
 
     def print_message(self, msg):
         "Print a message in the output window."
@@ -311,8 +319,23 @@ class PodDroidApp(GUIService, CommService):
             self.print_message(table)
         else:
             self.print_message("No live peers.")
+            
+    def cmd_graphswarm(self, cmdline):
+        """
+        View connected peers in graph format.
+        Requires: Networkx python graph library.
+        Usage: graphswarm
+        """
+        
+        if self.build_swarm_graph():
+            self.print_message("Generated peer graph.")
+        else:
+            self.print_message("Could not generate graph.")
 
 
 if __name__ == '__main__':
 
-    PodDroidApp().run()
+    # Build App
+    App = PodDroidApp()
+    # Start App mainloop
+    App.start()

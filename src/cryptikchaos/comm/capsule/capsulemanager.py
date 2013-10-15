@@ -21,7 +21,11 @@ class CapsuleManager:
 
         self.capsule_dict = {}
         self.peer_key = peerkey
-
+        
+    def __del__(self):
+        
+        del self.capsule_dict
+        
     def pack_capsule(self, captype="NULL", capcontent='',
                      dest_host="127.0.0.1", src_host="127.0.0.1"):
         "Pack data into capsule."
