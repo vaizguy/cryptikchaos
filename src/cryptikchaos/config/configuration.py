@@ -21,8 +21,11 @@ import constants
 constants.GUI_WELCOME_MSG = """
   CryptikChaos v.2
   ----------------------
+  
+  >> Welcome to CryptikChaos P2P Net <<
+  >> Enter "help" for command listing <<
 """
-constants.GUI_LABEL_PROMPT_SYM = ">>"
+constants.GUI_LABEL_PROMPT_SYM = ">> "
 constants.GUI_LABEL_LEFT_PADDING = "  "
 constants.GUI_LABEL_PROMPT = constants.GUI_LABEL_LEFT_PADDING + \
     constants.GUI_LABEL_PROMPT_SYM
@@ -98,7 +101,7 @@ constants.LOCAL_TEST_CAPS_CHKSUM = hmac.new(
 # ---Help documentation printer constants---------------------------------####
 
 constants.DOC_LEADER = ""
-constants.DOC_HEADER = "Documented commands (type help <topic>):"
+constants.DOC_HEADER = "Documented commands (type help <command>):"
 constants.MISC_HEADER = "Miscellaneous help topics:"
 constants.UNDOC_HEADER = "Undocumented commands:"
 constants.NOHELP = "*** No help on %s"
