@@ -47,7 +47,7 @@ class ConsoleWindow(GridLayout):
         self.add_widget(self.console_input)
         
     def append_text_to_console(self, text):
-        self.label.text += '\n' + text
+        self.label.text += text
 
 class ConsoleWindowTest(App):
 

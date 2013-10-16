@@ -56,22 +56,28 @@ class PodDroidApp(GUIService, CommService):
         # Cleanup env
         CommService.__del__(self)
         
-    def print_message(self, msg, peerid=None):
+    def print_message(self, msg, peerid=None, intermediate=False):
         "Print a message in the output window."
 
         # Convert to string
         msg = str(msg)
+        
+        # Indicates multiline output required
+        if intermediate:
+            text = constants.GUI_LABEL_LEFT_PADDING + \
+                msg.strip(" ")
+        else:
+        # One line print
+            if not peerid:
+                peerid = self.my_peerid
 
-        if not peerid:
-            peerid = self.my_peerid
+            text = constants.GUI_LABEL_LEFT_PADDING + \
+                constants.GUI_LABEL_PROMPT_SYM + \
+                str(peerid) + ": " + \
+                msg.strip(" ") + "\n"
 
-        text = constants.GUI_LABEL_LEFT_PADDING + \
-            constants.GUI_LABEL_PROMPT_SYM + \
-            str(peerid) + ": " + \
-            msg.strip(" ") + "\n"
-            
         self.append_text(text)
-                        
+
     #def handle_input(self, *args):
     def handle_input(self, console_input):
         "*Send* button (and return key) event call back"
@@ -126,21 +132,21 @@ class PodDroidApp(GUIService, CommService):
         "Print help topics"
 
         if cmds:
-            self.print_message("{}\n".format(str(header)))
+            self.print_message("{}\n".format(str(header)), None, True)
             if constants.RULER:
-                self.print_message("{}\n".format(str(constants.RULER * len(header))))
+                self.print_message(("{}\n".format(str(constants.RULER * len(header)))), None, True)
             self.columnize(cmds, maxcol - 1)
-            self.print_message("\n")
-
+            self.print_message(("\n"), None, True)
+        
     def columnize(self, list, displaywidth=80):
         """Display a list of strings as a compact set of columns.
 
         Each column is only as wide as necessary.
         Columns are separated by two spaces (one was not legible enough).
         """
-
+        
         if not list:
-            self.print_message("<empty>\n")
+            self.print_message("<empty>\n", None, True)
             return
         nonstrings = [i for i in range(len(list))
                       if not isinstance(list[i], str)]
@@ -149,7 +155,7 @@ class PodDroidApp(GUIService, CommService):
                             ", ".join(map(str, nonstrings)))
         size = len(list)
         if size == 1:
-            self.print_message('%s\n' % str(list[0]))
+            self.print_message('%s\n' % str(list[0]), None, True)
             return
         # Try every row count from 1 upwards
         for nrows in range(1, len(list)):
@@ -187,7 +193,7 @@ class PodDroidApp(GUIService, CommService):
                 del texts[-1]
             for col in range(len(texts)):
                 texts[col] = texts[col].ljust(colwidths[col])
-            self.print_message("%s\n" % str("  ".join(texts)))
+            self.print_message("%s\n" % str("  ".join(texts)), None, True)
 
     def cmd_help(self, arg):
         """
