@@ -86,7 +86,11 @@ class PodDroidApp(GUIService, CommService):
 
         if len(cmd_line):
             self.print_message(cmd_line)
+            # Clear input textbox
             console_input.text = ""
+            # Set cursor back to console
+            console_input.focus = True
+            
             return self.exec_command(cmd_line)
         else:
             return None
