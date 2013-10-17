@@ -21,7 +21,7 @@ class Capsule(object):
 
     "Capsule definition."
 
-    def __init__(self, key=None, captype="NULL", content='',
+    def __init__(self, pkey=None, captype="NULL", content='',
                  dest_host="127.0.0.1", src_host="127.0.0.1"):
 
         # Check length of content.
@@ -56,7 +56,7 @@ class Capsule(object):
             'CAP_CONTENT': content,
             'CAP_LEN'    : len(content),
             'CAP_CHKSUM' : hmac.new(content).hexdigest(),
-            'CAP_PKEY'   : key
+            'CAP_PKEY'   : pkey
             }
 
     def __setitem__(self, key, item):
@@ -148,22 +148,37 @@ class Capsule(object):
                 == self._dictionary["CAP_CHKSUM"]):
             return self._dictionary[
                 "CAP_CONTENT"
-            ][0:self._dictionary['CAP_LEN']]
+            ][0:self._dictionary["CAP_LEN"]]
         else:
             return None
+        
+    def getlen(self):
+        "Return the capsule content length"
+        
+        return self._dictionary["CAP_LEN"]
+    
+    def getchecksum(self):
+        "Return capsule checksum"
+        
+        return self._dictionary["CAP_CHKSUM"]
+    
+    def getpkey(self):
+        "Return peer's public key"
+        
+        return self._dictionary["CAP_PKEY"].strip('\b')
 
     def tuple(self):
         "Return capsule in tuple form."
 
         return (
-            self._dictionary['CAP_ID'],
+            self.getid(),
             self.getdip(),
             self.getsip(),
-            self._dictionary['CAP_TYPE'],
+            self.gettype(),
             self.getcontent(),
-            self._dictionary['CAP_LEN'],
-            self._dictionary['CAP_CHKSUM'],
-            self._dictionary['CAP_PKEY'].strip('\b')
+            self.getlen(),
+            self.getchecksum(),
+            self.getpkey()
         )
 
     def _ip_to_uint32(self, ip):
@@ -177,7 +192,7 @@ class Capsule(object):
 
         t = struct.pack("!I", ipn)
         return socket.inet_ntoa(t)
-
+    
 
 if __name__ == '__main__':
 

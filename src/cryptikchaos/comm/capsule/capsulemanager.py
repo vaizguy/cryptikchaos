@@ -19,7 +19,9 @@ class CapsuleManager:
 
     def __init__(self, peerkey):
 
+        # Dictionary of all packed/unpacked capsules
         self.capsule_dict = {}
+        # Peer public key
         self.peer_key = peerkey
 
     def __del__(self):
@@ -30,26 +32,34 @@ class CapsuleManager:
                      dest_host="127.0.0.1", src_host="127.0.0.1"):
         "Pack data into capsule."
 
+        # Create and populate capsule with specified data
         capsule = Capsule(self.peer_key, captype, capcontent, dest_host, src_host)
 
+        # Store capsule
         self.capsule_dict[capsule.getid()] = capsule
 
+        # Return capsule as packed struct
         return capsule.pack()
 
     def unpack_capsule(self, serial):
         "Unpack serial data into capsule."
 
+        # Create empty capsule
         capsule = Capsule()
 
         try:
+            # Unpack into capsule
             capsule.unpack(serial)
         except:
             raise
         else:
+            # Store unpacked capsule
             self.capsule_dict[capsule.getid()] = capsule
+            # Return unpacked data as tuple
             return capsule.tuple()
 
     def get_capsule(self, cid):
         "Return capsule data in form of tuple."
 
+        # Return specified capsule data as tuple
         return self.capsule_dict[cid].tuple()

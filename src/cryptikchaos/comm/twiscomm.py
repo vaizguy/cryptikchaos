@@ -142,7 +142,8 @@ class CommService(SwarmHandler, CapsuleManager):
             data_class,
             data_content,
             desthost,
-            self.host)
+            self.host
+        )
 
         # Send data over connection
         return self._write_into_connection(conn, stream)
@@ -251,6 +252,7 @@ class CommService(SwarmHandler, CapsuleManager):
         peer_port = connection.getPeer().port
 
         self._print("Client {}@{} connected.".format(peer_ip, peer_port))
+        
     def on_client_disconnection(self, connection):
 
         peer_ip = connection.getPeer().host
@@ -371,7 +373,7 @@ class CommService(SwarmHandler, CapsuleManager):
 
         port = constants.PEER_PORT
         # Assign port based on pid
-        if pid == 888:
+        if pid == constants.LOCAL_TEST_PEER_ID:
             port = constants.LOCAL_TEST_PORT
 
 
@@ -417,7 +419,7 @@ class CommService(SwarmHandler, CapsuleManager):
             return None
 
         if not self.get_peer(src_pid):
-            Logger.error("Unknown pid @{} attempting contact.".format(src_ip))
+            Logger.warn("Unknown pid @{} attempting contact.".format(src_ip))
 
         Logger.debug("Received: {}".format(b64encode(serial)))
 

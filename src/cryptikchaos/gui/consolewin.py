@@ -23,9 +23,8 @@ class ConsoleWindow(GridLayout):
         # Number of cols
         self.cols = 1
         
-        # Text output label
         self.label = Label(
-            text=greeting, 
+            text=greeting,
             size_hint_y=None,
             height=100
         )
@@ -40,7 +39,6 @@ class ConsoleWindow(GridLayout):
         # Add label to scroll view
         scroll_view.add_widget(self.label)
         
-        # Add scroll view
         self.add_widget(scroll_view)
         
         # Input text box

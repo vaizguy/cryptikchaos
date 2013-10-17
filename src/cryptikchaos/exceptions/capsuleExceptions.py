@@ -24,6 +24,20 @@ class CapsuleOverflowError(CapsuleError):
     def __str__(self):
 
         return "Capsule chunk should be equal to {} Bytes".format(constants.CAPSULE_SIZE)
+    
+class CapsuleEmptyError(CapsuleError):
+    """
+    If capsule is empty.
+    """
+
+    def __init__(self):
+
+        pass
+
+    def __str__(self):
+
+        return "Capsule not populated with data."
+    
 
 if __name__ == "__main__":
 
