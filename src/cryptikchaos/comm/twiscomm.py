@@ -18,6 +18,7 @@ from cryptikchaos.comm.swarm.swarmhandler import SwarmHandler
 from cryptikchaos.comm.capsule.capsulemanager import CapsuleManager
 
 from cryptikchaos.config.configuration import *
+from cryptikchaos.libs.utilities import *
 
 from twisted.internet import reactor
 
@@ -376,7 +377,6 @@ class CommService(SwarmHandler, CapsuleManager):
         if pid == constants.LOCAL_TEST_PEER_ID:
             port = constants.LOCAL_TEST_PORT
 
-
         # Check if peer is present
         if self.get_peer(pid):
             self._print(
@@ -411,12 +411,23 @@ class CommService(SwarmHandler, CapsuleManager):
 
         ## Get stored peer key
         src_pid = self.get_peerid_from_ip(src_ip)
-        stored_pkey = self.get_peer_key(src_pid)
-
+        
         ## Check message authenticity
-        if (c_rx_type != constants.PROTO_AUTH_TYPE and pkey != stored_pkey):
-            Logger.debug("Capsule unauthenticated.")
-            return None
+        if (c_rx_type != constants.PROTO_AUTH_TYPE):
+            
+            # Generate token from recieved information
+            recvd_token = generate_token(cid, pkey)
+            # Generate token with stored information
+            podnt_token = generate_token(
+                generate_uuid(self.host), 
+                self.get_peer_key(src_pid)
+            )
+                        
+            if (recvd_token != podnt_token):
+                Logger.warning("Capsule token chanllenge fail.")
+                return None
+            else:
+                Logger.info("Capsule token challenge pass.")
 
         if not self.get_peer(src_pid):
             Logger.warn("Unknown pid @{} attempting contact.".format(src_ip))

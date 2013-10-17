@@ -11,11 +11,11 @@ __author__ = "Arun Vaidya"
 __version__ = 0.2
 
 import struct
-import socket
 import zlib
 
 from cryptikchaos.config.configuration import *
 from cryptikchaos.exceptions.capsuleExceptions import *
+from cryptikchaos.libs.utilities import *
 
 class Capsule(object):
 
@@ -43,15 +43,13 @@ class Capsule(object):
             src_host = constants.LOCAL_TEST_HOST
 
         # Generate uid
-        uid = str(
-            uuid.uuid5(uuid.NAMESPACE_URL, dest_host)
-        )[0:constants.CAPS_ID_LEN]
+        uid = generate_uuid(dest_host)
 
         # Populate capsule fields
         self._dictionary = {
             'CAP_ID'     : uid,
-            'CAP_DSTIP'  : self._ip_to_uint32(dest_host),
-            'CAP_SCRIP'  : self._ip_to_uint32(src_host),
+            'CAP_DSTIP'  : ip_to_uint32(dest_host),
+            'CAP_SCRIP'  : ip_to_uint32(src_host),
             'CAP_TYPE'   : captype.upper(),
             'CAP_CONTENT': content,
             'CAP_LEN'    : len(content),
@@ -130,12 +128,12 @@ class Capsule(object):
     def getdip(self):
         "Return Destination IP."
 
-        return self._uint32_to_ip(self._dictionary["CAP_DSTIP"])
+        return uint32_to_ip(self._dictionary["CAP_DSTIP"])
 
     def getsip(self):
         "Return Destination IP."
 
-        return self._uint32_to_ip(self._dictionary["CAP_SRCIP"])
+        return uint32_to_ip(self._dictionary["CAP_SRCIP"])
 
     def gettype(self):
         "Return Capsule protocol type."
@@ -181,18 +179,6 @@ class Capsule(object):
             self.getpkey()
         )
 
-    def _ip_to_uint32(self, ip):
-        "Convert IPv4 Address into 32bit integer."
-
-        t = socket.inet_aton(ip)
-        return struct.unpack("!I", t)[0]
-
-    def _uint32_to_ip(self, ipn):
-        "Convert 32bit integer into IP Address."
-
-        t = struct.pack("!I", ipn)
-        return socket.inet_ntoa(t)
-    
 
 if __name__ == '__main__':
 
