@@ -19,7 +19,7 @@ import constants
 # ------------------GUI Attribute CONSTANTS-------------------------------####
 
 constants.GUI_WELCOME_MSG = """
-  CryptikChaos v.2
+  CryptikChaos v.""" + str(__version__) + """
   ----------------------
   
   >> Welcome to CryptikChaos P2P Net <<
