@@ -23,7 +23,7 @@ into the app console.
 
 Then to test successful message exchange enter;
 ```
-test
+sendtest
 ```
 into the app console, you will get ">>888: Simple Message Transfer Test Passed." as output on 
 your test server.

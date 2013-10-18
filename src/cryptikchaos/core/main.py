@@ -324,7 +324,7 @@ class PodDroidApp(GUIService, CommService):
                 "Unable to send message. Peer {} is offline.".format(pid)
             )
 
-    def cmd_test(self, cmdline):
+    def cmd_sendtest(self, cmdline):
         """
         Tests the pod with the test server running.
         All testcases should be run here.
