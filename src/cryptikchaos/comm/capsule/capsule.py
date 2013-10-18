@@ -73,7 +73,13 @@ class Capsule(object):
 
         # Pack the data into capsule
         stream = struct.pack(
-            "!8sII4s40sL32s128s",
+            "!{}sII{}s{}sL{}s{}s".format(
+                constants.CAPS_ID_LEN,
+                constants.CAPS_TYPE_LEN,
+                constants.CAPS_CONTENT_LEN,
+                constants.CAPS_CHKSUM_LEN,
+                constants.CAPS_PKEY_HASH_LEN
+            ),
             self._dictionary['CAP_ID'],
             self._dictionary['CAP_DSTIP'],
             self._dictionary['CAP_SCRIP'],
@@ -108,7 +114,15 @@ class Capsule(object):
             self._dictionary['CAP_LEN'],
             self._dictionary['CAP_CHKSUM'],
             self._dictionary['CAP_PKEY']
-        ) = struct.unpack("!8sII4s40sL32s128s", stream_unzip)
+        ) = struct.unpack(
+                "!{}sII{}s{}sL{}s{}s".format(
+                constants.CAPS_ID_LEN,
+                constants.CAPS_TYPE_LEN,
+                constants.CAPS_CONTENT_LEN,
+                constants.CAPS_CHKSUM_LEN,
+                constants.CAPS_PKEY_HASH_LEN
+            ), stream_unzip
+        )
 
     def __str__(self):
         "String representation of capsule."

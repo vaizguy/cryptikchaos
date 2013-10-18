@@ -48,7 +48,7 @@ constants.PROTO_AACK_TYPE = "AACK"
 # ------------------CAPSULE CONSTANTS-------------------------------------####
 
 # Capsule Content Length
-constants.CAPS_CONTENT_LEN = 40
+constants.CAPS_CONTENT_LEN = 64
 # Capsule Type length
 constants.CAPS_TYPE_LEN = 4
 # Capsule ID Length
