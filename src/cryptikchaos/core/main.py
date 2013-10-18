@@ -18,6 +18,7 @@ from cryptikchaos.comm.twiscomm import CommService
 from cryptikchaos.gui.kivygui import GUIService
 from cryptikchaos.config.configuration import *
 from cryptikchaos.libs.Table.prettytable import PrettyTable
+from cryptikchaos.libs.utilities import get_my_ip
 
 from kivy.logger import Logger
 
@@ -36,12 +37,18 @@ class PodDroidApp(GUIService, CommService):
         
         # Initiate Kivy GUI
         root = GUIService.build(self)
+        
+        # Determine host based on test mode
+        my_host = constants.LOCAL_TEST_HOST
+        # If not in test mode get LAN IP
+        if not constants.TEST_MODE:
+            my_host = get_my_ip()
 
         # Initiate Twisted Server & Client services
         CommService.__init__(self,
                              peerid=constants.PEER_ID,
                              peerkey=constants.LOCAL_TEST_CLIENT_KEY,
-                             host=constants.LOCAL_TEST_HOST,
+                             host=my_host,
                              port=constants.PEER_PORT,
                              printer=self.print_message)
 
@@ -277,6 +284,8 @@ class PodDroidApp(GUIService, CommService):
                 constants.LOCAL_TEST_HOST, constants.LOCAL_TEST_PORT
                 )
         )
+        
+        # Add Test server to swarm
         self.add_peer_to_swarm(888, "localhost")
 
     def cmd_send(self, cmdline):
@@ -295,10 +304,19 @@ class PodDroidApp(GUIService, CommService):
             pass
 
         if self.pass_message(pid, msg):
+            # command output
+            self.print_message("Message sent to peer {}.".format(pid))
+            # command log
             Logger.debug("Message sent to peer {}.".format(pid))
         else:
+            # command output
+            self.print_message(
+                "Unable to send message. Peer {} is offline.".format(pid)
+            )
+            # command log
             Logger.error(
-                "Unable to send message. Peer {} is offline.".format(pid))
+                "Unable to send message. Peer {} is offline.".format(pid)
+            )
 
     def cmd_test(self, cmdline):
         """

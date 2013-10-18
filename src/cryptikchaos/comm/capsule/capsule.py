@@ -10,12 +10,18 @@ communications between server and client and vice-versa.
 __author__ = "Arun Vaidya"
 __version__ = 0.2
 
-import struct
 import zlib
+import struct
 
 from cryptikchaos.config.configuration import *
-from cryptikchaos.exceptions.capsuleExceptions import *
-from cryptikchaos.libs.utilities import *
+
+from cryptikchaos.exceptions.capsuleExceptions import \
+    CapsuleOverflowError
+
+from cryptikchaos.libs.utilities import ip_to_uint32
+from cryptikchaos.libs.utilities import uint32_to_ip
+from cryptikchaos.libs.utilities import generate_uuid
+
 
 class Capsule(object):
 
@@ -129,7 +135,7 @@ class Capsule(object):
 
         string = ''
 
-        for (k, v) in self._dictionary.iteritems():
+        for v in self._dictionary.values():
             string += str(v) + ':'
 
         return string.strip(':')

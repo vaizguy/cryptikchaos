@@ -13,12 +13,13 @@ from cryptikchaos.comm.commcoreserver import CommCoreServerFactory
 from cryptikchaos.comm.commcoreclient import CommCoreClientFactory
 from cryptikchaos.comm.commcoreauth   import CommCoreAuthFactory
 
-
 from cryptikchaos.comm.swarm.swarmhandler import SwarmHandler
 from cryptikchaos.comm.capsule.capsulemanager import CapsuleManager
 
 from cryptikchaos.config.configuration import *
-from cryptikchaos.libs.utilities import *
+
+from cryptikchaos.libs.utilities import generate_uuid
+from cryptikchaos.libs.utilities import generate_token
 
 from twisted.internet import reactor
 
