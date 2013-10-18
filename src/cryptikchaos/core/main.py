@@ -41,7 +41,7 @@ class PodDroidApp(GUIService, CommService):
         # Determine host based on test mode
         my_host = constants.LOCAL_TEST_HOST
         # If not in test mode get LAN IP
-        if not constants.TEST_MODE:
+        if not constants.ENABLE_TEST_MODE:
             my_host = get_my_ip()
 
         # Initiate Twisted Server & Client services

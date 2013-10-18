@@ -115,6 +115,7 @@ constants.PEER_PORT = 1597
 constants.PEER_HOST = "127.0.0.1"
 # ------------------------------------------------------------------------####
 
-# ---Application mode-----------------------------------------------------####
-constants.TEST_MODE = True
+# ---Application switches-------------------------------------------------####
+constants.ENABLE_TEST_MODE = True
+constants.ENABLE_COMPRESSION = False
 # ------------------------------------------------------------------------####

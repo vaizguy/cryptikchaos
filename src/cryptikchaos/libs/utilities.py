@@ -15,6 +15,7 @@ import struct
 import socket
 import uuid
 import hashlib
+import zlib
 
 def ip_to_uint32(ip):
     """
@@ -69,3 +70,17 @@ def get_my_ip():
         host = s.getsockname()[0]
         s.close()
         return host 
+    
+def compress(stream):
+    """
+    Compress stream using zlib lib.
+    """
+    
+    return zlib.compress(stream)
+
+def decompress(stream):
+    """
+    Decompress stream using zlib.
+    """
+    
+    return zlib.decompress(stream)

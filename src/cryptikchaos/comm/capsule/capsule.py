@@ -10,7 +10,6 @@ communications between server and client and vice-versa.
 __author__ = "Arun Vaidya"
 __version__ = 0.3
 
-import zlib
 import struct
 
 from cryptikchaos.config.configuration import *
@@ -21,6 +20,8 @@ from cryptikchaos.exceptions.capsuleExceptions import \
 from cryptikchaos.libs.utilities import ip_to_uint32
 from cryptikchaos.libs.utilities import uint32_to_ip
 from cryptikchaos.libs.utilities import generate_uuid
+from cryptikchaos.libs.utilities import compress
+from cryptikchaos.libs.utilities import decompress
 
 
 class Capsule(object):
@@ -97,7 +98,10 @@ class Capsule(object):
         )
 
         # Compress stream
-        stream_zip = zlib.compress(stream)
+        if constants.ENABLE_COMPRESSION:
+            stream_zip = compress(stream)
+        else:
+            stream_zip = stream
 
         return stream_zip
 
@@ -105,7 +109,10 @@ class Capsule(object):
         "Unpack serial data into capsule."
 
         # Decompress data stream
-        stream_unzip = zlib.decompress(stream)
+        if constants.ENABLE_COMPRESSION:
+            stream_unzip = decompress(stream)
+        else:
+            stream_unzip = stream
 
         # Check if data is of expected chunk size
         if len(stream_unzip) != constants.CAPSULE_SIZE:
