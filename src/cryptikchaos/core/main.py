@@ -8,7 +8,7 @@ frontend and twisted framework as the backend.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.2
+__version__ = 0.3
 
 # Add cryptikchaos path
 import pythonpath
@@ -45,12 +45,14 @@ class PodDroidApp(GUIService, CommService):
             my_host = get_my_ip()
 
         # Initiate Twisted Server & Client services
-        CommService.__init__(self,
-                             peerid=constants.PEER_ID,
-                             peerkey=constants.LOCAL_TEST_CLIENT_KEY,
-                             host=my_host,
-                             port=constants.PEER_PORT,
-                             printer=self.print_message)
+        CommService.__init__(
+            self,
+            peerid=constants.PEER_ID,
+            peerkey=constants.LOCAL_TEST_CLIENT_KEY,
+            host=my_host,
+            port=constants.PEER_PORT,
+            printer=self.print_message
+        )
 
         return root
 
@@ -133,9 +135,11 @@ class PodDroidApp(GUIService, CommService):
                 return func(args)
 
     def default_cmd(self, cmd):
-        'If command not found'
+        "If command not found"
 
+        # Command output
         self.print_message('Invalid Command "{}"\n'.format(cmd))
+        # Command log
         Logger.error('Command "%s" not found', cmd)
 
     def print_topics(self, header, cmds, maxcol):
@@ -286,12 +290,16 @@ class PodDroidApp(GUIService, CommService):
         )
         
         # Add Test server to swarm
-        self.add_peer_to_swarm(888, "localhost")
+        self.add_peer_to_swarm(
+            constants.LOCAL_TEST_PEER_ID, 
+            constants.LOCAL_TEST_HOST
+        )
 
     def cmd_send(self, cmdline):
         """
         Send message to other peers using peerid.
         Usage: send <pid> <message>
+        Alternative Short Usage: @<pid> <message>        
         """
         try:
             (pid, msg) = (
@@ -304,8 +312,6 @@ class PodDroidApp(GUIService, CommService):
             pass
 
         if self.pass_message(pid, msg):
-            # command output
-            self.print_message("Message sent to peer {}.".format(pid))
             # command log
             Logger.debug("Message sent to peer {}.".format(pid))
         else:
@@ -326,7 +332,12 @@ class PodDroidApp(GUIService, CommService):
         """
         # Check sending of message.
         self.cmd_send(
-            str(constants.LOCAL_TEST_PEER_ID) + " " + constants.LOCAL_TEST_STR)
+            str(
+                constants.LOCAL_TEST_PEER_ID
+            ) + \
+            " " + \
+            constants.LOCAL_TEST_STR
+        )
 
     def cmd_peers(self, cmdline):
         """

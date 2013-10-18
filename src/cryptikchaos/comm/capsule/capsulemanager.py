@@ -8,7 +8,7 @@ over the air.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.2
+__version__ = 0.3
 
 from cryptikchaos.comm.capsule.capsule import Capsule
 
@@ -26,6 +26,7 @@ class CapsuleManager:
 
     def __del__(self):
 
+        # Clear stored capsules
         del self.capsule_dict
 
     def pack_capsule(self, captype="NULL", capcontent='',

@@ -7,9 +7,10 @@ Twisted network server core. TODO
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.2
+__version__ = 0.3
 
-# install_twisted_rector must be called before importing  and using the reactor
+# install_twisted_rector must be called before importing 
+# and using the reactor
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 
@@ -37,14 +38,17 @@ class CommCoreServerProtocol(LineReceiver):
         self._peer_repr = self._peer_host + " on " + str(self._peer_port)
 
         Logger.debug(
-            "Connection success! Connected to {}".format(self._peer_repr))
+            "Connection success! Connected to {}".format(self._peer_repr)
+        )
 
         self.factory.app.on_client_connection(self.transport)
 
     def connectionLost(self, reason):
         "Run when connection is lost with server."
 
-        Logger.warn("Lost connection with peer {}".format(self._peer_repr))
+        Logger.warn(
+            "Lost connection with peer {}".format(self._peer_repr)
+        )
 
         self.factory.app.on_client_disconnection(self.transport)
 
@@ -53,7 +57,6 @@ class CommCoreServerProtocol(LineReceiver):
         response = self.factory.app.handle_recieved_data(line, self.transport)
 
         if response:
-            #self.transport.write(response)
             self.sendLine(response)
 
 

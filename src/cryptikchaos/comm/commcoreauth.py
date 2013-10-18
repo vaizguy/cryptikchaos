@@ -5,7 +5,7 @@ Created on Oct 6, 2013
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.2
+__version__ = 0.3
 
 # install_twisted_rector must be called before importing the reactor
 from kivy.support import install_twisted_reactor
@@ -57,6 +57,7 @@ class CommCoreAuthProtocol(LineReceiver):
         "Run when response is recieved from server."
 
         Logger.debug("AUTH: Recieved : {}".format(base64.b64encode(line)))
+        
         if self.factory.app.handle_auth_response(line):
             self.transport.abortConnection()
 
@@ -81,12 +82,10 @@ class CommCoreAuthFactory(protocol.Factory):
     def clientConnectionLost(self, connector, reason):
         "Run when attempt to connect with server fails."
 
-        #self.app.print_message("connection failed")
         Logger.debug("Connection lost. {}".format(reason.getErrorMessage()))
 
     def clientConnectionFailed(self, connector, reason):
         "Run when attempt to connect with server fails."
 
-        #self.app.print_message("connection failed")
         Logger.debug("Connection failed. {}".format(reason.getErrorMessage()))
 

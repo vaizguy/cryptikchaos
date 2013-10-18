@@ -8,7 +8,7 @@ communications between server and client and vice-versa.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.2
+__version__ = 0.3
 
 import zlib
 import struct
@@ -162,6 +162,7 @@ class Capsule(object):
 
     def getcontent(self):
         "Return capsule content if its integrity is maintained."
+        
         if (hmac.new(self._dictionary["CAP_CONTENT"]).hexdigest()
                 == self._dictionary["CAP_CHKSUM"]):
             return self._dictionary[

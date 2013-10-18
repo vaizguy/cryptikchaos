@@ -5,7 +5,7 @@ Created on Aug 3, 2013
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.2
+__version__ = 0.3
 
 import collections
 

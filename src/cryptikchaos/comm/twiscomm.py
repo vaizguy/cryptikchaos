@@ -7,7 +7,7 @@ Twisted network service.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.2
+__version__ = 0.3
 
 from cryptikchaos.comm.commcoreserver import CommCoreServerFactory
 from cryptikchaos.comm.commcoreclient import CommCoreClientFactory
@@ -352,7 +352,7 @@ class CommService(SwarmHandler, CapsuleManager):
         return False
 
     # ------------------------------------------------
-    # Define Client Protocol defined here
+    # Client Protocol Method defined here
     # ------------------------------------------------
     def pass_message(self, pid, msg):
         "Pass message to client. Capsule Type: BULK"
@@ -397,7 +397,7 @@ class CommService(SwarmHandler, CapsuleManager):
     # ------------------------------------------------
 
     # ------------------------------------------------
-    # Server Protocols defined here
+    # Server Protocol Method defined here
     # ------------------------------------------------
     def handle_recieved_data(self, serial, connection):
 

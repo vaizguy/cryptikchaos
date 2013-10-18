@@ -7,7 +7,7 @@ python test_server.py
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.2
+__version__ = 0.3
 
 # install_twisted_rector must be called before importing  and using the reactor
 from kivy.support import install_twisted_reactor

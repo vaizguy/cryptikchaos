@@ -7,7 +7,7 @@ Twisted network client core.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.2
+__version__ = 0.3
 
 # install_twisted_rector must be called before importing the reactor
 from kivy.support import install_twisted_reactor
@@ -49,6 +49,10 @@ class CommCoreClientProtocol(LineReceiver):
         "Run when connection is lost with server."
 
         Logger.warn("Lost connection with peer {}".format(self._peer_repr))
+        
+        self.factory.app.print_message(
+            "Lost connection with peer {}".format(self._peer_repr)
+        )
 
         self.factory.app.on_server_disconnection(self.transport)
 
@@ -84,17 +88,11 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
         # Reset the delay on connection success
         self.resetDelay()
 
-        # Overridden build protocol
-        #client_protocol = self.protocol()
-        #client_protocol.factory = self
-        #return client_protocol
-
         return CommCoreClientProtocol(self)
 
     def clientConnectionLost(self, connector, reason):
         "Run when connection with server is lost."
 
-        #self.app.print_message("connection lost")
         Logger.debug("Lost connection: {}".format(reason.getErrorMessage()))
 
         return protocol.ReconnectingClientFactory.clientConnectionLost(
@@ -104,12 +102,8 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
     def clientConnectionFailed(self, connector, reason):
         "Run when attempt to connect with server fails."
 
-        #self.app.print_message("connection failed")
         Logger.debug("Connection failed. {}".format(reason.getErrorMessage()))
 
         return protocol.ReconnectingClientFactory.clientConnectionFailed(
             self, connector, reason
         )
-
-
-

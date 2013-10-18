@@ -7,7 +7,7 @@ Peer manager is used to Handle the peer information.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.2
+__version__ = 0.3
 
 from cryptikchaos.comm.swarm.peer import Peer
 from cryptikchaos.config.configuration import *

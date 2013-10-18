@@ -8,7 +8,7 @@ Must be changed with care.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.2
+__version__ = 0.3
 
 import uuid
 import hmac
@@ -111,7 +111,7 @@ constants.RULER = '='
 # ---peer attribute constants---------------------------------------------####
 
 constants.PEER_ID = uuid.getnode()
-constants.PEER_PORT = 8000
+constants.PEER_PORT = 1597
 constants.PEER_HOST = "127.0.0.1"
 # ------------------------------------------------------------------------####
 
