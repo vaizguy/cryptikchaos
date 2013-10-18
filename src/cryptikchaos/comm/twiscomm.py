@@ -267,7 +267,7 @@ class CommService(SwarmHandler, CapsuleManager):
         # Repsonse handling architecture should be placed here.
         # Unpack received stream
         try:
-            (cid, dest_ip, src_ip, captype, content,
+            (cid, dest_ip, src_ip, c_rsp_type, content,
                  _, chksum, pkey) = self.unpack_capsule(response)
         except:
             raise
@@ -295,7 +295,7 @@ class CommService(SwarmHandler, CapsuleManager):
             return None
 
         # Currently the test case is inbuilt into the pod. --## TEST BEGIN ##
-        if captype == constants.LOCAL_TEST_CAPS_TYPE:
+        if c_rsp_type == constants.LOCAL_TEST_CAPS_TYPE:
 
             if (cid == constants.LOCAL_TEST_CAPS_ID and
                chksum == constants.LOCAL_TEST_CAPS_CHKSUM and
@@ -320,14 +320,14 @@ class CommService(SwarmHandler, CapsuleManager):
                    src_ip
                 )
 
-        elif captype == constants.PROTO_MACK_TYPE:
+        elif c_rsp_type == constants.PROTO_MACK_TYPE:
             Logger.debug("Message ACK recieved from {}".format(src_ip))
 
     def handle_auth_response(self, response):
         "Handle authentication response to add peer."
 
         # Repsonse handling architecture should be placed here.
-        (cid, dest_ip, src_ip, captype, content,
+        (cid, dest_ip, src_ip, c_rsp_auth_type, content,
          _, chksum, pkey) = self.unpack_capsule(response)
 
         src_port = constants.PEER_PORT
@@ -336,7 +336,7 @@ class CommService(SwarmHandler, CapsuleManager):
         if not self.get_peerid_from_ip(src_ip):
             src_port = constants.LOCAL_TEST_PORT
 
-        if captype == constants.PROTO_AACK_TYPE:
+        if c_rsp_auth_type == constants.PROTO_AACK_TYPE:
             ## Extract peer id
             pid = int(content)
             ## Add peer
@@ -406,7 +406,7 @@ class CommService(SwarmHandler, CapsuleManager):
         rsp = serial
 
         # Unpack capsule
-        (cid, dest_ip, src_ip, c_rx_type, msg, _, _,
+        (cid, dest_ip, src_ip, c_rx_type, content, _, _,
             pkey) = self.unpack_capsule(serial)
 
         ## Get stored peer key
@@ -415,20 +415,26 @@ class CommService(SwarmHandler, CapsuleManager):
         ## Check message authenticity
         if (c_rx_type != constants.PROTO_AUTH_TYPE):
             
-            # Generate token from recieved information
-            recvd_token = generate_token(cid, pkey)
-            # Generate token with stored information
-            podnt_token = generate_token(
-                generate_uuid(self.host), 
-                self.get_peer_key(src_pid)
+            # Generate token from recieved information.
+            received_token = generate_token(
+                cid, # Received capsule destination ID
+                pkey # Received capsule's peer key
             )
-                        
-            if (recvd_token != podnt_token):
+            
+            # Generate token with stored information.
+            generated_token = generate_token(
+                generate_uuid(self.host),  # Generate capsule manager ID
+                self.get_peer_key(src_pid) # Get stored source peer's key
+            )
+            
+            # Token challenge
+            if (received_token != generated_token):
                 Logger.warning("Capsule token chanllenge fail.")
                 return None
             else:
                 Logger.info("Capsule token challenge pass.")
 
+        # Check if connection is recognized
         if not self.get_peer(src_pid):
             Logger.warn("Unknown pid @{} attempting contact.".format(src_ip))
 
@@ -438,24 +444,27 @@ class CommService(SwarmHandler, CapsuleManager):
             rsp = "PONG"  # Legacy
 
         elif c_rx_type == constants.LOCAL_TEST_CAPS_TYPE:
-            self._print(msg, src_ip)
+            self._print(content, src_ip)
             ## Repack capsule maintaining the same content
             rsp = self.pack_capsule(
                 captype=c_rx_type,
-                capcontent=msg,
+                capcontent=content,
                 dest_host=src_ip,
-                src_host=dest_ip)
+                src_host=dest_ip
+            )
 
         elif c_rx_type == constants.PROTO_BULK_TYPE:
 
-            if msg:  # integrity check
-                # Message reciept successful
-                self._print(msg, src_ip)
+            if content:  # integrity check
+                # Message receipt successful
+                self._print(content, src_ip)
+                # Generate response
                 rsp = self.pack_capsule(
                     captype=constants.PROTO_MACK_TYPE,
                     capcontent='',
                     dest_host=src_ip,
-                    src_host=dest_ip)
+                    src_host=dest_ip
+                )
             else:
                 # Request for message again
                 Logger.error("Tampered capsule received.")
@@ -463,10 +472,10 @@ class CommService(SwarmHandler, CapsuleManager):
 
         elif c_rx_type == constants.PROTO_AUTH_TYPE:
 
-            Logger.debug( "Recieved auth request from Peer: {}".format(msg))
+            Logger.debug( "Recieved auth request from Peer: {}".format(content))
 
             ## Extract peer id
-            pid = int(msg) # Need to check if peerid format is followed. TODO
+            pid = int(content) # Need to check if peerid format is followed. TODO
 
             ## Add peer
             self.add_peer(pid=pid,
