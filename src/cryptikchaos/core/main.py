@@ -16,6 +16,8 @@ pythonpath.AddSysPath('../../')
 
 from cryptikchaos.comm.twiscomm import CommService
 from cryptikchaos.gui.kivygui import GUIService
+from cryptikchaos.config.env import EnvService
+
 from cryptikchaos.config.configuration import *
 from cryptikchaos.libs.Table.prettytable import PrettyTable
 from cryptikchaos.libs.utilities import get_my_ip
@@ -23,7 +25,14 @@ from cryptikchaos.libs.utilities import get_my_ip
 from kivy.logger import Logger
 
 
-class PodDroidApp(GUIService, CommService):
+class PodDroidApp(
+    # GUI service
+    GUIService,  
+    # Communications service
+    CommService, 
+    # Environment service
+    EnvService
+):
 
     """
     Main kivy app class.
@@ -53,6 +62,9 @@ class PodDroidApp(GUIService, CommService):
             port=constants.PEER_PORT,
             printer=self.print_message
         )
+        
+        # Initiate environment
+        EnvService.__init__(self)
 
         return root
 
@@ -368,7 +380,30 @@ class PodDroidApp(GUIService, CommService):
             self.print_message("Generated peer graph.")
         else:
             self.print_message("Could not generate graph.")
-
+            
+    def cmd_env(self, cmdline):
+        """
+        View environment constants.
+        Usage: env
+        """
+        
+        self.print_message(
+            """\n\nEnvironment Constants:\nTo see value use: 'eko <constant name>'
+            """ + self.list_constants()
+        )
+        
+    def cmd_eko(self, cmdline):
+        """
+        View environment constant value.
+        Usage: eko <constant name>
+        """
+        
+        v = self.get_constant(cmdline)
+        
+        if v:
+            self.print_message("{} => {}".format(cmdline, v))
+        else:
+            self.print_message("{} not defined.".format(cmdline))
 
 if __name__ == '__main__':
 

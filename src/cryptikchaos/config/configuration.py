@@ -119,3 +119,6 @@ constants.PEER_HOST = "127.0.0.1"
 constants.ENABLE_TEST_MODE = True
 constants.ENABLE_COMPRESSION = False
 # ------------------------------------------------------------------------####
+
+if __name__ == "__main__":
+    print dir(constants)
