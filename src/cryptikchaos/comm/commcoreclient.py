@@ -59,7 +59,11 @@ class CommCoreClientProtocol(LineReceiver):
     def lineReceived(self, line):
         "Run when response is recieved from server."
 
-        Logger.debug("CLIENT: Recieved : {}".format(base64.b64encode(line)))
+        Logger.debug(
+            "CLIENT: Recieved : {}, Data Length: {}".format(
+                base64.b64encode(line), len(line)
+            )
+        )
 
         response = self.factory.app.handle_response(line)
 

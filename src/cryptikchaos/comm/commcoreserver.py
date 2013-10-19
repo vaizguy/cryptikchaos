@@ -15,6 +15,7 @@ from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 
 from kivy.logger import Logger
+import base64
 
 from twisted.internet import protocol
 from twisted.protocols.basic import LineReceiver
@@ -53,7 +54,14 @@ class CommCoreServerProtocol(LineReceiver):
         self.factory.app.on_client_disconnection(self.transport)
 
     def lineReceived(self, line):
+        "Run when response is recieved from client."
 
+        Logger.debug(
+            "SERVER: Recieved : {}, Data Length: {}".format(
+                base64.b64encode(line), len(line)
+            )
+        )
+        
         response = self.factory.app.handle_recieved_data(line, self.transport)
 
         if response:
