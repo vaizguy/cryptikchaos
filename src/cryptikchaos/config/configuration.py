@@ -16,6 +16,14 @@ import os
 import hashlib
 import constants
 
+
+# ---peer attribute constants---------------------------------------------####
+
+constants.PEER_ID = uuid.getnode()
+constants.PEER_PORT = 1597
+constants.PEER_HOST = "127.0.0.1"
+# ------------------------------------------------------------------------####
+
 # ------------------GUI Attribute CONSTANTS-------------------------------####
 
 constants.GUI_LABEL_LEFT_PADDING = ""
@@ -87,15 +95,22 @@ constants.LOCAL_TEST_PORT = 8888
 # Local Test PEer ID
 constants.LOCAL_TEST_PEER_ID = 888
 # Local Test keys
-constants.LOCAL_TEST_CLIENT_KEY = hashlib.sha512("TEST_CLIENT_KEY").hexdigest()
-constants.LOCAL_TEST_SERVER_KEY = hashlib.sha512("TEST_SERVER_KEY").hexdigest()
+constants.LOCAL_TEST_CLIENT_KEY = hashlib.sha512(
+                                      "TEST_CLIENT_KEY" + \
+                                      str(constants.PEER_ID)
+                                  ).hexdigest()
+constants.LOCAL_TEST_SERVER_KEY = hashlib.sha512(
+                                      "TEST_SERVER_KEY" + \
+                                      str(constants.PEER_ID)
+                                  ).hexdigest()
 # Test ID
 constants.LOCAL_TEST_CAPS_ID = str(
     uuid.uuid5(uuid.NAMESPACE_URL,
                constants.LOCAL_TEST_HOST))[0:constants.CAPS_ID_LEN]
 # Test chksum
 constants.LOCAL_TEST_CAPS_CHKSUM = hmac.new(
-    constants.LOCAL_TEST_STR).hexdigest()
+    constants.LOCAL_TEST_STR
+).hexdigest()
 # ------------------------------------------------------------------------####
 
 # ---Help documentation printer constants---------------------------------####
@@ -106,13 +121,6 @@ constants.MISC_HEADER = "Miscellaneous help topics:"
 constants.UNDOC_HEADER = "Undocumented commands:"
 constants.NOHELP = "*** No help on %s"
 constants.RULER = '='
-# ------------------------------------------------------------------------####
-
-# ---peer attribute constants---------------------------------------------####
-
-constants.PEER_ID = uuid.getnode()
-constants.PEER_PORT = 1597
-constants.PEER_HOST = "127.0.0.1"
 # ------------------------------------------------------------------------####
 
 # ---Application switches-------------------------------------------------####
