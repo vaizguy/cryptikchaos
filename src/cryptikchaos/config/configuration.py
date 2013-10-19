@@ -24,8 +24,8 @@ constants.GUI_WELCOME_MSG = """
 ----------------------
   
 """ + constants.GUI_LABEL_LEFT_PADDING + """>> Welcome to CryptikChaos P2P Net <<
-""" + constants.GUI_LABEL_LEFT_PADDING + """>> Enter "help" for command listing <<
-"""
+""" + constants.GUI_LABEL_LEFT_PADDING + """>> Enter "help" for command listing <<"""
+
 constants.GUI_LABEL_PROMPT_SYM = ">> "
 constants.GUI_LABEL_PROMPT = constants.GUI_LABEL_LEFT_PADDING + \
     constants.GUI_LABEL_PROMPT_SYM
