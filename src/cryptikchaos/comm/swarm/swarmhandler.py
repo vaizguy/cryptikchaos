@@ -232,7 +232,14 @@ class SwarmHandler:
             return self._peer_dict[str(pid)]["PEER_KEY"]
         else:
             return None
-
+        
+    def is_peer(self, pid):
+        "Check if peer got added successfully"
+        
+        if str(pid) in self._peer_dict:
+            return True
+        else:
+            return False
 
 if __name__ == '__main__':
     pm = PeerManager(constants.PROJECT_PATH + "/db/test_peerlist_db")

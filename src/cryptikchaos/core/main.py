@@ -283,7 +283,7 @@ class PodDroidApp(
     def cmd_addpeer(self, cmdline):
         """
         Add new peer.
-        Usage: addpeer <pid> <host> <port>
+        Usage: addpeer <pid> <host>
         """
         try:
             (pid, host) = (int(cmdline.split(' ')[0]), cmdline.split(' ')[1])
@@ -294,6 +294,9 @@ class PodDroidApp(
         else:
             self.print_message("Adding Peer {}.".format(pid))
             self.add_peer_to_swarm(pid, host)
+            
+            if not self.is_peer(pid):
+                self.print_message("Failed to add peer {}".format(pid))
 
     def cmd_addtest(self, cmdline):
         """
@@ -307,8 +310,8 @@ class PodDroidApp(
         )
         
         # Add Test server to swarm
-        self.add_peer_to_swarm(
-            constants.LOCAL_TEST_PEER_ID, 
+        self.cmd_addpeer(
+            str(constants.LOCAL_TEST_PEER_ID) + " " + \
             constants.LOCAL_TEST_HOST
         )
 
