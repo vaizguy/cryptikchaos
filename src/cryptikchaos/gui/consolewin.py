@@ -26,7 +26,8 @@ class ConsoleWindow(GridLayout):
         self.label = Label(
             text=greeting,
             size_hint_y=None,
-            height=100
+            height=100,
+            halign='left'
         )
                         
         # bind label to scrollable size

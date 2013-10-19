@@ -22,6 +22,7 @@ import constants
 constants.PEER_ID = uuid.getnode()
 constants.PEER_PORT = 1597
 constants.PEER_HOST = "127.0.0.1"
+constants.PEER_NAME = "MYPOD"
 # ------------------------------------------------------------------------####
 
 # ------------------GUI Attribute CONSTANTS-------------------------------####
@@ -32,7 +33,7 @@ constants.GUI_WELCOME_MSG = """
 ----------------------
   
 """ + constants.GUI_LABEL_LEFT_PADDING + """>> Welcome to CryptikChaos P2P Net <<
-""" + constants.GUI_LABEL_LEFT_PADDING + """>> Enter "help" for command listing <<"""
+""" + constants.GUI_LABEL_LEFT_PADDING + """>> Enter "help" for command listing <<\n"""
 
 constants.GUI_LABEL_PROMPT_SYM = ">> "
 constants.GUI_LABEL_PROMPT = constants.GUI_LABEL_LEFT_PADDING + \
@@ -83,7 +84,8 @@ constants.CAPSULE_SIZE = constants.CAPS_CONTENT_LEN + \
 # ------------------------------------------------------------------------####
 
 # ------------------TEST CONSTANTS----------------------------------------####
-
+# Test server name
+constants.LOCAL_TEST_PEER_NAME = "TSERVER"
 # Test string message
 constants.LOCAL_TEST_STR = "Hello World!"
 # Test capsule type

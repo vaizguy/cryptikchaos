@@ -73,7 +73,12 @@ class TwistedServerApp(App, CommService):
 
         if not peerid:
             peerid = constants.LOCAL_TEST_PEER_ID
+            
+        # If local pid, substitute with peer name
+        if peerid == constants.LOCAL_TEST_PEER_ID:
+            peerid = constants.LOCAL_TEST_PEER_NAME
 
+        # Single line output with peer id
         self.label.text += constants.GUI_LABEL_LEFT_PADDING + \
             constants.GUI_LABEL_PROMPT_SYM + \
             str(peerid) + ": " + \

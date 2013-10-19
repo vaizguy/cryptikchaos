@@ -90,7 +90,12 @@ class PodDroidApp(
         # One line print
             if not peerid:
                 peerid = self.my_peerid
+                
+            # If local pid, substitute with peer name
+            if peerid == self.my_peerid:
+                peerid = constants.PEER_NAME
 
+            # Single line output with peer id
             text = constants.GUI_LABEL_LEFT_PADDING + \
                 constants.GUI_LABEL_PROMPT_SYM + \
                 str(peerid) + ": " + \
