@@ -87,7 +87,7 @@ constants.CAPSULE_SIZE = constants.CAPS_CONTENT_LEN + \
 # Test server name
 constants.LOCAL_TEST_PEER_NAME = "TSERVER"
 # Test string message
-constants.LOCAL_TEST_STR = "Hello World!"
+constants.LOCAL_TEST_STR = os.urandom(64)
 # Test capsule type
 constants.LOCAL_TEST_CAPS_TYPE = "TEST"
 # Local Test IP
