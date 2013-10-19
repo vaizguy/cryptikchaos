@@ -28,12 +28,12 @@ class EnvService:
     def list_constants(self):
         "List all env constants."
         
-        constants = ""
+        constants = []
         i = 1
         
         for k in sorted(self.env_dict.keys()):
-            constants += "\n[" + str(i) + "] " + k
-            i += 1             
+            constants.append( "\n[" + str(i) + "] " + k )
+            i += 1     
             
         return constants
     

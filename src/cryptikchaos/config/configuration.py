@@ -18,15 +18,15 @@ import constants
 
 # ------------------GUI Attribute CONSTANTS-------------------------------####
 
+constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_WELCOME_MSG = """
-  CryptikChaos v.""" + str(__version__) + """
-  ----------------------
+""" + constants.GUI_LABEL_LEFT_PADDING + """CryptikChaos v.""" + str(__version__) + """
+----------------------
   
-  >> Welcome to CryptikChaos P2P Net <<
-  >> Enter "help" for command listing <<
+""" + constants.GUI_LABEL_LEFT_PADDING + """>> Welcome to CryptikChaos P2P Net <<
+""" + constants.GUI_LABEL_LEFT_PADDING + """>> Enter "help" for command listing <<
 """
 constants.GUI_LABEL_PROMPT_SYM = ">> "
-constants.GUI_LABEL_LEFT_PADDING = "  "
 constants.GUI_LABEL_PROMPT = constants.GUI_LABEL_LEFT_PADDING + \
     constants.GUI_LABEL_PROMPT_SYM
 # ------------------------------------------------------------------------####

@@ -388,9 +388,11 @@ class PodDroidApp(
         """
         
         self.print_message(
-            """\n\nEnvironment Constants:\nTo see value use: 'eko <constant name>'
-            """ + self.list_constants()
+            """\n\nEnvironment Constants:\nTo see value use: 'eko <constant name>'"""
         )
+        
+        for c in self.list_constants():
+            self.print_message(msg=c, intermediate=True)
         
     def cmd_eko(self, cmdline):
         """
