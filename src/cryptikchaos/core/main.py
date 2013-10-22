@@ -21,6 +21,7 @@ from cryptikchaos.config.env import EnvService
 from cryptikchaos.config.configuration import *
 from cryptikchaos.libs.Table.prettytable import PrettyTable
 from cryptikchaos.libs.utilities import get_my_ip
+from cryptikchaos.libs.utilities import factor_line 
 
 from kivy.logger import Logger
 
@@ -100,6 +101,11 @@ class PodDroidApp(
                 constants.GUI_LABEL_PROMPT_SYM + \
                 str(peerid) + ": " + \
                 msg.strip(" ") + "\n"
+                
+        # TODO Horizontal scroll is not working
+        # Setting maximum line length to 75 and 
+        # adding a newline character after 75 chars
+        text = factor_line(text)
 
         self.append_text(text)
 

@@ -18,7 +18,6 @@ import constants
 import random
 import string
 
-
 # ---peer attribute constants---------------------------------------------####
 
 constants.PEER_ID = uuid.getnode()

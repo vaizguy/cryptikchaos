@@ -35,7 +35,7 @@ class ConsoleWindow(GridLayout):
                        
         # Scroll view label
         scroll_view = ScrollView(size_hint_y=0.9, size=(400, 400))
-        # Y-axis scroll # TODO not working
+        # TODO X-axis scroll not working
         scroll_view.do_scroll_y = True
         scroll_view.do_scroll_x = True
         # Add label to scroll view

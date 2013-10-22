@@ -85,7 +85,8 @@ class CommService(SwarmHandler, CapsuleManager):
             else:
                 pass
 
-    def _update_peer_connection_status(self, peer_ip, peer_port, status, conn):
+    def _update_peer_connection_status(self, peer_ip, peer_port, status, 
+            conn):
         "Change peer conn status based on connection/disconnection"
 
         # Assuming Peer ID <-> Peer IP one to one relation
@@ -127,7 +128,8 @@ class CommService(SwarmHandler, CapsuleManager):
 
         return pid
 
-    def _transfer_data(self, pid, data_class, data_content, desthost=None):
+    def _transfer_data(self, pid, data_class, data_content, 
+            desthost=None):
         "Transfer data to client with peer id."
 
         # Get peer route.
@@ -150,7 +152,8 @@ class CommService(SwarmHandler, CapsuleManager):
         # Send data over connection
         return self._write_into_connection(conn, stream)
 
-    def _print(self, msg, dip=constants.PEER_HOST, port=constants.PEER_PORT):
+    def _print(self, msg, dip=constants.PEER_HOST, 
+            port=constants.PEER_PORT):
         "Print message on console with peer id."
 
         # Get peer ID
@@ -170,7 +173,8 @@ class CommService(SwarmHandler, CapsuleManager):
         
         self._print("<TEST TYPE:{}>{}<TEST>".format(ctype, content))
 
-    def start_connection(self, pid, host='localhost', port=constants.PEER_PORT):
+    def start_connection(self, pid, host='localhost', 
+        port=constants.PEER_PORT):
         "Start connection with server."
 
         Logger.debug("Connecting to pid: {}".format(pid))
@@ -181,11 +185,14 @@ class CommService(SwarmHandler, CapsuleManager):
         else:
             return False
 
-    def start_authentication(self, pid, host='localhost', port=constants.PEER_PORT):
+    def start_authentication(self, pid, host='localhost', 
+            port=constants.PEER_PORT):
         "Start connection with server."
 
         Logger.debug(
-            "Attempting connection to pid: {} for authentication.".format(pid)
+            "Attempting connection to pid: {} for authentication.".format(
+                pid
+            )
         )
 
         if reactor.connectTCP(host, port, CommCoreAuthFactory(self)):
@@ -202,13 +209,20 @@ class CommService(SwarmHandler, CapsuleManager):
 
         # Announce successful server connection
         self._print(
-            "Connected to PID:{}--{}@{}".format(peer_id, peer_ip, peer_port),
+            "Connected to PID:{}--{}@{}".format(
+                peer_id, peer_ip, peer_port
+            ),
             peer_ip,
             peer_port
         )
 
         # Update peer connection status to CONNECTED
-        self._update_peer_connection_status(peer_ip, peer_port, True, connection)
+        self._update_peer_connection_status(
+            peer_ip, 
+            peer_port, 
+            True, 
+            connection
+        )
 
     def on_server_disconnection(self, connection):
         "Executed on successful server disconnection."
@@ -227,13 +241,16 @@ class CommService(SwarmHandler, CapsuleManager):
         self._update_peer_connection_status(peer_ip, peer_port, False, None)
 
     def on_server_authentication(self, connection):
+        "Used to handle server auth requests"
 
         peer_ip = connection.getPeer().host
         peer_port = connection.getPeer().port
 
         # Authenticate server connection
         self._print(
-            "Authenticating connection to {}@{}".format(peer_ip, peer_port),
+            "Authenticating connection to {}@{}".format(
+                peer_ip, peer_port
+            ),
             peer_ip,
             peer_port
         )
@@ -247,13 +264,17 @@ class CommService(SwarmHandler, CapsuleManager):
         return self._write_into_connection(connection, stream)
 
     def on_server_auth_close(self, connection):
+        "Executed on successful closure of authentication connection."
 
         peer_ip = connection.getPeer().host
         peer_port = connection.getPeer().port
 
-        self._print("Authentication successful to {}@{}".format(peer_ip, peer_port))
+        self._print(
+            "Authentication successful to {}@{}".format(peer_ip, peer_port)
+        )
 
     def on_client_connection(self, connection):
+        "Execued on successful client connection."
 
         peer_ip = connection.getPeer().host
         peer_port = connection.getPeer().port
@@ -261,11 +282,14 @@ class CommService(SwarmHandler, CapsuleManager):
         self._print("Client {}@{} connected.".format(peer_ip, peer_port))
         
     def on_client_disconnection(self, connection):
+        "Executed on successful client disconnection."
 
         peer_ip = connection.getPeer().host
         peer_port = connection.getPeer().port
 
-        self._print("Client {}@{} disconnected.".format(peer_ip, peer_port))
+        self._print(
+            "Client {}@{} disconnected.".format(peer_ip, peer_port)
+        )
 
     def handle_response(self, response):
         "Handle response from server"
@@ -287,7 +311,10 @@ class CommService(SwarmHandler, CapsuleManager):
 
         ## It maybe from Test server if None
         if not self.get_peerid_from_ip(src_ip):
-            src_pid = self.get_peerid_from_ip(src_ip, constants.LOCAL_TEST_PORT)
+            src_pid = self.get_peerid_from_ip(
+                src_ip, 
+                constants.LOCAL_TEST_PORT
+            )
         else:
             src_pid = self.get_peerid_from_ip(src_ip)
 
@@ -300,7 +327,8 @@ class CommService(SwarmHandler, CapsuleManager):
             Logger.debug("Capsule unauthenticated.")
             return None
 
-        # Currently the test case is inbuilt into the pod. --## TEST BEGIN ##
+        # Currently the test case is inbuilt into the pod.
+        # MSG TEST BEGIN #
         if c_rsp_type == constants.LOCAL_TEST_CAPS_TYPE:
 
             if (cid == constants.LOCAL_TEST_CAPS_ID and
@@ -348,7 +376,12 @@ class CommService(SwarmHandler, CapsuleManager):
             ## Add peer
             self.add_peer(pid, pkey, src_ip, src_port)
             ## Add peer connection
-            self._update_peer_connection_status(src_ip, src_port, False, None)
+            self._update_peer_connection_status(
+                src_ip, 
+                src_port, 
+                False, 
+                None
+            )
             ## Connect to peer using normal connection this should refresh
             ## the connection in db to normal client conn from auth conn
             self.start_connection(pid, src_ip, src_port)
@@ -445,7 +478,9 @@ class CommService(SwarmHandler, CapsuleManager):
 
         # Check if connection is recognized
         if not self.get_peer(src_pid):
-            Logger.warn("Unknown pid @{} attempting contact.".format(src_ip))
+            Logger.warn(
+                "Unknown pid @{} attempting contact.".format(src_ip)
+            )
 
         Logger.debug("Received: {}".format(b64encode(serial)))
 
@@ -484,26 +519,36 @@ class CommService(SwarmHandler, CapsuleManager):
 
         elif c_rx_type == constants.PROTO_AUTH_TYPE:
 
-            Logger.debug( "Recieved auth request from Peer: {}".format(content))
+            Logger.debug(
+                "Recieved auth request from Peer: {}".format(content)
+            )
 
             ## Extract peer id
             pid = int(content) # Need to check if peerid format is followed. TODO
 
             ## Add peer
-            self.add_peer(pid=pid,
-                          key=pkey,
-                          host=src_ip,
-                          port=constants.PEER_PORT)
+            self.add_peer(
+                pid=pid,
+                key=pkey,
+                host=src_ip,
+                port=constants.PEER_PORT
+            )
 
             ## Add peer connection and change status
-            self._update_peer_connection_status(src_ip, constants.PEER_PORT, True, connection)
+            self._update_peer_connection_status(
+                src_ip, 
+                constants.PEER_PORT, 
+                True, 
+                connection
+            )
 
             ## Send current peer info
             rsp = self.pack_capsule(
-                    captype=constants.PROTO_AACK_TYPE,
-                    capcontent=str(self.peerid),
-                    dest_host=src_ip,
-                    src_host=self.host)
+                captype=constants.PROTO_AACK_TYPE,
+                capcontent=str(self.peerid),
+                dest_host=src_ip,
+                src_host=self.host
+            )
 
         Logger.debug("Responded: {}".format(b64encode(rsp)))
 

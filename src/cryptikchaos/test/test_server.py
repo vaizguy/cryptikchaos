@@ -22,6 +22,7 @@ pythonpath.AddSysPath('../../')
 
 from cryptikchaos.config.configuration import *
 from cryptikchaos.comm.twiscomm import CommService
+from cryptikchaos.libs.utilities import factor_line
 
 
 class PodroidTestProtocol(protocol.Protocol):
@@ -70,6 +71,8 @@ class TwistedServerApp(App, CommService):
 
         # Convert to string
         msg = str(msg)
+        
+        text = ''
 
         if not peerid:
             peerid = constants.LOCAL_TEST_PEER_ID
@@ -79,10 +82,16 @@ class TwistedServerApp(App, CommService):
             peerid = constants.LOCAL_TEST_PEER_NAME
 
         # Single line output with peer id
-        self.label.text += constants.GUI_LABEL_LEFT_PADDING + \
+        text += constants.GUI_LABEL_LEFT_PADDING + \
             constants.GUI_LABEL_PROMPT_SYM + \
             str(peerid) + ": " + \
             msg.strip(" ") + "\n"
+            
+        # Factor line
+        text = factor_line(text)
+        
+        # Append line to label
+        self.label.text += text
 
 if __name__ == '__main__':
     TwistedServerApp().run()

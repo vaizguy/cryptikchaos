@@ -84,3 +84,18 @@ def decompress(stream):
     """
     
     return zlib.decompress(stream)
+
+def factor_line(line, cmax=75, delim='\n'):
+    """
+    Factors a line in to max num of chars seperated
+    by delimiter.
+    """
+    # Get length of line
+    length = len(line)
+    # Factor line into n number of lines of max chars each
+    lines = [ line[i: i+cmax] for i in xrange(0, length/cmax, cmax) ]
+    # Append remaining characters if total number of chars is not 
+    # a factor of max
+    lines.append(line[-(length%cmax):])
+    
+    return delim.join(lines)
