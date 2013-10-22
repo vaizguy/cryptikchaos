@@ -32,8 +32,8 @@ class EnvService:
         i = 1
         
         for k in sorted(self.env_dict.keys()):
-            constants.append( "\n[" + str(i) + "] " + k )
-            i += 1     
+            constants.append( "[" + str(i) + "] " + k )
+            i += 1
             
         return constants
     

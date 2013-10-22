@@ -86,7 +86,7 @@ class PodDroidApp(
         # Indicates multiline output required
         if intermediate:
             text = constants.GUI_LABEL_LEFT_PADDING + \
-                msg.strip(" ")
+                msg.strip() + "\n"
         else:
         # One line print
             if not peerid:
@@ -100,7 +100,7 @@ class PodDroidApp(
             text = constants.GUI_LABEL_LEFT_PADDING + \
                 constants.GUI_LABEL_PROMPT_SYM + \
                 str(peerid) + ": " + \
-                msg.strip(" ") + "\n"
+                msg.strip() + "\n"
                 
         # TODO Horizontal scroll is not working
         # Setting maximum line length to 75 and 
