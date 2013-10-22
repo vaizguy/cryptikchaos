@@ -15,6 +15,8 @@ import hmac
 import os
 import hashlib
 import constants
+import random
+import string
 
 
 # ---peer attribute constants---------------------------------------------####
@@ -87,7 +89,9 @@ constants.CAPSULE_SIZE = constants.CAPS_CONTENT_LEN + \
 # Test server name
 constants.LOCAL_TEST_PEER_NAME = "TSERVER"
 # Test string message
-constants.LOCAL_TEST_STR = os.urandom(64)
+constants.LOCAL_TEST_STR = ''.join(
+    random.choice(string.ascii_uppercase + string.digits) for x in range(64)
+)
 # Test capsule type
 constants.LOCAL_TEST_CAPS_TYPE = "TEST"
 # Local Test IP
