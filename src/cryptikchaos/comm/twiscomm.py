@@ -164,6 +164,11 @@ class CommService(SwarmHandler, CapsuleManager):
             self._printer(msg, peer_id)
         else:
             Logger.info(msg)
+            
+    def _print_test(self, ctype, content):
+        "Print test message."
+        
+        self._print("<TEST TYPE:{}>{}<TEST>".format(ctype, content))
 
     def start_connection(self, pid, host='localhost', port=constants.PEER_PORT):
         "Start connection with server."
@@ -434,6 +439,9 @@ class CommService(SwarmHandler, CapsuleManager):
                 return None
             else:
                 Logger.info("Capsule token challenge pass.")
+        else:
+            # print test info
+            self._print_test(c_rx_type, content)
 
         # Check if connection is recognized
         if not self.get_peer(src_pid):
@@ -445,7 +453,10 @@ class CommService(SwarmHandler, CapsuleManager):
             rsp = "PONG"  # Legacy
 
         elif c_rx_type == constants.LOCAL_TEST_CAPS_TYPE:
-            self._print(content, src_ip)
+            
+            # print test info
+            self._print_test(c_rx_type, content)
+            
             ## Repack capsule maintaining the same content
             rsp = self.pack_capsule(
                 captype=c_rx_type,
