@@ -93,7 +93,7 @@ constants.LOCAL_TEST_STR = ''.join(
     random.choice(string.ascii_uppercase + string.digits) for x in range(64)
 )
 # Test capsule type
-constants.LOCAL_TEST_CAPS_TYPE = "TEST"
+constants.LOCAL_TEST_CAPS_TYPE = "MTST"
 # Local Test IP
 constants.LOCAL_TEST_HOST = "127.0.0.1"
 # Local Test Port
