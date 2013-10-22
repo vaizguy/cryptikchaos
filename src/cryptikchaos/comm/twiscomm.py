@@ -233,12 +233,15 @@ class CommService(SwarmHandler, CapsuleManager):
 
         # Announce successful server disconnection
         self._print(
-            "Disconnected from PID:{}--{}@{}".format(peer_id, peer_ip, peer_port),
+            "Disconnected from PID:{}--{}@{}".format(
+                peer_id, peer_ip, peer_port
+            ),
             peer_ip,
             peer_port
         )
         # Update peer connection status to DISCONNECTED
-        self._update_peer_connection_status(peer_ip, peer_port, False, None)
+        self._update_peer_connection_status(peer_ip, peer_port, False, 
+            None)
 
     def on_server_authentication(self, connection):
         "Used to handle server auth requests"

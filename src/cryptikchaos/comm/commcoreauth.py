@@ -88,4 +88,8 @@ class CommCoreAuthFactory(protocol.Factory):
         "Run when attempt to connect with server fails."
 
         Logger.debug("Connection failed. {}".format(reason.getErrorMessage()))
+        
+        # Display error on app console
+        self.app.print_message("{}".format(reason.getErrorMessage()))
+
 

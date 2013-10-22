@@ -107,7 +107,7 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
         "Run when attempt to connect with server fails."
 
         Logger.debug("Connection failed. {}".format(reason.getErrorMessage()))
-
+        
         return protocol.ReconnectingClientFactory.clientConnectionFailed(
             self, connector, reason
         )

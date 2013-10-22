@@ -127,7 +127,8 @@ class SwarmHandler:
             self._peer_dict.sync()
         else:
             raise Exception(
-                "Invalid Peer Connection Status, must be True or False.")
+                "Invalid Peer Connection Status, must be True or False."
+            )
 
     def list_peer_ids(self):
         "Returns a list of all peer IDs present in swarm."
