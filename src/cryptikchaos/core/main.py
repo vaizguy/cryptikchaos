@@ -354,6 +354,9 @@ class PodDroidApp(
         All testcases should be run here.
         Usage: test
         """
+        # Print test string
+        self.print_message("Sending Test String: {}".format(constants.LOCAL_TEST_STR))
+        
         # Check sending of message.
         self.cmd_send(
             str(

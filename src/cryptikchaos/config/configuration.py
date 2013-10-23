@@ -82,6 +82,9 @@ constants.CAPSULE_SIZE = constants.CAPS_CONTENT_LEN + \
     constants.CAPS_DST_IP_LEN + \
     constants.CAPS_SCR_IP_LEN + \
     constants.CAPS_PKEY_HASH_LEN
+    
+# Capsule shuffle iterations
+constants.CAPS_CONT_SHUFF_ITER = 1000
 # ------------------------------------------------------------------------####
 
 # ------------------TEST CONSTANTS----------------------------------------####

@@ -22,8 +22,9 @@ from cryptikchaos.libs.utilities import uint32_to_ip
 from cryptikchaos.libs.utilities import generate_uuid
 from cryptikchaos.libs.utilities import compress
 from cryptikchaos.libs.utilities import decompress
-from cryptikchaos.libs.utilities import shuffler
-from cryptikchaos.libs.utilities import unshuffler
+
+from cryptikchaos.libs.obscure import shuffler
+from cryptikchaos.libs.obscure import unshuffler
 
 
 class Capsule(object):
@@ -52,21 +53,27 @@ class Capsule(object):
             src_host = constants.LOCAL_TEST_HOST
 
         # Generate uid
-        uid = generate_uuid(dest_host)
+        cap_uid = generate_uuid(dest_host)
+        
+        # Generate checksum before shuffle
+        cap_hmac = hmac.new(content).hexdigest()
         
         # Shuffle content
         if constants.ENABLE_SHUFFLE:
-            content = shuffler(content)
+            content = shuffler(
+                string=content, 
+                iterations=constants.CAPS_CONT_SHUFF_ITER
+            )
 
         # Populate capsule fields
         self._dictionary = {
-            'CAP_ID'     : uid,
+            'CAP_ID'     : cap_uid,
             'CAP_DSTIP'  : ip_to_uint32(dest_host),
             'CAP_SCRIP'  : ip_to_uint32(src_host),
             'CAP_TYPE'   : captype.upper(),
             'CAP_CONTENT': content,
             'CAP_LEN'    : len(content),
-            'CAP_CHKSUM' : hmac.new(content).hexdigest(),
+            'CAP_CHKSUM' : cap_hmac,
             'CAP_PKEY'   : pkey
             }
 
@@ -106,8 +113,6 @@ class Capsule(object):
         # Compress stream
         if constants.ENABLE_COMPRESSION:
             stream = compress(stream)
-        else:
-            stream = stream
 
         return stream
 
@@ -117,8 +122,6 @@ class Capsule(object):
         # Decompress data stream
         if constants.ENABLE_COMPRESSION:
             stream = decompress(stream)
-        else:
-            stream = stream
 
         # Check if data is of expected chunk size
         if len(stream) != constants.CAPSULE_SIZE:
@@ -176,18 +179,20 @@ class Capsule(object):
     def getcontent(self):
         "Return capsule content if its integrity is maintained."
         
-        if (hmac.new(self._dictionary["CAP_CONTENT"]).hexdigest()
-                == self._dictionary["CAP_CHKSUM"]):
-            
-            # Get content
-            content = self._dictionary[
-                "CAP_CONTENT"
-            ][0:self._dictionary["CAP_LEN"]]
-            
-            # Unshuffle content
-            if constants.ENABLE_SHUFFLE:
-                content = unshuffler(content)
-                
+        # Get content
+        content = self._dictionary[
+            "CAP_CONTENT"
+        ][0:self._dictionary["CAP_LEN"]]
+        
+        # Unshuffle content
+        if constants.ENABLE_SHUFFLE:
+            content = unshuffler(
+                shuffled_string=content,
+                iterations=constants.CAPS_CONT_SHUFF_ITER
+            )
+        
+        # Returns content only if conent integrity is maintained   
+        if (hmac.new(content).hexdigest() == self._dictionary["CAP_CHKSUM"]):
             return content
         else:
             return None
@@ -224,7 +229,8 @@ class Capsule(object):
 
 if __name__ == '__main__':
 
-    Ctx = Capsule('TEST', 'This is a capsule test.')
+    Ctx = Capsule(pkey="123", captype="TEST", content='Hello',
+                 dest_host="127.0.0.1", src_host="127.0.0.1")
     pkd = Ctx.pack()
     print 'Packed data is :', pkd
     Crx = Capsule()
