@@ -11,6 +11,8 @@ from cryptikchaos.config.configuration import constants
 
 from kivy import Logger
 
+from time import gmtime, strftime
+
 import struct
 import socket
 import uuid
@@ -99,3 +101,7 @@ def factor_line(line, cmax=75, delim='\n'):
     lines.append(line[-(length%cmax):])
     
     return delim.join(lines)
+
+def get_time():
+    
+    return strftime(constants.TIME_FORMAT, gmtime())

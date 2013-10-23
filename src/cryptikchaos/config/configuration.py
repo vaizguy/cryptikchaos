@@ -18,6 +18,13 @@ import constants
 import random
 import string
 
+from cryptikchaos.libs.utilities import get_time
+
+# ---Application Environment----------------------------------------------####
+
+constants.TIME_FORMAT = "%a, %d %b %Y %H:%M:%S +0000"
+# ------------------------------------------------------------------------####
+
 # ---peer attribute constants---------------------------------------------####
 
 constants.PEER_ID = uuid.getnode()
@@ -32,11 +39,12 @@ constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_WELCOME_MSG = """
 """ + constants.GUI_LABEL_LEFT_PADDING + """CryptikChaos v.""" + str(__version__) + """
 ----------------------
-  
+[ """ + constants.GUI_LABEL_LEFT_PADDING + get_time() + """ ] 
+
 """ + constants.GUI_LABEL_LEFT_PADDING + """>> Welcome to CryptikChaos P2P Net <<
 """ + constants.GUI_LABEL_LEFT_PADDING + """>> Enter "help" for command listing <<\n"""
 
-constants.GUI_LABEL_PROMPT_SYM = "\n>> "
+constants.GUI_LABEL_PROMPT_SYM = ">> "
 constants.GUI_LABEL_PROMPT = constants.GUI_LABEL_LEFT_PADDING + \
     constants.GUI_LABEL_PROMPT_SYM
 # ------------------------------------------------------------------------####

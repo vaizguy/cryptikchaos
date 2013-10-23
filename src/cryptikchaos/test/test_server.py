@@ -23,6 +23,7 @@ pythonpath.AddSysPath('../../')
 from cryptikchaos.config.configuration import *
 from cryptikchaos.comm.twiscomm import CommService
 from cryptikchaos.libs.utilities import factor_line
+from cryptikchaos.libs.utilities import get_time
 
 
 class PodroidTestProtocol(protocol.Protocol):
@@ -62,7 +63,11 @@ class TwistedServerApp(App, CommService):
             clientinit=False,
             printer=self.print_message)
 
-        self.label = Label(text="Server started\n")
+        self.label = Label(
+            text="""
+            \n+Server started+\
+            \n[ """ + get_time() + """ ]\n\n"""
+        )
 
         return self.label
 

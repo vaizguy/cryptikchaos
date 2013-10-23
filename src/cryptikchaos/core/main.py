@@ -420,7 +420,7 @@ class PodDroidApp(
         if v:
             self.print_message("{} => {}".format(cmdline, v))
         else:
-            self.print_message("{} not defined.".format(cmdline))
+            self.print_message("{}".format(cmdline))
 
 if __name__ == '__main__':
 
