@@ -369,12 +369,13 @@ class CommService(SwarmHandler, CapsuleManager):
                      src_ip,
                      constants.LOCAL_TEST_PORT
                 )
-            else:
+            else:       
                 Logger.debug("""
                 Sending Message Test Fail.
                 For test to pass,
                 1. Test server must be running.
-                2. Command is 'send 888 Hello World!'
+                2. Add test server using 'addtest' command.
+                3. Begin test with 'sendtest' command.
                 """)
                 self._print(
                    "Simple Message Transfer Test Failed.",
