@@ -131,6 +131,7 @@ constants.RULER = '='
 # ---Application switches-------------------------------------------------####
 constants.ENABLE_TEST_MODE = True
 constants.ENABLE_COMPRESSION = False
+constants.ENABLE_SHUFFLE = True
 # ------------------------------------------------------------------------####
 
 if __name__ == "__main__":

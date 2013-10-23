@@ -22,6 +22,8 @@ from cryptikchaos.libs.utilities import uint32_to_ip
 from cryptikchaos.libs.utilities import generate_uuid
 from cryptikchaos.libs.utilities import compress
 from cryptikchaos.libs.utilities import decompress
+from cryptikchaos.libs.utilities import shuffler
+from cryptikchaos.libs.utilities import unshuffler
 
 
 class Capsule(object):
@@ -51,6 +53,10 @@ class Capsule(object):
 
         # Generate uid
         uid = generate_uuid(dest_host)
+        
+        # Shuffle content
+        if constants.ENABLE_SHUFFLE:
+            content = shuffler(content)
 
         # Populate capsule fields
         self._dictionary = {
@@ -172,9 +178,17 @@ class Capsule(object):
         
         if (hmac.new(self._dictionary["CAP_CONTENT"]).hexdigest()
                 == self._dictionary["CAP_CHKSUM"]):
-            return self._dictionary[
+            
+            # Get content
+            content = self._dictionary[
                 "CAP_CONTENT"
             ][0:self._dictionary["CAP_LEN"]]
+            
+            # Unshuffle content
+            if constants.ENABLE_SHUFFLE:
+                content = unshuffler(content)
+                
+            return content
         else:
             return None
         

@@ -99,3 +99,77 @@ def factor_line(line, cmax=75, delim='\n'):
     lines.append(line[-(length%cmax):])
     
     return delim.join(lines)
+
+def shuffler(word, key=None, iterations=1):  
+    """
+    Scramble plaintext readability.
+    """  
+
+    if key:
+        salt = hashlib.sha512(word + key).hexdigest()
+        word = word + salt
+
+    for _ in xrange(1, iterations+1):
+        shuffled_word = []
+        even_chars = []
+        odd_chars  = []
+        
+        for odd_pos in [ x for x in xrange (0, len(word)) if x%2!=0]:
+            odd_chars.append(word[odd_pos])
+        
+        for even_pos in [ x for x in xrange (0, len(word)) if x%2==0]:
+            even_chars.insert(0, word[even_pos])
+
+        shuffled_word = odd_chars + even_chars 
+
+        word = "".join(shuffled_word)
+
+        return word
+
+def unshuffler(shuffled_word, key=None, iterations=1):
+    """
+    Unscramble scrambled word.
+    """
+
+    wlen = len(shuffled_word)
+
+    word = [None]*wlen
+
+    for _ in xrange(1, iterations+1):
+        odd_segment = shuffled_word[0:wlen/2]
+        even_segment = shuffled_word[wlen/2:wlen]
+
+        odd_pos = 1
+        for c in odd_segment:
+            word[odd_pos] = c
+            odd_pos += 2
+
+        even_pos = 0
+        for c in even_segment[::-1]:
+            word[even_pos] = c
+            even_pos += 2
+
+        shuffled_word = ''.join(word)
+
+    string = ''.join(word)
+
+    if key:
+        if string[-128:] == hashlib.sha512(string[:-128]+key).hexdigest():
+            return string[:-128]
+        else:
+            return None
+    else:
+        return string
+    
+if __name__ == "__main__":
+    import random, string
+    string = "".join([random.choice(string.ascii_uppercase + string.digits) for x in range(64)])
+    scram = shuffler(string)
+    print "Scrambled :", scram, "len: ", len(scram)
+    unshuff = unshuffler(scram)
+    print "Unscrambled:", unshuff
+    
+    if string == unshuff:
+        print "pass"
+    else:
+        print "fail"
