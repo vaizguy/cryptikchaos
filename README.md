@@ -25,6 +25,11 @@ Then to test successful message exchange enter;
 ```
 sendtest
 ```
-into the app console, you will get ">>888: Simple Message Transfer Test Passed." as output on 
-your test server.
+into the application console.
+
+You should get;
+">>888: Simple Message Transfer Test Passed."
+as output on your Application console. On the test server you will get a message indicating
+reciept of random data.
+
 This signifies successful data exchange between client and test server.
