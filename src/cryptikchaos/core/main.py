@@ -77,7 +77,7 @@ class PodDroidApp(
         # Cleanup env
         CommService.__del__(self)
         
-    def print_message(self, msg, peerid=None, intermediate=False):
+    def print_message(self, msg, peerid=None, intermediate=False, factor=True):
         "Print a message in the output window."
 
         # Convert to string
@@ -105,7 +105,8 @@ class PodDroidApp(
         # TODO Horizontal scroll is not working
         # Setting maximum line length to 75 and 
         # adding a newline character after 75 chars
-        text = factor_line(text)
+        if factor:
+            text = factor_line(text)
 
         self.append_text(text)
 
@@ -376,7 +377,7 @@ class PodDroidApp(
             for r in plist:
                 table.add_row(r)
 
-            self.print_message("List of live peers:" + '\n' + str(table))
+            self.print_message("List of live peers:" + '\n' + str(table), factor=False)
         else:
             self.print_message("No live peers.")
 

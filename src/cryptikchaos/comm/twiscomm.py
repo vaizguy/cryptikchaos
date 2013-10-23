@@ -47,9 +47,9 @@ class CommService(SwarmHandler, CapsuleManager):
         self.peerkey = peerkey
 
         # Initialize peer manager
-        SwarmHandler.__init__(self, peerid, self.peerkey)
+        SwarmHandler.__init__(self, peerid, peerkey)
         # Initialize capsule manager
-        CapsuleManager.__init__(self, self.peerkey)
+        CapsuleManager.__init__(self, peerkey)
 
         self._printer = printer
 
@@ -171,7 +171,11 @@ class CommService(SwarmHandler, CapsuleManager):
     def _print_test(self, ctype, content):
         "Print test message."
         
-        self._print("<TEST TYPE:{}>{}<TEST>".format(ctype, content))
+        self._print(
+            "<TEST TYPE:{}>{}<TEST>".format(ctype, content),
+            dip=constants.LOCAL_TEST_HOST,
+            port=constants.LOCAL_TEST_PORT
+        )
 
     def start_connection(self, pid, host='localhost', 
         port=constants.PEER_PORT):
@@ -296,6 +300,12 @@ class CommService(SwarmHandler, CapsuleManager):
 
     def handle_response(self, response):
         "Handle response from server"
+        
+        # Default value of response at server side is None
+        # hence we add a check for this at the client side.
+        if not response:
+            self._print("Error processing response. Got None!")
+            return None
 
         # Repsonse handling architecture should be placed here.
         # Unpack received stream
@@ -320,16 +330,30 @@ class CommService(SwarmHandler, CapsuleManager):
             )
         else:
             src_pid = self.get_peerid_from_ip(src_ip)
-
-        # Get previously stored public key
-        stored_pkey = self.get_peer_key(src_pid)
-
-        ## Check message authenticity
-        if (pkey != stored_pkey):
-            print pkey, stored_pkey
-            Logger.debug("Capsule unauthenticated.")
+            
+        ## Capsule Token Challenge
+        
+        # Generate token from recieved information.
+        received_token = generate_token(
+            cid, # Received capsule destination ID
+            pkey # Received capsule's peer key
+        )
+        
+        # Generate token with stored information.
+        generated_token = generate_token(
+            generate_uuid(self.host),  # Generate capsule manager ID
+            self.get_peer_key(src_pid) # Get stored source peer's key
+        )
+        
+        # Token challenge
+        if (received_token != generated_token):
+            Logger.warning("Capsule token chanllenge fail.")
             return None
-
+        else:
+            Logger.info("Capsule token challenge pass.")
+            
+        ## Token challenge enc
+                    
         # Currently the test case is inbuilt into the pod.
         # MSG TEST BEGIN #
         if c_rsp_type == constants.LOCAL_TEST_CAPS_TYPE:
@@ -426,8 +450,6 @@ class CommService(SwarmHandler, CapsuleManager):
             )
             return False
         else:
-            # Add peer
-            #self.add_peer_unauth(pid, host, port)
             pass
 
         # Start a connection with peer
@@ -444,40 +466,88 @@ class CommService(SwarmHandler, CapsuleManager):
 
         Logger.debug("Handling Capsule : {}".format(b64encode(serial)))
 
-        # Response
-        rsp = serial
+        # Response (default = None)
+        rsp = None
 
         # Unpack capsule
         (cid, dest_ip, src_ip, c_rx_type, content, _, _,
             pkey) = self.unpack_capsule(serial)
-
-        ## Get stored peer key
-        src_pid = self.get_peerid_from_ip(src_ip)
-        
-        ## Check message authenticity
-        if (c_rx_type != constants.PROTO_AUTH_TYPE):
-            
-            # Generate token from recieved information.
-            received_token = generate_token(
-                cid, # Received capsule destination ID
-                pkey # Received capsule's peer key
-            )
-            
-            # Generate token with stored information.
-            generated_token = generate_token(
-                generate_uuid(self.host),  # Generate capsule manager ID
-                self.get_peer_key(src_pid) # Get stored source peer's key
-            )
-            
-            # Token challenge
-            if (received_token != generated_token):
-                Logger.warning("Capsule token chanllenge fail.")
-                return None
-            else:
-                Logger.info("Capsule token challenge pass.")
-        else:
-            # print test info
+                    
+        # Print test message if test server
+        if self.my_peerid == constants.LOCAL_TEST_PEER_ID:
             self._print_test(c_rx_type, content)
+          
+        ## ------------------------------------------------------------      
+        ## Check if the request is an AUTH request and 
+        ## handle it accordingly, this requires no capsule challenge
+        ## ------------------------------------------------------------          
+        if c_rx_type == constants.PROTO_AUTH_TYPE:
+
+            Logger.debug(
+                "Recieved auth request from Peer: {}".format(content)
+            )
+
+            ## Extract peer id
+            pid = int(content) # Need to check if peerid format is followed. TODO
+
+            ## Add peer
+            self.add_peer(
+                pid=pid,
+                key=pkey,
+                host=src_ip,
+                port=constants.PEER_PORT
+            )
+
+            ## Add peer connection and change status
+            self._update_peer_connection_status(
+                peer_ip=src_ip, 
+                peer_port=constants.PEER_PORT, 
+                status=True, 
+                conn=connection
+            )
+
+            ## Send current peer info
+            rsp = self.pack_capsule(
+                captype=constants.PROTO_AACK_TYPE,
+                capcontent=str(self.peerid),
+                dest_host=src_ip,
+                src_host=self.host
+            )
+        
+            Logger.debug("Auth Response: {}".format(b64encode(rsp)))
+
+            # Send Auth response
+            return rsp
+    
+        ## -------------------------------------------------------------
+        ## Request is not of authentication nature and hence we
+        ## can proceed with capsule token challenge.
+        ## -------------------------------------------------------------
+        
+        ## Capsule Token Challenge
+        
+        # Get stored peer key
+        src_pid = self.get_peerid_from_ip(src_ip)
+                    
+        # Generate token from recieved information.
+        received_token = generate_token(
+            cid, # Received capsule destination ID
+            pkey # Received capsule's peer key
+        )
+                # Generate token with stored information.
+        generated_token = generate_token(
+            generate_uuid(self.host),  # Generate capsule manager ID
+            self.get_peer_key(src_pid) # Get stored source peer's key
+        )
+        
+        # Token challenge
+        if (received_token != generated_token):
+            Logger.warning("Capsule token chanllenge fail.")
+            return None
+        else:
+            Logger.info("Capsule token challenge pass.")
+            
+        ## Token challenge end
 
         # Check if connection is recognized
         if not self.get_peer(src_pid):
@@ -491,10 +561,7 @@ class CommService(SwarmHandler, CapsuleManager):
             rsp = "PONG"  # Legacy
 
         elif c_rx_type == constants.LOCAL_TEST_CAPS_TYPE:
-            
-            # print test info
-            self._print_test(c_rx_type, content)
-            
+                        
             ## Repack capsule maintaining the same content
             rsp = self.pack_capsule(
                 captype=c_rx_type,
@@ -519,40 +586,7 @@ class CommService(SwarmHandler, CapsuleManager):
                 # Request for message again
                 Logger.error("Tampered capsule received.")
                 pass
-
-        elif c_rx_type == constants.PROTO_AUTH_TYPE:
-
-            Logger.debug(
-                "Recieved auth request from Peer: {}".format(content)
-            )
-
-            ## Extract peer id
-            pid = int(content) # Need to check if peerid format is followed. TODO
-
-            ## Add peer
-            self.add_peer(
-                pid=pid,
-                key=pkey,
-                host=src_ip,
-                port=constants.PEER_PORT
-            )
-
-            ## Add peer connection and change status
-            self._update_peer_connection_status(
-                src_ip, 
-                constants.PEER_PORT, 
-                True, 
-                connection
-            )
-
-            ## Send current peer info
-            rsp = self.pack_capsule(
-                captype=constants.PROTO_AACK_TYPE,
-                capcontent=str(self.peerid),
-                dest_host=src_ip,
-                src_host=self.host
-            )
-
+            
         Logger.debug("Responded: {}".format(b64encode(rsp)))
 
         return rsp

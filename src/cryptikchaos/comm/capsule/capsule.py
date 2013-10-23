@@ -99,23 +99,23 @@ class Capsule(object):
 
         # Compress stream
         if constants.ENABLE_COMPRESSION:
-            stream_zip = compress(stream)
+            stream = compress(stream)
         else:
-            stream_zip = stream
+            stream = stream
 
-        return stream_zip
+        return stream
 
     def unpack(self, stream):
         "Unpack serial data into capsule."
 
         # Decompress data stream
         if constants.ENABLE_COMPRESSION:
-            stream_unzip = decompress(stream)
+            stream = decompress(stream)
         else:
-            stream_unzip = stream
+            stream = stream
 
         # Check if data is of expected chunk size
-        if len(stream_unzip) != constants.CAPSULE_SIZE:
+        if len(stream) != constants.CAPSULE_SIZE:
             raise CapsuleOverflowError()
 
         (
@@ -134,7 +134,7 @@ class Capsule(object):
                 constants.CAPS_CONTENT_LEN,
                 constants.CAPS_CHKSUM_LEN,
                 constants.CAPS_PKEY_HASH_LEN
-            ), stream_unzip
+            ), stream
         )
 
     def __str__(self):
