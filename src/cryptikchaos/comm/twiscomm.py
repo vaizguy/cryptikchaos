@@ -472,9 +472,10 @@ class CommService(SwarmHandler, CapsuleManager):
         # Unpack capsule
         (cid, dest_ip, src_ip, c_rx_type, content, _, _,
             pkey) = self.unpack_capsule(serial)
-                    
+        
         # Print test message if test server
-        if self.my_peerid == constants.LOCAL_TEST_PEER_ID:
+        if self.my_peerid == constants.LOCAL_TEST_PEER_ID and \
+           c_rx_type in (constants.LOCAL_TEST_CAPS_TYPE):
             self._print_test(c_rx_type, content)
           
         ## ------------------------------------------------------------      
