@@ -52,11 +52,23 @@ class Capsule(object):
         if src_host == "localhost":
             src_host = constants.LOCAL_TEST_HOST
 
+        ## Calculate all capsule values here using 
+        ## original inputs.
+        
         # Generate uid
         cap_uid = generate_uuid(dest_host)
-        
         # Generate checksum before shuffle
         cap_hmac = hmac.new(content).hexdigest()
+        # Calc capsule destination IP integer
+        cap_dstip = ip_to_uint32(dest_host)
+        # Calc capsule source IP 
+        cap_srcip = ip_to_uint32(src_host)
+        # Capsule type
+        cap_type = captype.upper()
+        # Calculate content length
+        cap_len = len(content)
+        
+        ## All compression/obfuscation performed now.
         
         # Shuffle content
         if constants.ENABLE_SHUFFLE:
@@ -65,14 +77,14 @@ class Capsule(object):
                 iterations=constants.CAPS_CONT_SHUFF_ITER
             )
 
-        # Populate capsule fields
+        ## Populate capsule fields
         self._dictionary = {
             'CAP_ID'     : cap_uid,
-            'CAP_DSTIP'  : ip_to_uint32(dest_host),
-            'CAP_SCRIP'  : ip_to_uint32(src_host),
-            'CAP_TYPE'   : captype.upper(),
+            'CAP_DSTIP'  : cap_dstip,
+            'CAP_SCRIP'  : cap_srcip,
+            'CAP_TYPE'   : cap_type,
             'CAP_CONTENT': content,
-            'CAP_LEN'    : len(content),
+            'CAP_LEN'    : cap_len,
             'CAP_CHKSUM' : cap_hmac,
             'CAP_PKEY'   : pkey
             }
