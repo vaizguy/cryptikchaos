@@ -38,21 +38,36 @@ constants.PEER_NAME = "MYPOD"
 
 constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_WELCOME_MSG = """
-""" + constants.GUI_LABEL_LEFT_PADDING + """CryptikChaos v.""" + str(__version__) + """
-----------------------
-[ """ + constants.GUI_LABEL_LEFT_PADDING + get_time() + """ ] 
 
-""" + constants.GUI_LABEL_LEFT_PADDING + """>> Welcome to CryptikChaos P2P Net <<
-""" + constants.GUI_LABEL_LEFT_PADDING + """>> Enter "help" for command listing <<\n"""
+{}CryptikChaos v.{}
+{}--------------------------
+{}[{}]
+
+{}>> Welcome to CryptikChaos P2P Net <<
+{}>> Enter "help" for command listing <<
+
+""".format(
+    constants.GUI_LABEL_LEFT_PADDING,
+    str(__version__),
+    constants.GUI_LABEL_LEFT_PADDING,
+    constants.GUI_LABEL_LEFT_PADDING,
+    get_time(),
+    constants.GUI_LABEL_LEFT_PADDING,
+    constants.GUI_LABEL_LEFT_PADDING
+)
 
 constants.GUI_LABEL_PROMPT_SYM = ">> "
-constants.GUI_LABEL_PROMPT = constants.GUI_LABEL_LEFT_PADDING + \
+constants.GUI_LABEL_PROMPT = "{}{}".format(
+    constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_PROMPT_SYM
+)
 # ------------------------------------------------------------------------####
 
 # ------------------Project Path CONSTANTS--------------------------------####
 
-constants.PROJECT_PATH = os.path.dirname(os.path.realpath(__file__)) + "/.."
+constants.PROJECT_PATH = "{}/..".format(
+    os.path.dirname(os.path.realpath(__file__))
+)
 # ------------------------------------------------------------------------####
 
 # ------------------Protocol Capsule type CONSTANTS-----------------------####
@@ -115,17 +130,18 @@ constants.LOCAL_TEST_PORT = 8888
 constants.LOCAL_TEST_PEER_ID = 888
 # Local Test keys
 constants.LOCAL_TEST_CLIENT_KEY = hashlib.sha512(
-                                      "TEST_CLIENT_KEY" + \
-                                      str(constants.PEER_ID)
-                                  ).hexdigest()
+    "TEST_CLIENT_KEY{}".format(constants.PEER_ID)
+).hexdigest()
 constants.LOCAL_TEST_SERVER_KEY = hashlib.sha512(
-                                      "TEST_SERVER_KEY" + \
-                                      str(constants.PEER_ID)
-                                  ).hexdigest()
+    "TEST_SERVER_KEY{}".format(constants.PEER_ID)
+).hexdigest()
 # Test ID
 constants.LOCAL_TEST_CAPS_ID = str(
-    uuid.uuid5(uuid.NAMESPACE_URL,
-               constants.LOCAL_TEST_HOST))[0:constants.CAPS_ID_LEN]
+    uuid.uuid5(
+        uuid.NAMESPACE_URL,
+        constants.LOCAL_TEST_HOST
+    )
+)[0:constants.CAPS_ID_LEN]
 # Test chksum
 constants.LOCAL_TEST_CAPS_CHKSUM = hmac.new(
     constants.LOCAL_TEST_STR

@@ -21,7 +21,10 @@ class SwarmHandler:
 
     def __init__(self, peerid, peerkey):
 
-        peerfile = constants.PROJECT_PATH + "/db/"+ str(peerid) +"_db"
+        peerfile = "{}/db/{}_db".format(
+            constants.PROJECT_PATH,
+            peerid
+        )
 
         self.my_peerid = peerid
         self.my_key = peerkey
@@ -243,7 +246,9 @@ class SwarmHandler:
             return False
 
 if __name__ == '__main__':
-    pm = PeerManager(constants.PROJECT_PATH + "/db/test_peerlist_db")
+    pm = PeerManager("{}/db/test_peerlist_db".format(
+        constants.PROJECT_PATH
+    ))
     pm.add_peer(123, 'localhost', 8000)
     pm.add_peer(234, 'localhost', 8001)
     pm.add_peer(345, 'localhost', 8002)

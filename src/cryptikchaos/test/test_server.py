@@ -39,7 +39,8 @@ class TestServerApp(App, CommService):
         self.label = Label(
             text="""
             \n+Test Server started+\
-            \n[ """ + get_time() + """ ]\n\n"""
+            \n[ {} ]
+            \n""".format(get_time())
         )
 
         return self.label
@@ -60,10 +61,12 @@ class TestServerApp(App, CommService):
             peerid = constants.LOCAL_TEST_PEER_NAME
 
         # Single line output with peer id
-        text += constants.GUI_LABEL_LEFT_PADDING + \
-            constants.GUI_LABEL_PROMPT_SYM + \
-            str(peerid) + ": " + \
-            msg.strip(" ") + "\n"
+        text += "{}{}{}:{}\n".format(
+            constants.GUI_LABEL_LEFT_PADDING,
+            constants.GUI_LABEL_PROMPT_SYM,
+            str(peerid),
+            msg.strip(" ")
+        )
             
         # Factor line
         text = factor_line(text)

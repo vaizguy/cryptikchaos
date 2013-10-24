@@ -85,8 +85,10 @@ class CryptikChaosApp(
         
         # Indicates multiline output required
         if intermediate:
-            text = constants.GUI_LABEL_LEFT_PADDING + \
-                msg.strip() + "\n"
+            text = "{}{}\n".format(
+                constants.GUI_LABEL_LEFT_PADDING, 
+                msg.strip()
+            )
         else:
         # One line print
             if not peerid:
@@ -97,10 +99,12 @@ class CryptikChaosApp(
                 peerid = constants.PEER_NAME
 
             # Single line output with peer id
-            text = constants.GUI_LABEL_LEFT_PADDING + \
-                constants.GUI_LABEL_PROMPT_SYM + \
-                str(peerid) + ": " + \
-                msg.strip() + "\n"
+            text = "{}{}{}:{}\n".format(
+                constants.GUI_LABEL_LEFT_PADDING,
+                constants.GUI_LABEL_PROMPT_SYM,
+                str(peerid),
+                msg.strip()
+            )
                 
         # TODO Horizontal scroll is not working
         # Setting maximum line length to 75 and 
@@ -135,7 +139,7 @@ class CryptikChaosApp(
         "Parse command line."
 
         if line[0] == '@':
-            line = 'send ' + line[1:]
+            line = 'send {}'.format(line[1:])
 
         # Convert to cmd, args
         cmd_split = line.split(' ')
@@ -309,14 +313,17 @@ class CryptikChaosApp(
         """
         self.print_message(
             "Adding Test server {}@{}".format(
-                constants.LOCAL_TEST_HOST, constants.LOCAL_TEST_PORT
+                constants.LOCAL_TEST_HOST, 
+                constants.LOCAL_TEST_PORT
             )
         )
         
         # Add Test server to swarm
         self.cmd_addpeer(
-            str(constants.LOCAL_TEST_PEER_ID) + " " + \
-            constants.LOCAL_TEST_HOST
+            "{} {}".format(
+                constants.LOCAL_TEST_PEER_ID,
+                constants.LOCAL_TEST_HOST
+            )
         )
 
     def cmd_send(self, cmdline):
@@ -355,11 +362,10 @@ class CryptikChaosApp(
         
         # Check sending of message.
         self.cmd_send(
-            str(
-                constants.LOCAL_TEST_PEER_ID
-            ) + \
-            " " + \
-            constants.LOCAL_TEST_STR
+            "{} {}".format(
+                constants.LOCAL_TEST_PEER_ID,
+                constants.LOCAL_TEST_STR
+            )
         )
 
     def cmd_peers(self, cmdline):
@@ -376,7 +382,7 @@ class CryptikChaosApp(
             for r in plist:
                 table.add_row(r)
 
-            self.print_message("List of live peers:" + '\n' + str(table), factor=False)
+            self.print_message("List of live peers:\n{}".format(table), factor=False)
         else:
             self.print_message("No live peers.")
 
