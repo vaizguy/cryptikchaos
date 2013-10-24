@@ -115,8 +115,10 @@ def serialize(dictionary):
     """
     
     return base64.b64encode(
-        json.dumps(
-            dictionary
+        zlib.compress(
+            json.dumps(
+                dictionary
+            )
         )
     )
     
@@ -126,7 +128,9 @@ def deserialize(serialstr):
     """
     
     return json.loads(
-        base64.b64decode(
-            serialstr
+        zlib.decompress(
+            base64.b64decode(
+                serialstr
+            )
         )
     )
