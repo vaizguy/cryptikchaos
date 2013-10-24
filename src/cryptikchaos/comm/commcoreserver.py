@@ -20,6 +20,8 @@ import base64
 from twisted.internet import protocol
 from twisted.protocols.basic import LineReceiver
 
+from cryptikchaos.config.configuration import constants
+
 
 class CommCoreServerProtocol(LineReceiver):
 
@@ -30,6 +32,9 @@ class CommCoreServerProtocol(LineReceiver):
         self._peer_host = None
         self._peer_port = None
         self._peer_repr = None
+        
+        # Delimiter for sending line
+        self.delimiter = constants.CAPS_LINE_DELIMITER
 
     def connectionMade(self):
         "Run when connection is established with server."
@@ -66,6 +71,11 @@ class CommCoreServerProtocol(LineReceiver):
 
         if response:
             self.sendLine(response)
+            
+    def lineLengthExceeded(self, line):
+        "Run when line length is exceeded."
+        
+        Logger.error("Recieved line is more than {}".format(self.MAX_LENGTH))
 
 
 class CommCoreServerFactory(protocol.Factory):

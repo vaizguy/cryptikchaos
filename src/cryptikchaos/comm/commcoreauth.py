@@ -18,6 +18,8 @@ from twisted.protocols.basic import LineReceiver
 
 import base64
 
+from cryptikchaos.config.configuration import constants
+
 
 class CommCoreAuthProtocol(LineReceiver):
 
@@ -31,6 +33,9 @@ class CommCoreAuthProtocol(LineReceiver):
         self._peer_port = None
         self._peer_repr = None
         self.factory    = factory
+        
+        # Delimiter for sending line
+        self.delimiter = constants.CAPS_LINE_DELIMITER
 
     def connectionMade(self):
         "Run when connection is established with server."
@@ -61,6 +66,11 @@ class CommCoreAuthProtocol(LineReceiver):
         
         if self.factory.app.handle_auth_response(line):
             self.transport.abortConnection()
+                
+    def lineLengthExceeded(self, line):
+        "Run when line length is exceeded."
+        
+        Logger.error("Recieved line is more than {}".format(self.MAX_LENGTH))
 
 class CommCoreAuthFactory(protocol.Factory):
 

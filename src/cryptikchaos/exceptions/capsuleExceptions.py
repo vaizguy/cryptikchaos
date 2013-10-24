@@ -17,13 +17,22 @@ class CapsuleOverflowError(CapsuleError):
     If capsule unpack fails.
     """
 
-    def __init__(self):
-
-        pass
+    def __init__(self, limit=None):
+        
+        # Size limit
+        if limit:
+            self.limit = constants.CAPSULE_SIZE
+        else:
+            self.limit = limit
+            
+        # Error message
+        self.msg = "Exceeded limit of {} Bytes".format(
+            self.limit
+        )
 
     def __str__(self):
 
-        return "Capsule chunk should be equal to {} Bytes".format(constants.CAPSULE_SIZE)
+        return self.msg
     
 class CapsuleEmptyError(CapsuleError):
     """

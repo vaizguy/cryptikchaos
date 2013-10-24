@@ -36,15 +36,11 @@ class Capsule(object):
 
         # Check length of content.
         if len(content) > constants.CAPS_CONTENT_LEN:
-            raise Exception(
-                'OverflowError: Content exceeded capsule limit of 40'
-            )
+            raise CapsuleOverflowError(constants.CAPS_CONTENT_LEN)
 
         # Check length of capsule type.
         if len(captype) > constants.CAPS_TYPE_LEN:
-            raise Exception(
-                'OverflowError: Type exceeded capsule limit of 4'
-            )
+            raise CapsuleOverflowError(constants.CAPS_TYPE_LEN)
 
         # localhost - 127.0.0.1 mapping.
         if dest_host == "localhost":

@@ -10,9 +10,13 @@ over the air.
 __author__ = "Arun Vaidya"
 __version__ = 0.3
 
+from kivy import Logger
+
 from cryptikchaos.comm.capsule.capsule import Capsule
-
-
+from cryptikchaos.exceptions.capsuleExceptions import \
+    CapsuleOverflowError
+    
+    
 class CapsuleManager:
 
     "Capsule manager class."
@@ -33,14 +37,18 @@ class CapsuleManager:
                      dest_host="127.0.0.1", src_host="127.0.0.1"):
         "Pack data into capsule."
 
-        # Create and populate capsule with specified data
-        capsule = Capsule(self.peer_key, captype, capcontent, dest_host, src_host)
-
-        # Store capsule
-        self.capsule_dict[capsule.getid()] = capsule
-
-        # Return capsule as packed struct
-        return capsule.pack()
+        try:
+            # Create and populate capsule with specified data
+            capsule = Capsule(self.peer_key, captype, capcontent, dest_host, src_host)
+        except CapsuleOverflowError:
+            Logger.error("Could not pack capsule.")
+            return None
+        else:
+            # Store capsule
+            self.capsule_dict[capsule.getid()] = capsule
+            
+            # Return capsule as packed struct
+            return capsule.pack()
 
     def unpack_capsule(self, serial):
         "Unpack serial data into capsule."
@@ -51,8 +59,9 @@ class CapsuleManager:
         try:
             # Unpack into capsule
             capsule.unpack(serial)
-        except:
-            raise
+        except CapsuleOverflowError:
+            Logger.error("Capsule format is invalid, Unpack failed.")
+            return tuple([None]*8)
         else:
             # Store unpacked capsule
             self.capsule_dict[capsule.getid()] = capsule

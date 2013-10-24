@@ -107,7 +107,7 @@ class CommService(SwarmHandler, CapsuleManager):
         try:
             r = conn.sendLine(line)
         except:
-            r = conn.write(line + '\r\n')
+            r = conn.write(line + constants.CAPS_LINE_DELIMITER)
         else:
             return r
 

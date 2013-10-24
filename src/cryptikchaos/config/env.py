@@ -26,7 +26,9 @@ class EnvService:
         # Populate constants
         for attr in dir(constants):
             if attr.isupper():
-                self.env_dict[attr] = str(getattr(constants, attr)).encode('string_escape')
+                self.env_dict[attr] = str(
+                    getattr(constants, attr)
+                ).encode('string_escape')
 
     def list_constants(self):
         "List all env constants."
@@ -84,8 +86,8 @@ if __name__ == "__main__":
     e = EnvService()
     print e.list_constants()
     print "Peer port = {}".format(e.get_constant("PEER_PORT"))
-    print "Is configs equal: {}".format(e.config_equal(e.serialize_caps_conf()))
+    print "Is configs equal: {}".format(e.config_equal(
+        e.serialize_caps_conf())
+    )
     print "Len of serial config: {}".format(len(e.serialize_caps_conf()))
     
-    
-            
