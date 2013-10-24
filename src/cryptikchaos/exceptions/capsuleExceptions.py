@@ -7,7 +7,7 @@ Created on Oct 10, 2013
 __author__ = "Arun Vaidya"
 __version__ = 0.3
 
-from cryptikchaos.config.configuration import *
+from cryptikchaos.config.configuration import constants
 
 class CapsuleError(Exception):
     pass

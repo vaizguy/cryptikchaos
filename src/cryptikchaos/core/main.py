@@ -18,7 +18,7 @@ from cryptikchaos.comm.twiscomm import CommService
 from cryptikchaos.gui.kivygui import GUIService
 from cryptikchaos.config.env import EnvService
 
-from cryptikchaos.config.configuration import *
+from cryptikchaos.config.configuration import constants
 from cryptikchaos.libs.Table.prettytable import PrettyTable
 from cryptikchaos.libs.utilities import get_my_ip
 from cryptikchaos.libs.utilities import factor_line 
@@ -26,7 +26,7 @@ from cryptikchaos.libs.utilities import factor_line
 from kivy.logger import Logger
 
 
-class PodDroidApp(
+class CryptikChaosApp(
     # GUI service
     GUIService,  
     # Communications service
@@ -421,6 +421,6 @@ class PodDroidApp(
 if __name__ == '__main__':
 
     # Build App
-    App = PodDroidApp()
+    App = CryptikChaosApp()
     # Start App mainloop
     App.start()

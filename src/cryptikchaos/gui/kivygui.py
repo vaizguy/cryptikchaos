@@ -10,7 +10,7 @@ __version__ = 0.3
 from kivy.app import App
 
 from cryptikchaos.gui.consolewin import ConsoleWindow
-from cryptikchaos.config.configuration import *
+from cryptikchaos.config.configuration import constants
 
 
 class GUIService(App):

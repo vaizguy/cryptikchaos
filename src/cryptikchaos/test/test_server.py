@@ -9,47 +9,20 @@ python test_server.py
 __author__ = "Arun Vaidya"
 __version__ = 0.3
 
-# install_twisted_rector must be called before importing  and using the reactor
-from kivy.support import install_twisted_reactor
-
-install_twisted_reactor()
-
-from twisted.internet import protocol
-
 # Add cryptikchaos path
 import pythonpath
 pythonpath.AddSysPath('../../')
 
-from cryptikchaos.config.configuration import *
+from cryptikchaos.config.configuration import constants
 from cryptikchaos.comm.twiscomm import CommService
 from cryptikchaos.libs.utilities import factor_line
 from cryptikchaos.libs.utilities import get_time
-
-
-class PodroidTestProtocol(protocol.Protocol):
-
-    def dataReceived(self, data):
-
-        response = self.factory.app.handle_recieved_data(data)
-
-        if response:
-            self.transport.write(response)
-
-
-class PodroidTestFactory(protocol.Factory):
-
-    protocol = PodroidTestProtocol
-
-    def __init__(self, app):
-
-        self.app = app
-
 
 from kivy.app import App
 from kivy.uix.label import Label
 
 
-class TwistedServerApp(App, CommService):
+class TestServerApp(App, CommService):
 
     def build(self):
 
@@ -65,7 +38,7 @@ class TwistedServerApp(App, CommService):
 
         self.label = Label(
             text="""
-            \n+Server started+\
+            \n+Test Server started+\
             \n[ """ + get_time() + """ ]\n\n"""
         )
 
@@ -99,4 +72,4 @@ class TwistedServerApp(App, CommService):
         self.label.text += text
 
 if __name__ == '__main__':
-    TwistedServerApp().run()
+    TestServerApp().run()

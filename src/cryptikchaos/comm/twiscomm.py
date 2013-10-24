@@ -16,7 +16,7 @@ from cryptikchaos.comm.commcoreauth   import CommCoreAuthFactory
 from cryptikchaos.comm.swarm.swarmhandler import SwarmHandler
 from cryptikchaos.comm.capsule.capsulemanager import CapsuleManager
 
-from cryptikchaos.config.configuration import *
+from cryptikchaos.config.configuration import constants
 
 from cryptikchaos.libs.utilities import generate_uuid
 from cryptikchaos.libs.utilities import generate_token
@@ -110,11 +110,11 @@ class CommService(SwarmHandler, CapsuleManager):
             return None
 
         try:
-            r = conn.sendLine(line)
+            conn.sendLine(line)
         except:
-            r = conn.write(line + constants.CAPS_LINE_DELIMITER)
-        else:
-            return r
+            conn.write(line + constants.CAPS_LINE_DELIMITER)
+        finally:
+            return True
 
     def _write_into_connection(self, conn, stream):
         "Write into twisted connection transport."

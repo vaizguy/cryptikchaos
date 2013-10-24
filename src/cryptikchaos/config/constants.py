@@ -31,4 +31,7 @@ class _const:
 
 
 import sys
+# Save reference to module
+ref = sys.modules['__main__'] 
+# overwrite module reference
 sys.modules[__name__] = _const()

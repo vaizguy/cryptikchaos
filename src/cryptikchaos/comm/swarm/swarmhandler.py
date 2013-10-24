@@ -10,7 +10,7 @@ __author__ = "Arun Vaidya"
 __version__ = 0.3
 
 from cryptikchaos.comm.swarm.peer import Peer
-from cryptikchaos.config.configuration import *
+from cryptikchaos.config.configuration import constants
 
 from kivy.logger import Logger
 

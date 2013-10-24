@@ -11,8 +11,9 @@ __author__ = "Arun Vaidya"
 __version__ = 0.3
 
 import struct
+import hmac
 
-from cryptikchaos.config.configuration import *
+from cryptikchaos.config.configuration import constants
 
 from cryptikchaos.exceptions.capsuleExceptions import \
     CapsuleOverflowError

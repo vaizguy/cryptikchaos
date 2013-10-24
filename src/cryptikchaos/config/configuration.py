@@ -14,9 +14,10 @@ import uuid
 import hmac
 import os
 import hashlib
-import constants
 import random
 import string
+
+from cryptikchaos.config import constants
 
 from cryptikchaos.libs.utilities import get_time
 
