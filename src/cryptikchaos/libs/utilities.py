@@ -18,6 +18,8 @@ import socket
 import uuid
 import hashlib
 import zlib
+import json
+import base64
 
 def ip_to_uint32(ip):
     """
@@ -105,3 +107,26 @@ def factor_line(line, cmax=75, delim='\n'):
 def get_time():
     
     return strftime(constants.TIME_FORMAT, gmtime())
+
+def serialize(dictionary):
+    """
+    Converts dictionary into network tx friendly string,
+    returns string
+    """
+    
+    return base64.b64encode(
+        json.dumps(
+            dictionary
+        )
+    )
+    
+def deserialize(serialstr):
+    """
+    Deserializes network serialized dictionary, returns dict
+    """
+    
+    return json.loads(
+        base64.b64decode(
+            serialstr
+        )
+    )

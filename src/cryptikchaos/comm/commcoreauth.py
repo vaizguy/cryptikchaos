@@ -42,6 +42,7 @@ class CommCoreAuthProtocol(LineReceiver):
         Logger.debug(
             "Attempting handshake with {}".format(self._peer_repr)
         )
+                
         self.factory.app.on_server_authentication(self.transport)
 
     def connectionLost(self, reason):

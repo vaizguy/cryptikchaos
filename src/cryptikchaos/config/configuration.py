@@ -82,7 +82,7 @@ constants.CAPS_SCR_IP_LEN = 4
 constants.CAPS_PKEY_HASH_LEN = 128
 
 # Capsule size
-constants.CAPSULE_SIZE = constants.CAPS_CONTENT_LEN + \
+constants.CAPS_SIZE = constants.CAPS_CONTENT_LEN + \
     constants.CAPS_TYPE_LEN + \
     constants.CAPS_ID_LEN + \
     constants.CAPS_CHKSUM_LEN + \

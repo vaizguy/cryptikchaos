@@ -136,7 +136,7 @@ class Capsule(object):
             stream = decompress(stream)
 
         # Check if data is of expected chunk size
-        if len(stream) != constants.CAPSULE_SIZE:
+        if len(stream) != constants.CAPS_SIZE:
             raise CapsuleOverflowError()
 
         (
