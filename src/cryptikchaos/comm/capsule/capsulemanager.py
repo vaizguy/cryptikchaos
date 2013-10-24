@@ -16,6 +16,7 @@ from cryptikchaos.comm.capsule.capsule import Capsule
 from cryptikchaos.exceptions.capsuleExceptions import \
     CapsuleOverflowError
     
+import traceback
     
 class CapsuleManager:
 
@@ -41,6 +42,7 @@ class CapsuleManager:
             # Create and populate capsule with specified data
             capsule = Capsule(self.peer_key, captype, capcontent, dest_host, src_host)
         except CapsuleOverflowError:
+            Logger.error("{}".format(traceback.format_exc()))
             Logger.error("Could not pack capsule.")
             return None
         else:
@@ -60,6 +62,7 @@ class CapsuleManager:
             # Unpack into capsule
             capsule.unpack(serial)
         except CapsuleOverflowError:
+            Logger.error("{}".format(traceback.format_exc()))
             Logger.error("Capsule format is invalid, Unpack failed.")
             return tuple([None]*8)
         else:

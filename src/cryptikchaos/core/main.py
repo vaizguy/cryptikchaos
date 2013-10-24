@@ -341,11 +341,7 @@ class PodDroidApp(
         else:
             # command output
             self.print_message(
-                "Unable to send message. Peer {} is offline.".format(pid)
-            )
-            # command log
-            Logger.error(
-                "Unable to send message. Peer {} is offline.".format(pid)
+                "Unable to send message."
             )
 
     def cmd_sendtest(self, cmdline):

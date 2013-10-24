@@ -21,7 +21,7 @@ class CapsuleOverflowError(CapsuleError):
         
         # Size limit
         if limit:
-            self.limit = constants.CAPSULE_SIZE
+            self.limit = constants.CAPS_SIZE
         else:
             self.limit = limit
             

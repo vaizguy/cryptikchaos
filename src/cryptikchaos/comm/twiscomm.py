@@ -103,6 +103,11 @@ class CommService(SwarmHandler, CapsuleManager):
 
     def _sendLine(self, conn, line):
         "Implementing sendLine method locally."
+        
+        # If capsule packing fails line=None
+        if not line:
+            Logger.error("No stream to send.")
+            return None
 
         try:
             r = conn.sendLine(line)
@@ -115,7 +120,8 @@ class CommService(SwarmHandler, CapsuleManager):
         "Write into twisted connection transport."
 
         try:
-            self._sendLine(conn, stream)
+            if not self._sendLine(conn, stream):
+                return False
         except:
             Logger.error("Connection to peer failed. Please try later.")
             print traceback.format_exc()
