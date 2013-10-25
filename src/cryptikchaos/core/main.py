@@ -81,13 +81,13 @@ class CryptikChaosApp(
         "Print a message in the output window."
 
         # Convert to string
-        msg = str(msg)
+        msg = str(msg).rstrip()
         
         # Indicates multiline output required
         if intermediate:
             text = "{}{}\n".format(
                 constants.GUI_LABEL_LEFT_PADDING, 
-                msg.strip()
+                msg
             )
         else:
         # One line print
@@ -103,7 +103,7 @@ class CryptikChaosApp(
                 constants.GUI_LABEL_LEFT_PADDING,
                 constants.GUI_LABEL_PROMPT_SYM,
                 str(peerid),
-                msg.strip()
+                msg
             )
                 
         # TODO Horizontal scroll is not working
@@ -245,7 +245,7 @@ class CryptikChaosApp(
                 try:
                     doc = getattr(self, 'cmd_' + arg).__doc__
                     if doc:
-                        self.print_message("%s\n" % str(doc))
+                        self.print_message("%s\n" % str(doc), factor=False)
                         return
                 except AttributeError:
                     pass
