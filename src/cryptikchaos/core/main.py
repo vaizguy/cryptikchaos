@@ -114,23 +114,18 @@ class CryptikChaosApp(
 
         self.append_text(text)
 
-    #def handle_input(self, *args):
-    def handle_input(self, console_input):
+    ## GUI Callback Hooks
+    ## ----------------------------------------------------
+    def handle_input_hook(self, console_input):
         "*Send* button (and return key) event call back"
-
-        # Total text input entered by user
-        cmd_line = console_input.text
-
-        if len(cmd_line):
-            self.print_message(cmd_line)
-            # Clear input textbox
-            console_input.text = ""
-            # Set cursor back to console
-            console_input.focus = True
-            
-            return self.exec_command(cmd_line)
-        else:
-            return None
+        
+        return self.exec_command(console_input)
+    
+    def get_commands_hook(self):
+        "Get the list of defined commands"
+        
+        return [cmd for cmd in dir(self) if "cmd_" in cmd]
+    ## ----------------------------------------------------
 
     # -----------
     # CLI methods

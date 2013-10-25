@@ -94,6 +94,7 @@ def factor_line(line, cmax=75, delim='\n'):
     Factors a line in to max num of chars seperated
     by delimiter.
     """
+    
     # Get length of line
     length = len(line)
     # Factor line into n number of lines of max chars each

@@ -5,7 +5,7 @@ Created on Aug 5, 2013
 '''
 
 
-class _const:
+class _constant:
 
     "Code taken from Alex Martelli's python constant recipe."
 
@@ -29,9 +29,8 @@ class _const:
         if name in self.__dict__:
             raise self.ConstError("Can't delete constant {}".format(name))
 
-
 import sys
 # Save reference to module
 ref = sys.modules['__main__'] 
 # overwrite module reference
-sys.modules[__name__] = _const()
+sys.modules[__name__] = _constant()

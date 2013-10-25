@@ -40,7 +40,7 @@ constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_WELCOME_MSG = """
 
 {}CryptikChaos v.{}
-{}--------------------------
+{}==========================
 {}[{}]
 
 {}>> Welcome to CryptikChaos P2P Net <<
@@ -155,7 +155,7 @@ constants.DOC_HEADER = "Documented commands (type help <command>):"
 constants.MISC_HEADER = "Miscellaneous help topics:"
 constants.UNDOC_HEADER = "Undocumented commands:"
 constants.NOHELP = "*** No help on %s"
-constants.RULER = '='
+constants.RULER = '-'
 # ------------------------------------------------------------------------####
 
 # ---Application switches-------------------------------------------------####
@@ -163,6 +163,3 @@ constants.ENABLE_TEST_MODE = True
 constants.ENABLE_COMPRESSION = False
 constants.ENABLE_SHUFFLE = True
 # ------------------------------------------------------------------------####
-
-if __name__ == "__main__":
-    print dir(constants)

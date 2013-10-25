@@ -15,7 +15,6 @@ import collections
 
 
 class TransformedDict(collections.MutableMapping):
-
     """Represents the Peer attributes"""
 
     def __init__(self, *args, **kwargs):
@@ -42,7 +41,6 @@ class TransformedDict(collections.MutableMapping):
 
 
 class Peer(TransformedDict):
-
     "Peer dictionary, holds the peer attributes."
 
     def __getitem__(self, key):

@@ -13,10 +13,79 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.scrollview import ScrollView
 
+import re
+
+class ConsoleInput(TextInput):
+    
+    def __init__(self, handle_input_hook, get_cmd_hook):
+
+        # Init super
+        super(ConsoleInput, self).__init__()
+        
+        # Single line input, enter triggers
+        # on_text_validate
+        self.multiline=False
+        # Not password input
+        self.password=False
+        # Set size
+        self.size_hint_y=0.1
+        # Sets focus active
+        self.focus = True
+        
+        # Input command handler
+        self.handle_input = handle_input_hook
+        # Get list of defined commands
+        self.get_commands = get_cmd_hook
+        
+        # Bind to function on entry
+        self.bind(on_text_validate=self.new_input)
+        
+    def new_input(self, instance):
+        "Called on text input entry"
+        
+        # Get data input
+        input_text = instance.text
+        
+        # Handle input
+        if input_text:
+            # Clear text in input box
+            instance.text = ""         
+            # Handle the input
+            self.handle_input(input_text)
+            
+        # Set focu
+        self.focus = True ## TODO not working.
+        
+    def on_text(self, instance, value):
+        "Method hook called on change of TextInput.text value"   
+        
+        # Partial comm
+        pcmd = value.strip()
+        # List of commands
+        cmd_list =  [c[4:] for c in self.get_commands()]
+        # Get commands with pcmd matches
+        pcmd_matches = [c for c in cmd_list if re.match(r'^{}'.format(pcmd), c)]
+
+        # command completion
+        if '\t' in value and pcmd_matches:
+            # first match for now ## TODO
+            fcmd = pcmd_matches.pop()
+            # Change text
+            instance.text = fcmd
+            # position difference
+            diff = len(fcmd) - len(pcmd)
+            # get current position
+            (x, y) = self.cursor
+            # Shift cursor
+            self.cursor = (x+diff, y)
+            # move cursor to end
+            self.do_cursor_movement("cursor_end")
+
 
 class ConsoleWindow(GridLayout):
     
-    def __init__(self, handle_input, greeting):
+    def __init__(self, handle_input_hook, get_cmd_hook, greeting):
+        
         # Init super
         super(ConsoleWindow, self).__init__()
         
@@ -45,22 +114,29 @@ class ConsoleWindow(GridLayout):
         self.add_widget(scroll_view)
         
         # Input text box
-        self.console_input = TextInput(password=False, multiline=False, size_hint_y=0.1)
-        self.console_input.focus = True
-        self.console_input.bind(on_text_validate=handle_input)
+        self.console_input = ConsoleInput(
+            # Input handler hook
+            handle_input_hook=handle_input_hook, 
+            # CMD list hook
+            get_cmd_hook=get_cmd_hook
+        )
         
         self.add_widget(self.console_input)
         
     def append_text_to_console(self, text):
+        
         self.label.text += text
+
 
 class ConsoleWindowTest(App):
 
     def build(self):
+        
         self.root = ConsoleWindow(self.handle_input, "Testing Console Window!")
         return self.root
     
     def handle_input(self, textbox):
+        
         print "Input", textbox.text
         textbox.text = ""
         textbox.focus = True

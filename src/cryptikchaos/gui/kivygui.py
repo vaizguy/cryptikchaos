@@ -16,12 +16,15 @@ from cryptikchaos.config.configuration import constants
 class GUIService(App):
 
     def build(self):
-
         "Build the kivy App."
         
         root = ConsoleWindow(
-            self.handle_input,
-            constants.GUI_WELCOME_MSG
+            # Input handler hook
+            handle_input_hook=self.handle_input_hook,
+            # Get command list hook
+            get_cmd_hook=self.get_commands_hook,
+            # Console splash greeting
+            greeting=constants.GUI_WELCOME_MSG
         ) ## TODO messy implementation
         
         self.append_text = root.append_text_to_console
