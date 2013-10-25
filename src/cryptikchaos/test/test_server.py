@@ -49,7 +49,7 @@ class TestServerApp(App, CommService):
         "Print a message in the output window."
 
         # Convert to string
-        msg = str(msg)
+        msg = str(msg).rstrip()
         
         text = ''
 
@@ -61,11 +61,11 @@ class TestServerApp(App, CommService):
             peerid = constants.LOCAL_TEST_PEER_NAME
 
         # Single line output with peer id
-        text += "{}{}{}:{}\n".format(
+        text += "{}{}{} : {}\n".format(
             constants.GUI_LABEL_LEFT_PADDING,
             constants.GUI_LABEL_PROMPT_SYM,
             str(peerid),
-            msg.strip(" ")
+            msg
         )
             
         # Factor line

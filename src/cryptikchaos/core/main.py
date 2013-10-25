@@ -99,7 +99,7 @@ class CryptikChaosApp(
                 peerid = constants.PEER_NAME
 
             # Single line output with peer id
-            text = "{}{}{}:{}\n".format(
+            text = "{}{}{} : {}\n".format(
                 constants.GUI_LABEL_LEFT_PADDING,
                 constants.GUI_LABEL_PROMPT_SYM,
                 str(peerid),
