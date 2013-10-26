@@ -349,6 +349,8 @@ class CryptikChaosApp(
         if self.pass_message(pid, msg):
             # command log
             Logger.debug("Message sent to peer {}.".format(pid))
+            # Display send message
+            self.print_message("[{}] : {}".format(pid, msg))
         else:
             # command output
             self.print_message(
@@ -404,7 +406,8 @@ class CryptikChaosApp(
             
     def cmd_env(self, cmdline):
         """
-        View environment constants.
+        View Application environment constants.
+        (useful for realtime debugging)
         Usage: env
         """
         

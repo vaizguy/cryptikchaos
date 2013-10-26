@@ -94,18 +94,19 @@ def factor_line(line, cmax=75, delim='\n'):
     Factors a line in to max num of chars seperated
     by delimiter.
     """
-    
+    # Remove any newline characters in the line
+    line = line.strip()
     # Get length of line
     length = len(line)
     # Factor line into n number of lines of max chars each
-    lines = [ line[i: i+cmax] for i in xrange(0, length/cmax, cmax) ]
-    # Append remaining characters if total number of chars is not 
-    # a factor of max
-    lines.append(line[-(length%cmax):])
+    lines = [ line[i: i+cmax] for i in xrange(0, length, cmax) ]
     
-    return delim.join(lines)
+    return "\n{}".format(delim.join(lines))
 
 def get_time():
+    """
+    Get the time as a string.
+    """
     
     return strftime(constants.TIME_FORMAT, gmtime())
 
@@ -153,4 +154,12 @@ def criptiklogo():
         __author__,
         __version__
     )        
-        
+
+if __name__ == "__main__":
+    ## Test for factor_line
+    import string, random
+       
+    s = "".join(random.choice(string.ascii_uppercase + string.digits) for x in range(512))
+    
+    print "line", factor_line(s)
+            

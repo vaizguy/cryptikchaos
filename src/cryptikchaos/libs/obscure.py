@@ -73,7 +73,7 @@ if __name__ == "__main__":
     import random, string
     
     # Random string of 64 bytes
-    string = "".join([random.choice(string.ascii_uppercase + string.digits) for x in range(64)])
+    string = "".join([random.choice(string.ascii_uppercase + string.digits) for x in range(128)])
     print "Original String: {}".format(string)
     
     # Shuffle string
