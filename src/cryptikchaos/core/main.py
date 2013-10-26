@@ -22,8 +22,10 @@ from cryptikchaos.config.configuration import constants
 from cryptikchaos.libs.Table.prettytable import PrettyTable
 from cryptikchaos.libs.utilities import get_my_ip
 from cryptikchaos.libs.utilities import factor_line 
+from cryptikchaos.libs.utilities import criptiklogo
 
 from kivy.logger import Logger
+from kivy.clock import Clock
 
 
 class CryptikChaosApp(
@@ -44,7 +46,7 @@ class CryptikChaosApp(
 
     def build(self):
         "Build the kivy App."
-        
+                
         # Initiate Kivy GUI
         root = GUIService.build(self)
         
@@ -70,12 +72,19 @@ class CryptikChaosApp(
         return root
 
     def start(self):
-
+                        
+        # Print criptikchaos banner
+        Clock.schedule_once(self.print_logo)
+        
         # Run the GUI
-        self.run()
+        self.run()        
 
         # Cleanup env
         CommService.__del__(self)
+        
+    def print_logo(self, dt):
+        
+        print criptiklogo()
         
     def print_message(self, msg, peerid=None, intermediate=False, factor=True):
         "Print a message in the output window."
@@ -294,7 +303,7 @@ class CryptikChaosApp(
         try:
             (pid, host) = (int(cmdline.split(' ')[0]), cmdline.split(' ')[1])
         except:
-            self.print_message("Incorrect Command Use.")
+            self.print_message("Incorrect use of command 'addpeer'.")
             self.cmd_help("addpeer")
             return None
         else:
@@ -331,7 +340,7 @@ class CryptikChaosApp(
             (pid, msg) = (
                 int(cmdline.split(' ')[0]), ' '.join(cmdline.split(' ')[1:]))
         except:
-            self.print_message("Incorrect Command Use.")
+            self.print_message("Incorrect use of command 'send'")
             self.cmd_help("send")
             return None
         else:

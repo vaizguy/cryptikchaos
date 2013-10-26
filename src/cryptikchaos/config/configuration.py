@@ -26,6 +26,13 @@ from cryptikchaos.libs.utilities import get_time
 constants.TIME_FORMAT = "%a, %d %b %Y %H:%M:%S +0000"
 # ------------------------------------------------------------------------####
 
+# ---Project Path CONSTANTS-----------------------------------------------####
+
+constants.PROJECT_PATH = "{}/..".format(
+    os.path.dirname(os.path.realpath(__file__))
+)
+# ------------------------------------------------------------------------####
+
 # ---peer attribute constants---------------------------------------------####
 
 constants.PEER_ID = uuid.getnode()
@@ -38,7 +45,7 @@ constants.PEER_NAME = "MYPOD"
 
 constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_WELCOME_MSG = """
-
+{}==========================
 {}CryptikChaos v.{}
 {}==========================
 {}[{}]
@@ -47,6 +54,7 @@ constants.GUI_WELCOME_MSG = """
 {}>> Enter "help" for command listing <<
 
 """.format(
+    constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_LEFT_PADDING,
     str(__version__),
     constants.GUI_LABEL_LEFT_PADDING,
@@ -63,13 +71,6 @@ constants.GUI_LABEL_PROMPT = "{}{}".format(
 )
 # ------------------------------------------------------------------------####
 
-# ------------------Project Path CONSTANTS--------------------------------####
-
-constants.PROJECT_PATH = "{}/..".format(
-    os.path.dirname(os.path.realpath(__file__))
-)
-# ------------------------------------------------------------------------####
-
 # ------------------Protocol Capsule type CONSTANTS-----------------------####
 
 constants.PROTO_BULK_TYPE = "BULK"
@@ -82,7 +83,7 @@ constants.PROTO_AACK_TYPE = "AACK"
 # ------------------CAPSULE CONSTANTS-------------------------------------####
 
 # Capsule Content Length
-constants.CAPS_CONTENT_LEN = 64
+constants.CAPS_CONTENT_LEN = 128
 # Capsule Type length
 constants.CAPS_TYPE_LEN = 4
 # Capsule ID Length
@@ -118,7 +119,9 @@ constants.CAPS_LINE_DELIMITER = '\r\n'
 constants.LOCAL_TEST_PEER_NAME = "TSERVER"
 # Test string message
 constants.LOCAL_TEST_STR = ''.join(
-    random.choice(string.ascii_uppercase + string.digits) for x in range(64)
+    random.choice(string.ascii_uppercase + string.digits) for x in range(
+        constants.CAPS_CONTENT_LEN
+    )
 )
 # Test capsule type
 constants.LOCAL_TEST_CAPS_TYPE = "MTST"
