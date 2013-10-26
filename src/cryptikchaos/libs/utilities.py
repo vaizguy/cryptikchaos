@@ -135,3 +135,22 @@ def deserialize(serialstr):
             )
         )
     )
+    
+def criptiklogo():
+    """
+    Read the logo and return it as string.
+    """
+    
+    logofile = "{}/db/logo".format(
+        constants.PROJECT_PATH
+    )
+    
+    
+    with open(logofile, 'r') as f:
+        logo = "".join(f.readlines())
+    
+    return logo.format(
+        __author__,
+        __version__
+    )        
+        
