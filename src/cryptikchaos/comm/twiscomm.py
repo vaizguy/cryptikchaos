@@ -533,19 +533,24 @@ class CommService(SwarmHandler, CapsuleManager):
         ## -------------------------------------------------------------
         
         ## Capsule Token Challenge
-        
-        # Get stored peer key
-        src_pid = self.get_peerid_from_ip(src_ip)
                     
         # Generate token from recieved information.
         received_token = generate_token(
             cid, # Received capsule destination ID
             pkey # Received capsule's peer key
         )
-                # Generate token with stored information.
+                
+        # Get stored peer key
+        src_pid = self.get_peerid_from_ip(src_ip)
+        # Generate capsule manager ID
+        gen_cid = generate_uuid(self.host)
+        # Get stored source peer's key
+        stored_pkey = self.get_peer_key(src_pid) 
+        
+        # Generate token with stored information.
         generated_token = generate_token(
-            generate_uuid(self.host),  # Generate capsule manager ID
-            self.get_peer_key(src_pid) # Get stored source peer's key
+            gen_cid,
+            stored_pkey
         )
         
         # Token challenge
