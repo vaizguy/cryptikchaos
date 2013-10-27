@@ -27,6 +27,8 @@ from cryptikchaos.libs.utilities import criptiklogo
 from kivy.logger import Logger
 from kivy.clock import Clock
 
+import traceback
+
 
 class CryptikChaosApp(
     # GUI service
@@ -77,11 +79,15 @@ class CryptikChaosApp(
         # Print criptikchaos banner
         Clock.schedule_once(self.print_logo)
         
-        # Run the GUI
-        self.run()        
-
-        # Cleanup env
-        CommService.__del__(self)
+        try:
+            # Run the GUI
+            self.run()
+        except:
+            # print traceback
+            print traceback.format_exc()
+        finally:
+            # Cleanup environment
+            CommService.__del__(self)
         
     def print_logo(self, dt):
         "Print the criptikchaos logo"
