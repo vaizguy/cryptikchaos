@@ -13,8 +13,8 @@ from cryptikchaos.comm.commcoreserver import CommCoreServerFactory
 from cryptikchaos.comm.commcoreclient import CommCoreClientFactory
 from cryptikchaos.comm.commcoreauth   import CommCoreAuthFactory
 
-from cryptikchaos.comm.swarm.swarmhandler import SwarmHandler
-from cryptikchaos.comm.capsule.capsulemanager import CapsuleManager
+from cryptikchaos.comm.swarm.manager import SwarmManager
+from cryptikchaos.comm.capsule.manager import CapsuleManager
 
 from cryptikchaos.config.configuration import constants
 
@@ -30,7 +30,7 @@ from base64 import b64encode
 import traceback
 
 
-class CommService(SwarmHandler, CapsuleManager):
+class CommService(SwarmManager, CapsuleManager):
 
     """
     Twisted communications service.
@@ -47,7 +47,7 @@ class CommService(SwarmHandler, CapsuleManager):
         self.peerkey = peerkey
 
         # Initialize peer manager
-        SwarmHandler.__init__(self, peerid, peerkey)
+        SwarmManager.__init__(self, peerid, peerkey)
         # Initialize capsule manager
         CapsuleManager.__init__(self, peerkey)
 
@@ -64,7 +64,7 @@ class CommService(SwarmHandler, CapsuleManager):
     def __del__(self):
 
         # Close swarm handler
-        SwarmHandler.__del__(self)
+        SwarmManager.__del__(self)
         # Close capsule manager
         CapsuleManager.__del__(self)
 

@@ -14,9 +14,9 @@ __version__ = 0.4
 import pythonpath
 pythonpath.AddSysPath('../../')
 
-from cryptikchaos.comm.twiscomm import CommService
-from cryptikchaos.gui.kivygui import GUIService
-from cryptikchaos.config.env import EnvService
+from cryptikchaos.comm.service import CommService
+from cryptikchaos.gui.service import GUIService
+from cryptikchaos.config.service import EnvService
 
 from cryptikchaos.config.configuration import constants
 from cryptikchaos.libs.Table.prettytable import PrettyTable

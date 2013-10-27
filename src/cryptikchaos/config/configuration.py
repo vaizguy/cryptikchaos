@@ -52,7 +52,6 @@ constants.GUI_WELCOME_MSG = """
 
 {}>> Welcome to CryptikChaos P2P Net <<
 {}>> Enter "help" for command listing <<
-
 """.format(
     constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_LEFT_PADDING,

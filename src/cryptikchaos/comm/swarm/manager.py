@@ -17,8 +17,8 @@ from kivy.logger import Logger
 import shelve
 
 
-class SwarmHandler:
-    "Swarm handler is used to manage peers in the swarm."
+class SwarmManager:
+    "Manage peers in the swarm."
 
     def __init__(self, peerid, peerkey):
 
@@ -247,7 +247,7 @@ class SwarmHandler:
             return False
 
 if __name__ == '__main__':
-    pm = PeerManager("{}/db/test_peerlist_db".format(
+    pm = SwarmManager("{}/db/test_peerlist_db".format(
         constants.PROJECT_PATH
     ))
     pm.add_peer(123, 'localhost', 8000)

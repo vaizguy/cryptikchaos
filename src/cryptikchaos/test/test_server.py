@@ -14,7 +14,7 @@ import pythonpath
 pythonpath.AddSysPath('../../')
 
 from cryptikchaos.config.configuration import constants
-from cryptikchaos.comm.twiscomm import CommService
+from cryptikchaos.comm.service import CommService
 from cryptikchaos.libs.utilities import factor_line
 from cryptikchaos.libs.utilities import get_time
 
