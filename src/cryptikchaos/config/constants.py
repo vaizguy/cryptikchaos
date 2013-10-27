@@ -6,7 +6,6 @@ Created on Aug 5, 2013
 
 
 class _constant:
-
     "Code taken from Alex Martelli's python constant recipe."
 
     # ConstError Exception class

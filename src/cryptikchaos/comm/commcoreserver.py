@@ -7,7 +7,7 @@ Twisted network server core. TODO
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.3
+__version__ = 0.4
 
 # install_twisted_rector must be called before importing 
 # and using the reactor

@@ -7,7 +7,7 @@ Peer manager is used to Handle the peer information.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.3
+__version__ = 0.4
 
 from cryptikchaos.comm.swarm.peer import Peer
 from cryptikchaos.config.configuration import constants
@@ -18,6 +18,7 @@ import shelve
 
 
 class SwarmHandler:
+    "Swarm handler is used to manage peers in the swarm."
 
     def __init__(self, peerid, peerkey):
 

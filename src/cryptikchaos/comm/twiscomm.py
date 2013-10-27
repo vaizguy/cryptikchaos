@@ -7,7 +7,7 @@ Twisted network service.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.3
+__version__ = 0.4
 
 from cryptikchaos.comm.commcoreserver import CommCoreServerFactory
 from cryptikchaos.comm.commcoreclient import CommCoreClientFactory

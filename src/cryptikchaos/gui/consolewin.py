@@ -5,7 +5,7 @@ Created on Oct 15, 2013
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.3
+__version__ = 0.4
 
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
@@ -15,7 +15,9 @@ from kivy.uix.scrollview import ScrollView
 
 import re
 
+
 class ConsoleInput(TextInput):
+    "Console text input class"
     
     def __init__(self, handle_input_hook, get_cmd_hook):
 
@@ -83,6 +85,7 @@ class ConsoleInput(TextInput):
 
 
 class ConsoleWindow(GridLayout):
+    "Console window class."
     
     def __init__(self, handle_input_hook, get_cmd_hook, greeting):
         

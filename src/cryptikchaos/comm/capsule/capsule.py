@@ -8,7 +8,7 @@ communications between server and client and vice-versa.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.3
+__version__ = 0.4
 
 import struct
 import hmac

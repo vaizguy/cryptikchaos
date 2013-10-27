@@ -8,7 +8,7 @@ over the air.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.3
+__version__ = 0.4
 
 from kivy import Logger
 

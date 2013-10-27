@@ -7,7 +7,7 @@ python test_server.py
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.3
+__version__ = 0.4
 
 # Add cryptikchaos path
 import pythonpath
@@ -23,6 +23,7 @@ from kivy.uix.label import Label
 
 
 class TestServerApp(App, CommService):
+    "Test sever application."
 
     def build(self):
 

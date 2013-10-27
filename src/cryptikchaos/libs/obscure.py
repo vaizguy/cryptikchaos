@@ -6,6 +6,9 @@ Contains methods that obscure plaintext.
 @author: vaizguy
 '''
 
+__author__ = "Arun Vaidya"
+__version__ = 0.4
+
 import hashlib
 
 def shuffler(string, key=None, iterations=1):  

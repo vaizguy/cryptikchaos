@@ -8,7 +8,7 @@ frontend and twisted framework as the backend.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.3
+__version__ = 0.4
 
 # Add cryptikchaos path
 import pythonpath
@@ -72,6 +72,7 @@ class CryptikChaosApp(
         return root
 
     def start(self):
+        "Start the application."
                         
         # Print criptikchaos banner
         Clock.schedule_once(self.print_logo)
@@ -305,6 +306,7 @@ class CryptikChaosApp(
         Add new peer.
         Usage: addpeer <pid> <host>
         """
+        
         try:
             (pid, host) = (int(cmdline.split(' ')[0]), cmdline.split(' ')[1])
         except:
@@ -320,6 +322,8 @@ class CryptikChaosApp(
         Add test server.
         Usage: addtest
         """
+        
+        # Print to console
         self.print_message(
             "Adding Test server {}@{}".format(
                 constants.LOCAL_TEST_HOST, 
@@ -341,6 +345,7 @@ class CryptikChaosApp(
         Usage: send <pid> <message>
         Alternative Short Usage: @<pid> <message>        
         """
+        
         try:
             (pid, msg) = (
                 int(cmdline.split(' ')[0]), ' '.join(cmdline.split(' ')[1:]))
@@ -368,6 +373,7 @@ class CryptikChaosApp(
         All testcases should be run here.
         Usage: test
         """
+        
         # Print test string
         self.print_message("Sending Test String: {}".format(constants.LOCAL_TEST_STR))
         

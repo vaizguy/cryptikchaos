@@ -5,7 +5,7 @@ Created on Oct 8, 2013
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.3
+__version__ = 0.4
 
 from kivy.app import App
 
@@ -14,6 +14,7 @@ from cryptikchaos.config.configuration import constants
 
 
 class GUIService(App):
+    "Graphival user interface service."
 
     def build(self):
         "Build the kivy App."
