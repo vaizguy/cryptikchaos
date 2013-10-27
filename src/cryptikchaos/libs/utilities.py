@@ -146,14 +146,20 @@ def criptiklogo():
         constants.PROJECT_PATH
     )
     
-    
-    with open(logofile, 'r') as f:
-        logo = "".join(f.readlines())
-    
-    return logo.format(
-        __author__,
-        __version__
-    )        
+    try:
+        # Open and read logo file
+        with open(logofile, 'r') as f:
+            logo = "".join(f.readlines())
+    except IOError:
+        # No logo present
+        Logger.error("Failed to read cryptikchaos logo.")
+        return None
+    else:
+        # Return logo if success
+        return logo.format(
+            __author__,
+            __version__
+       )        
 
 if __name__ == "__main__":
     ## Test for factor_line

@@ -83,8 +83,13 @@ class CryptikChaosApp(
         CommService.__del__(self)
         
     def print_logo(self, dt):
+        "Print the criptikchaos logo"
         
-        print criptiklogo()
+        # Get logo
+        logo = criptiklogo()
+        
+        if logo:
+            print logo
         
     def print_message(self, msg, peerid=None, intermediate=False, factor=True):
         "Print a message in the output window."
