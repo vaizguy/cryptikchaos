@@ -12,6 +12,8 @@ __version__ = 0.4
 from cryptikchaos.comm.swarm.peer import Peer
 from cryptikchaos.config.configuration import constants
 
+from cryptikchaos.libs.utilities import random_color_code
+
 from kivy.logger import Logger
 
 import shelve
@@ -29,6 +31,7 @@ class SwarmManager:
 
         self.my_peerid = peerid
         self.my_key = peerkey
+        self.my_msg_rcc = random_color_code()
 
         self._peer_dict = shelve.open(
             peerfile,
@@ -68,6 +71,9 @@ class SwarmManager:
             return None
         else:
             Logger.debug("Adding Peer {} , {}@{}".format(pid, host, port))
+            
+        # Random message color code
+        rcc = random_color_code()
 
         # Peer dictionary structure defined here
         self._peer_dict[str(pid)] = Peer({
@@ -76,6 +82,7 @@ class SwarmManager:
             "PEER_IP": host,
             "PEER_PORT": port,
             "PEER_CONN_STATUS": False,
+            "PEER_ID_COLOR" : rcc
         })
 
         # Sync DB
@@ -237,6 +244,13 @@ class SwarmManager:
             return self._peer_dict[str(pid)]["PEER_KEY"]
         else:
             return None
+        
+    def get_peerid_color(self, pid):
+        
+        if str(pid) in self._peer_dict.keys():
+            return self._peer_dict[str(pid)]["PEER_ID_COLOR"]
+        else:
+            return self.my_msg_rcc
         
     def is_peer(self, pid):
         "Check if peer got added successfully"

@@ -77,7 +77,7 @@ class CryptikChaosApp(
         "Start the application."
                         
         # Print criptikchaos banner
-        Clock.schedule_once(self.print_logo)
+        Clock.schedule_once(self.print_logo, 0.05)
         
         try:
             # Run the GUI
@@ -118,11 +118,15 @@ class CryptikChaosApp(
             # If local pid, substitute with peer name
             if peerid == self.my_peerid:
                 peerid = constants.PEER_NAME
+                
+            # Get peer message color
+            rcc = self.get_peerid_color(peerid)
 
             # Single line output with peer id
-            text = "{}{}{} : {}\n".format(
+            text = "{}{}[color={}]{}[/color] : {}\n".format(
                 constants.GUI_LABEL_LEFT_PADDING,
                 constants.GUI_LABEL_PROMPT_SYM,
+                rcc,
                 str(peerid),
                 msg
             )

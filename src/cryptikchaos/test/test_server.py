@@ -41,7 +41,8 @@ class TestServerApp(App, CommService):
             text="""
             \n+Test Server started+\
             \n[ {} ]
-            \n""".format(get_time())
+            \n""".format(get_time()),
+            markup=True
         )
 
         return self.label
@@ -61,10 +62,14 @@ class TestServerApp(App, CommService):
         if peerid == constants.LOCAL_TEST_PEER_ID:
             peerid = constants.LOCAL_TEST_PEER_NAME
 
+        # Get peer message color
+        rcc = self.get_peerid_color(peerid)
+
         # Single line output with peer id
-        text += "{}{}{} : {}\n".format(
+        text = "{}{}[color={}]{}[/color] : {}\n".format(
             constants.GUI_LABEL_LEFT_PADDING,
             constants.GUI_LABEL_PROMPT_SYM,
+            rcc,
             str(peerid),
             msg
         )

@@ -45,7 +45,7 @@ class Peer(TransformedDict):
 
     def __getitem__(self, key):
 
-        if key in ("PEER_ID", "PEER_KEY", "PEER_IP", "PEER_PORT", "PEER_CONN_STATUS"):
+        if key in ("PEER_ID", "PEER_KEY", "PEER_IP", "PEER_PORT", "PEER_CONN_STATUS", "PEER_ID_COLOR"):
             return TransformedDict.__getitem__(self, key)
         else:
             raise Exception("Invalid peer attribute.")
