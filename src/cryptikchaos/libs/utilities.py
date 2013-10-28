@@ -20,6 +20,7 @@ import hashlib
 import zlib
 import json
 import base64
+import random
 
 def ip_to_uint32(ip):
     """
@@ -89,7 +90,7 @@ def decompress(stream):
     
     return zlib.decompress(stream)
 
-def factor_line(line, cmax=75, delim='\n'):
+def factor_line(line, cmax=100, delim='\n'):
     """
     Factors a line in to max num of chars seperated
     by delimiter.
@@ -159,7 +160,13 @@ def criptiklogo():
         return logo.format(
             __author__,
             __version__
-       )        
+       )
+
+def random_color_code():
+    
+    r = lambda: random.randint(0,255)
+    return '#{:02X}{:02X}{:02X}'.format(r(),r(),r())
+
 
 if __name__ == "__main__":
     ## Test for factor_line
