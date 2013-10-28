@@ -44,7 +44,7 @@ def generate_uuid(host):
 
     return str(
         uuid.uuid5(uuid.NAMESPACE_URL, host)
-    )[0:constants.CAPS_ID_LEN]
+    )[0:constants.STREAM_ID_LEN]
 
 def generate_token(uid, pkey):
     """

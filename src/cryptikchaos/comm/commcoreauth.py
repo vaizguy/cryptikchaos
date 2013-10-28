@@ -35,7 +35,7 @@ class CommCoreAuthProtocol(LineReceiver):
         self.factory    = factory
         
         # Delimiter for sending line
-        self.delimiter = constants.CAPS_LINE_DELIMITER
+        self.delimiter = constants.STREAM_LINE_DELIMITER
 
     def connectionMade(self):
         "Run when connection is established with server."

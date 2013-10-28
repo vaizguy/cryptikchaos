@@ -57,16 +57,16 @@ class EnvService:
         
         return { 
             fkey : self.env_dict[fkey] for fkey in sorted(
-                [k for k in self.env_dict.keys() if k[0:5] == "CAPS_"]
+                [k for k in self.env_dict.keys() if k[0:5] == "STREAM_"]
             )
         }
                
-    def serialize_caps_conf(self):
+    def serialize_stream_conf(self):
         "Serialize capsule configuration."
         
         return serialize(self.caps_conf_dict())
     
-    def deserialize_caps_conf(self, serialstr):
+    def deserialize_stream_conf(self, serialstr):
         "Deserialize capsule configuration."
         
         return deserialize(serialstr)

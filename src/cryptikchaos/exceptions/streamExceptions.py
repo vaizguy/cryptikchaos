@@ -9,10 +9,10 @@ __version__ = 0.4
 
 from cryptikchaos.config.configuration import constants
 
-class CapsuleError(Exception):
+class StreamError(Exception):
     pass
 
-class CapsuleOverflowError(CapsuleError):
+class StreamOverflowError(StreamError):
     """
     If capsule unpack fails.
     """
@@ -21,7 +21,7 @@ class CapsuleOverflowError(CapsuleError):
         
         # Size limit
         if limit:
-            self.limit = constants.CAPS_SIZE
+            self.limit = constants.STREAM_SIZE
         else:
             self.limit = limit
             
@@ -34,7 +34,7 @@ class CapsuleOverflowError(CapsuleError):
 
         return self.msg
     
-class CapsuleEmptyError(CapsuleError):
+class StreamEmptyError(StreamError):
     """
     If capsule is empty.
     """
@@ -45,9 +45,9 @@ class CapsuleEmptyError(CapsuleError):
 
     def __str__(self):
 
-        return "Capsule not populated with data."
+        return "Stream not populated with data."
     
 
 if __name__ == "__main__":
 
-    raise CapsuleOverflowError()
+    raise StreamOverflowError()

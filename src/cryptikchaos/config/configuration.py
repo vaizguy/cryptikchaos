@@ -79,38 +79,38 @@ constants.PROTO_AUTH_TYPE = "AUTH"
 constants.PROTO_AACK_TYPE = "AACK"
 # ------------------------------------------------------------------------####
 
-# ------------------CAPSULE CONSTANTS-------------------------------------####
+# ------------------STREAM CONSTANTS-------------------------------------####
 
 # Capsule Content Length
-constants.CAPS_CONTENT_LEN = 128
+constants.STREAM_CONTENT_LEN = 128
 # Capsule Type length
-constants.CAPS_TYPE_LEN = 4
+constants.STREAM_TYPE_LEN = 4
 # Capsule ID Length
-constants.CAPS_ID_LEN = 8
+constants.STREAM_ID_LEN = 8
 # Capsule chksum length
-constants.CAPS_CHKSUM_LEN = 32
+constants.STREAM_CHKSUM_LEN = 32
 # Capsule content length byte length
-constants.CAPS_CONTENTL_LEN = 4
+constants.STREAM_CONTENTL_LEN = 4
 # Capsule IP integer repr length
-constants.CAPS_DST_IP_LEN = 4
-constants.CAPS_SCR_IP_LEN = 4
+constants.STREAM_DST_IP_LEN = 4
+constants.STREAM_SCR_IP_LEN = 4
 # Capsule peer key hash length
-constants.CAPS_PKEY_HASH_LEN = 128
+constants.STREAM_PKEY_HASH_LEN = 128
 
 # Capsule size
-constants.CAPS_SIZE = constants.CAPS_CONTENT_LEN + \
-    constants.CAPS_TYPE_LEN + \
-    constants.CAPS_ID_LEN + \
-    constants.CAPS_CHKSUM_LEN + \
-    constants.CAPS_CONTENTL_LEN + \
-    constants.CAPS_DST_IP_LEN + \
-    constants.CAPS_SCR_IP_LEN + \
-    constants.CAPS_PKEY_HASH_LEN
+constants.STREAM_SIZE = constants.STREAM_CONTENT_LEN + \
+    constants.STREAM_TYPE_LEN + \
+    constants.STREAM_ID_LEN + \
+    constants.STREAM_CHKSUM_LEN + \
+    constants.STREAM_CONTENTL_LEN + \
+    constants.STREAM_DST_IP_LEN + \
+    constants.STREAM_SCR_IP_LEN + \
+    constants.STREAM_PKEY_HASH_LEN
 
 # Capsule shuffle iterations
-constants.CAPS_CONT_SHUFF_ITER = 1000
+constants.STREAM_CONT_SHUFF_ITER = 1000
 # Capsule line delimiter
-constants.CAPS_LINE_DELIMITER = '\r\n'
+constants.STREAM_LINE_DELIMITER = '\r\n'
 # ------------------------------------------------------------------------####
 
 # ------------------TEST CONSTANTS----------------------------------------####
@@ -119,11 +119,11 @@ constants.LOCAL_TEST_PEER_NAME = "TSERVER"
 # Test string message
 constants.LOCAL_TEST_STR = ''.join(
     random.choice(string.ascii_uppercase + string.digits) for x in range(
-        constants.CAPS_CONTENT_LEN
+        constants.STREAM_CONTENT_LEN
     )
 )
 # Test capsule type
-constants.LOCAL_TEST_CAPS_TYPE = "MTST"
+constants.LOCAL_TEST_STREAM_TYPE = "MTST"
 # Local Test IP
 constants.LOCAL_TEST_HOST = "127.0.0.1"
 # Local Test Port
@@ -138,14 +138,14 @@ constants.LOCAL_TEST_SERVER_KEY = hashlib.sha512(
     "TEST_SERVER_KEY{}".format(constants.PEER_ID)
 ).hexdigest()
 # Test ID
-constants.LOCAL_TEST_CAPS_ID = str(
+constants.LOCAL_TEST_STREAM_ID = str(
     uuid.uuid5(
         uuid.NAMESPACE_URL,
         constants.LOCAL_TEST_HOST
     )
-)[0:constants.CAPS_ID_LEN]
+)[0:constants.STREAM_ID_LEN]
 # Test chksum
-constants.LOCAL_TEST_CAPS_CHKSUM = hmac.new(
+constants.LOCAL_TEST_STREAM_CHKSUM = hmac.new(
     constants.LOCAL_TEST_STR
 ).hexdigest()
 # ------------------------------------------------------------------------####

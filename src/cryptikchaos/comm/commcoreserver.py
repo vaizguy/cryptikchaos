@@ -34,7 +34,7 @@ class CommCoreServerProtocol(LineReceiver):
         self._peer_repr = None
         
         # Delimiter for sending line
-        self.delimiter = constants.CAPS_LINE_DELIMITER
+        self.delimiter = constants.STREAM_LINE_DELIMITER
 
     def connectionMade(self):
         "Run when connection is established with server."

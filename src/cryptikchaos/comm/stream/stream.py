@@ -15,8 +15,8 @@ import hmac
 
 from cryptikchaos.config.configuration import constants
 
-from cryptikchaos.exceptions.capsuleExceptions import \
-    CapsuleOverflowError
+from cryptikchaos.exceptions.streamExceptions import \
+    StreamOverflowError
 
 from cryptikchaos.libs.utilities import ip_to_uint32
 from cryptikchaos.libs.utilities import uint32_to_ip
@@ -28,20 +28,20 @@ from cryptikchaos.libs.obscure import shuffler
 from cryptikchaos.libs.obscure import unshuffler
 
 
-class Capsule(object):
+class Stream(object):
 
-    "Capsule definition."
+    "Communication stream definition."
 
     def __init__(self, pkey=None, captype="NULL", content='',
                  dest_host="127.0.0.1", src_host="127.0.0.1"):
 
         # Check length of content.
-        if len(content) > constants.CAPS_CONTENT_LEN:
-            raise CapsuleOverflowError(constants.CAPS_CONTENT_LEN)
+        if len(content) > constants.STREAM_CONTENT_LEN:
+            raise CapsuleOverflowError(constants.STREAM_CONTENT_LEN)
 
         # Check length of capsule type.
-        if len(captype) > constants.CAPS_TYPE_LEN:
-            raise CapsuleOverflowError(constants.CAPS_TYPE_LEN)
+        if len(captype) > constants.STREAM_TYPE_LEN:
+            raise CapsuleOverflowError(constants.STREAM_TYPE_LEN)
 
         # localhost - 127.0.0.1 mapping.
         if dest_host == "localhost":
@@ -71,7 +71,7 @@ class Capsule(object):
         if constants.ENABLE_SHUFFLE:
             content = shuffler(
                 string=content, 
-                iterations=constants.CAPS_CONT_SHUFF_ITER
+                iterations=constants.STREAM_CONT_SHUFF_ITER
             )
 
         ## Populate capsule fields
@@ -103,11 +103,11 @@ class Capsule(object):
         # Pack the data into capsule
         stream = struct.pack(
             "!{}sII{}s{}sL{}s{}s".format(
-                constants.CAPS_ID_LEN,
-                constants.CAPS_TYPE_LEN,
-                constants.CAPS_CONTENT_LEN,
-                constants.CAPS_CHKSUM_LEN,
-                constants.CAPS_PKEY_HASH_LEN
+                constants.STREAM_ID_LEN,
+                constants.STREAM_TYPE_LEN,
+                constants.STREAM_CONTENT_LEN,
+                constants.STREAM_CHKSUM_LEN,
+                constants.STREAM_PKEY_HASH_LEN
             ),
             self._dictionary['CAP_ID'],
             self._dictionary['CAP_DSTIP'],
@@ -133,7 +133,7 @@ class Capsule(object):
             stream = decompress(stream)
 
         # Check if data is of expected chunk size
-        if len(stream) != constants.CAPS_SIZE:
+        if len(stream) != constants.STREAM_SIZE:
             raise CapsuleOverflowError()
 
         (
@@ -147,11 +147,11 @@ class Capsule(object):
             self._dictionary['CAP_PKEY']
         ) = struct.unpack(
                 "!{}sII{}s{}sL{}s{}s".format(
-                constants.CAPS_ID_LEN,
-                constants.CAPS_TYPE_LEN,
-                constants.CAPS_CONTENT_LEN,
-                constants.CAPS_CHKSUM_LEN,
-                constants.CAPS_PKEY_HASH_LEN
+                constants.STREAM_ID_LEN,
+                constants.STREAM_TYPE_LEN,
+                constants.STREAM_CONTENT_LEN,
+                constants.STREAM_CHKSUM_LEN,
+                constants.STREAM_PKEY_HASH_LEN
             ), stream
         )
 
@@ -197,7 +197,7 @@ class Capsule(object):
         if constants.ENABLE_SHUFFLE:
             content = unshuffler(
                 shuffled_string=content,
-                iterations=constants.CAPS_CONT_SHUFF_ITER
+                iterations=constants.STREAM_CONT_SHUFF_ITER
             )
         
         # Returns content only if conent integrity is maintained   
@@ -238,10 +238,10 @@ class Capsule(object):
 
 if __name__ == '__main__':
 
-    Ctx = Capsule(pkey="123", captype="TEST", content='Hello',
+    Ctx = Stream(pkey="123", captype="TEST", content='Hello',
                  dest_host="127.0.0.1", src_host="127.0.0.1")
     pkd = Ctx.pack()
     print 'Packed data is :', pkd
-    Crx = Capsule()
+    Crx = Stream()
     Crx.unpack(pkd)
     print "Unpacked data :", Crx.tuple()

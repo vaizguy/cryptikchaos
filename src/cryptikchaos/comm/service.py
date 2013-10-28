@@ -14,7 +14,7 @@ from cryptikchaos.comm.commcoreclient import CommCoreClientFactory
 from cryptikchaos.comm.commcoreauth   import CommCoreAuthFactory
 
 from cryptikchaos.comm.swarm.manager import SwarmManager
-from cryptikchaos.comm.capsule.manager import CapsuleManager
+from cryptikchaos.comm.stream.manager import StreamManager
 
 from cryptikchaos.config.configuration import constants
 
@@ -30,7 +30,12 @@ from base64 import b64encode
 import traceback
 
 
-class CommService(SwarmManager, CapsuleManager):
+class CommService(
+    # Manages peer swarm              
+    SwarmManager, 
+    # Capsule manager
+    StreamManager
+):
 
     """
     Twisted communications service.
@@ -49,7 +54,7 @@ class CommService(SwarmManager, CapsuleManager):
         # Initialize peer manager
         SwarmManager.__init__(self, peerid, peerkey)
         # Initialize capsule manager
-        CapsuleManager.__init__(self, peerkey)
+        StreamManager.__init__(self, peerkey)
 
         self._printer = printer
 
@@ -66,7 +71,7 @@ class CommService(SwarmManager, CapsuleManager):
         # Close swarm handler
         SwarmManager.__del__(self)
         # Close capsule manager
-        CapsuleManager.__del__(self)
+        StreamManager.__del__(self)
 
     def _start_server(self):
         "Start twisted server listener."
@@ -112,7 +117,7 @@ class CommService(SwarmManager, CapsuleManager):
         try:
             conn.sendLine(line)
         except:
-            conn.write(line + constants.CAPS_LINE_DELIMITER)
+            conn.write(line + constants.STREAM_LINE_DELIMITER)
         finally:
             return True
 
@@ -148,7 +153,7 @@ class CommService(SwarmManager, CapsuleManager):
             desthost = self.peer_host(pid)
 
         # Pack data into capsule
-        stream = self.pack_capsule(
+        stream = self.pack_stream(
             data_class,
             data_content,
             desthost,
@@ -268,7 +273,7 @@ class CommService(SwarmManager, CapsuleManager):
             peer_port
         )
         # Pack data into capsule
-        stream = self.pack_capsule(
+        stream = self.pack_stream(
             constants.PROTO_AUTH_TYPE,
             str(self.peerid),
             peer_ip,
@@ -317,7 +322,7 @@ class CommService(SwarmManager, CapsuleManager):
         # Unpack received stream
         try:
             (cid, dest_ip, src_ip, c_rsp_type, content,
-                 _, chksum, pkey) = self.unpack_capsule(response)
+                 _, chksum, pkey) = self.unpack_stream(response)
         except:
             raise
             return None
@@ -362,10 +367,10 @@ class CommService(SwarmManager, CapsuleManager):
                     
         # Currently the test case is inbuilt into the pod.
         # MSG TEST BEGIN #
-        if c_rsp_type == constants.LOCAL_TEST_CAPS_TYPE:
+        if c_rsp_type == constants.LOCAL_TEST_STREAM_TYPE:
 
-            if (cid == constants.LOCAL_TEST_CAPS_ID and
-               chksum == constants.LOCAL_TEST_CAPS_CHKSUM and
+            if (cid == constants.LOCAL_TEST_STREAM_ID and
+               chksum == constants.LOCAL_TEST_STREAM_CHKSUM and
                content == constants.LOCAL_TEST_STR and
                dest_ip == constants.LOCAL_TEST_HOST and
                src_ip == constants.LOCAL_TEST_HOST):
@@ -396,7 +401,7 @@ class CommService(SwarmManager, CapsuleManager):
 
         # Repsonse handling architecture should be placed here.
         (cid, dest_ip, src_ip, c_rsp_auth_type, content,
-         _, chksum, pkey) = self.unpack_capsule(response)
+         _, chksum, pkey) = self.unpack_stream(response)
 
         src_port = constants.PEER_PORT
 
@@ -437,7 +442,7 @@ class CommService(SwarmManager, CapsuleManager):
         dtype = constants.PROTO_BULK_TYPE
 
         if msg == constants.LOCAL_TEST_STR:
-            dtype = constants.LOCAL_TEST_CAPS_TYPE
+            dtype = constants.LOCAL_TEST_STREAM_TYPE
 
         # Send message using send data API
         return self._transfer_data(pid, dtype, msg)
@@ -478,11 +483,11 @@ class CommService(SwarmManager, CapsuleManager):
 
         # Unpack capsule
         (cid, dest_ip, src_ip, c_rx_type, content, _, _,
-            pkey) = self.unpack_capsule(serial)
+            pkey) = self.unpack_stream(serial)
         
         # Print test message if test server
         if self.my_peerid == constants.LOCAL_TEST_PEER_ID and \
-           c_rx_type in (constants.LOCAL_TEST_CAPS_TYPE):
+           c_rx_type in (constants.LOCAL_TEST_STREAM_TYPE):
             self._print_test(c_rx_type, content)
           
         ## ------------------------------------------------------------      
@@ -515,7 +520,7 @@ class CommService(SwarmManager, CapsuleManager):
             )
 
             ## Send current peer info
-            rsp = self.pack_capsule(
+            rsp = self.pack_stream(
                 captype=constants.PROTO_AACK_TYPE,
                 capcontent=str(self.peerid),
                 dest_host=src_ip,
@@ -573,10 +578,10 @@ class CommService(SwarmManager, CapsuleManager):
         if c_rx_type == "PING":
             rsp = "PONG"  # Legacy
 
-        elif c_rx_type == constants.LOCAL_TEST_CAPS_TYPE:
+        elif c_rx_type == constants.LOCAL_TEST_STREAM_TYPE:
                         
             ## Repack capsule maintaining the same content
-            rsp = self.pack_capsule(
+            rsp = self.pack_stream(
                 captype=c_rx_type,
                 capcontent=content,
                 dest_host=src_ip,
@@ -589,7 +594,7 @@ class CommService(SwarmManager, CapsuleManager):
                 # Message receipt successful
                 self._print(content, src_ip)
                 # Generate response
-                rsp = self.pack_capsule(
+                rsp = self.pack_stream(
                     captype=constants.PROTO_MACK_TYPE,
                     capcontent='',
                     dest_host=src_ip,
