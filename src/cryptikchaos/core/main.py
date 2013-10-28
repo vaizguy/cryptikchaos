@@ -132,6 +132,8 @@ class CryptikChaosApp(
         # adding a newline character after 75 chars
         if factor:
             text = factor_line(text)
+        else:
+            text = '\n{}'.format(text) 
 
         self.append_text(text)
 
@@ -182,7 +184,7 @@ class CryptikChaosApp(
         "If command not found"
 
         # Command output
-        self.print_message('Invalid Command "{}"\n'.format(cmd))
+        self.print_message('Invalid Command "{}"'.format(cmd))
         # Command log
         Logger.error('Command "%s" not found', cmd)
 
@@ -190,9 +192,9 @@ class CryptikChaosApp(
         "Print help topics"
 
         if cmds:
-            self.print_message("{}\n".format(str(header)), None, True)
+            self.print_message("{}".format(str(header)), None, True)
             if constants.RULER:
-                self.print_message(("{}\n".format(str(constants.RULER * len(header)))), None, True)
+                self.print_message(("{}".format(str(constants.RULER * len(header)))), None, True)
             self.columnize(cmds, maxcol - 1)
             self.print_message(("\n"), None, True)
         
@@ -213,7 +215,7 @@ class CryptikChaosApp(
                             ", ".join(map(str, nonstrings)))
         size = len(list)
         if size == 1:
-            self.print_message('%s\n' % str(list[0]), None, True)
+            self.print_message('%s' % str(list[0]), None, True)
             return
         # Try every row count from 1 upwards
         for nrows in range(1, len(list)):
@@ -251,7 +253,7 @@ class CryptikChaosApp(
                 del texts[-1]
             for col in range(len(texts)):
                 texts[col] = texts[col].ljust(colwidths[col])
-            self.print_message("%s\n" % str("  ".join(texts)), None, True)
+            self.print_message("%s" % str("  ".join(texts)), None, True)
 
     def cmd_help(self, arg):
         """
@@ -266,11 +268,11 @@ class CryptikChaosApp(
                 try:
                     doc = getattr(self, 'cmd_' + arg).__doc__
                     if doc:
-                        self.print_message("%s\n" % str(doc), factor=False)
+                        self.print_message("%s" % str(doc), factor=False)
                         return
                 except AttributeError:
                     pass
-                self.print_message("%s\n" % str(constants.NOHELP % (arg,)))
+                self.print_message("%s" % str(constants.NOHELP % (arg,)))
                 return
             func()
         else:
@@ -298,7 +300,7 @@ class CryptikChaosApp(
                         cmds_doc.append(cmd)
                     else:
                         cmds_undoc.append(cmd)
-            self.print_message("%s\n" % str(constants.DOC_LEADER))
+            self.print_message("%s" % str(constants.DOC_LEADER))
             self.print_topics(constants.DOC_HEADER, cmds_doc, 80)
             self.print_topics(constants.MISC_HEADER, help_doc.keys(), 80)
             self.print_topics(constants.UNDOC_HEADER, cmds_undoc, 80)
