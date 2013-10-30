@@ -60,9 +60,9 @@ class ConsoleInput(TextInput):
         
     def on_text(self, instance, value):
         "Method hook called on change of TextInput.text value"   
-        
+
         # Partial comm
-        pcmd = value.strip()
+        pcmd = value.rstrip('\t')
         # List of commands
         cmd_list =  [c[4:] for c in self.get_commands()]
         # Get commands with pcmd matches
@@ -87,7 +87,8 @@ class ConsoleInput(TextInput):
 class ConsoleWindow(GridLayout):
     "Console window class."
     
-    def __init__(self, handle_input_hook, get_cmd_hook, greeting):
+    def __init__(self, handle_input_hook, get_cmd_hook, greeting, 
+        font_type, font_size):
         
         # Init super
         super(ConsoleWindow, self).__init__()
@@ -100,7 +101,9 @@ class ConsoleWindow(GridLayout):
             size_hint_y=None,
             height=100,
             halign='left',
-            markup=True
+            markup=True,
+            font_name=font_type,
+            font_size=font_size
         )
                         
         # bind label to scrollable size

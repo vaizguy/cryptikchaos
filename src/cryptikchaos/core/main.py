@@ -48,7 +48,7 @@ class CryptikChaosApp(
 
     def build(self):
         "Build the kivy App."
-                
+                        
         # Initiate Kivy GUI
         root = GUIService.build(self)
         
@@ -106,7 +106,7 @@ class CryptikChaosApp(
         
         # Indicates multiline output required
         if intermediate:
-            text = "{}{}\n".format(
+            text = "{}{}".format(
                 constants.GUI_LABEL_LEFT_PADDING, 
                 msg
             )
@@ -123,7 +123,7 @@ class CryptikChaosApp(
             rcc = self.get_peerid_color(peerid)
 
             # Single line output with peer id
-            text = "{}{}[color={}]{}[/color] : {}\n".format(
+            text = "{}{}[color={}]{}[/color] : {}".format(
                 constants.GUI_LABEL_LEFT_PADDING,
                 constants.GUI_LABEL_PROMPT_SYM,
                 rcc,
@@ -136,8 +136,11 @@ class CryptikChaosApp(
         # adding a newline character after 75 chars
         if factor:
             text = factor_line(text)
-        else:
-            text = '\n{}'.format(text) 
+        
+        text = '\n[font={}]{}[/font]'.format(
+            constants.GUI_FONT_TYPE, 
+            text
+        ) 
 
         self.append_text(text)
 

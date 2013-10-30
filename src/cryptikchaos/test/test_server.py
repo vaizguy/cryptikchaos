@@ -20,8 +20,12 @@ from cryptikchaos.libs.utilities import get_time
 
 from kivy.app import App
 from kivy.uix.label import Label
+from kivy.resources import resource_add_path
 
-
+# Add kivy resource paths
+resource_add_path(constants.KIVY_RESOURCE_PATH)
+        
+        
 class TestServerApp(App, CommService):
     "Test sever application."
 
@@ -42,7 +46,9 @@ class TestServerApp(App, CommService):
             \n+Test Server started+\
             \n[ {} ]
             \n""".format(get_time()),
-            markup=True
+            markup=True,
+            font_name=constants.GUI_FONT_TYPE,
+            font_size=constants.GUI_FONT_SIZE
         )
 
         return self.label

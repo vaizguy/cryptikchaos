@@ -21,6 +21,7 @@ import zlib
 import json
 import base64
 import random
+import re
 
 def ip_to_uint32(ip):
     """
@@ -95,14 +96,21 @@ def factor_line(line, cmax=100, delim='\n'):
     Factors a line in to max num of chars seperated
     by delimiter.
     """
+    
+    # check if factoring required
+    if len(line) <= cmax:
+        return line
+    else:
+        print len(line), line
+    
     # Remove any newline characters in the line
-    line = line.strip()
+    line = re.sub(r"\r\n", " ", line)
     # Get length of line
     length = len(line)
     # Factor line into n number of lines of max chars each
     lines = [ line[i: i+cmax] for i in xrange(0, length, cmax) ]
     
-    return "\n{}".format(delim.join(lines))
+    return "{}".format(delim.join(lines))
 
 def get_time():
     """

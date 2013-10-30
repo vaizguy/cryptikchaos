@@ -31,6 +31,7 @@ constants.TIME_FORMAT = "%a, %d %b %Y %H:%M:%S +0000"
 constants.PROJECT_PATH = "{}/..".format(
     os.path.dirname(os.path.realpath(__file__))
 )
+constants.KIVY_RESOURCE_PATH = "{}/fonts".format(constants.PROJECT_PATH)
 # ------------------------------------------------------------------------####
 
 # ---peer attribute constants---------------------------------------------####
@@ -43,6 +44,8 @@ constants.PEER_NAME = "MYPOD"
 
 # ------------------GUI Attribute CONSTANTS-------------------------------####
 
+constants.GUI_FONT_TYPE = "DroidSansMono.ttf"
+constants.GUI_FONT_SIZE = 14
 constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_WELCOME_MSG = """
 {}==========================
