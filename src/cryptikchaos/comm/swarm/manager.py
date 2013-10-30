@@ -46,15 +46,21 @@ class SwarmManager:
 
         # Closing all connections
         Logger.info("Closing all connections.")
-
+        
+        peer_ids = self.list_peer_ids()
+        
+        # Exit if no connections to clear
+        if not peer_ids:
+            return None
+        
         # Remove peer connections
-        for pid in self.list_peer_ids():
+        for pid in peer_ids:
             # Update peer connection status
             self.update_peer_connection_status(pid, False)
             # Remove existing connection objects
             self.peer_connections[pid] = None
 
-        # Close peer dict
+        # Close peer dict if it exists
         self._peer_dict.close()
 
     def add_peer(self, pid, key, host, port):
@@ -143,8 +149,11 @@ class SwarmManager:
 
     def list_peer_ids(self):
         "Returns a list of all peer IDs present in swarm."
-
-        return self._peer_dict.keys()
+        
+        try:
+            return self._peer_dict.keys()
+        except AttributeError:
+            return []
 
     def build_swarm_graph(self):
         "Return visual graph of entire swarm"

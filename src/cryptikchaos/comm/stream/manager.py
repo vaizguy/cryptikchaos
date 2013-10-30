@@ -32,7 +32,11 @@ class StreamManager:
     def __del__(self):
 
         # Clear stored streams
-        del self.stream_dict
+        try:
+            del self.stream_dict
+        except AttributeError:
+            return None
+            
 
     def pack_stream(self, captype="NULL", capcontent='',
                      dest_host="127.0.0.1", src_host="127.0.0.1"):
