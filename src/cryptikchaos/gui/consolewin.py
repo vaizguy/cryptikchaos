@@ -103,14 +103,17 @@ class ConsoleWindow(GridLayout):
             halign='left',
             markup=True,
             font_name=font_type,
-            font_size=font_size
+            font_size=font_size,
         )
                         
         # bind label to scrollable size
         self.label.bind(texture_size=self.label.setter('size'))
                        
         # Scroll view label
-        scroll_view = ScrollView(size_hint_y=0.9, size=(400, 400))
+        scroll_view = ScrollView(
+            size_hint_y=0.9, 
+            size=(400, 400),
+        )
         # TODO X-axis scroll not working
         scroll_view.do_scroll_y = True
         scroll_view.do_scroll_x = True
@@ -137,11 +140,24 @@ class ConsoleWindow(GridLayout):
 class ConsoleWindowTest(App):
 
     def build(self):
+                
+        # Build ConsoleWindow
+        root = ConsoleWindow(
+            # Input handler hook
+            handle_input_hook=self.handle_input_hook,
+            # Get command list hook
+            get_cmd_hook=lambda: None,
+            # Console splash greeting
+            greeting="Testing Window!",
+            # Font type face
+            font_type=constants.GUI_FONT_TYPE,
+            # Font size
+            font_size=constants.GUI_FONT_SIZE
+        ) ## TODO messy implementation
         
-        self.root = ConsoleWindow(self.handle_input, "Testing Console Window!")
-        return self.root
+        return root
     
-    def handle_input(self, textbox):
+    def handle_input_hook(self, textbox):
         
         print "Input", textbox.text
         textbox.text = ""
