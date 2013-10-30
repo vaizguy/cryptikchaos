@@ -22,6 +22,7 @@ import json
 import base64
 import random
 import re
+import os
 
 def ip_to_uint32(ip):
     """
@@ -166,7 +167,7 @@ def criptiklogo():
     else:
         # Return logo if success
         return logo.format(
-            __author__,
+            os.getenv("USER"),
             __version__
        )
 
