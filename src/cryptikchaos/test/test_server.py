@@ -15,7 +15,7 @@ pythonpath.AddSysPath('../../')
 
 from cryptikchaos.config.configuration import constants
 from cryptikchaos.comm.service import CommService
-from cryptikchaos.libs.utilities import factor_line
+from cryptikchaos.libs.utilities import wrap_line
 from cryptikchaos.libs.utilities import get_time
 
 from kivy.app import App
@@ -48,7 +48,10 @@ class TestServerApp(App, CommService):
             \n""".format(get_time()),
             markup=True,
             font_name=constants.GUI_FONT_TYPE,
-            font_size=constants.GUI_FONT_SIZE
+            font_size=constants.GUI_FONT_SIZE,
+            text_size=(750, None),
+            shorten=True,
+            valign='top'
         )
 
         return self.label
@@ -81,7 +84,7 @@ class TestServerApp(App, CommService):
         )
             
         # Factor line
-        text = factor_line(text)
+        text = wrap_line(text)
         
         # Append line to label
         self.label.text += text

@@ -104,6 +104,9 @@ class ConsoleWindow(GridLayout):
             markup=True,
             font_name=font_type,
             font_size=font_size,
+            text_size=(750, None),
+            shorten=True,
+            valign='top'
         )
                         
         # bind label to scrollable size
@@ -112,7 +115,6 @@ class ConsoleWindow(GridLayout):
         # Scroll view label
         scroll_view = ScrollView(
             size_hint_y=0.9, 
-            size=(400, 400),
         )
         # TODO X-axis scroll not working
         scroll_view.do_scroll_y = True

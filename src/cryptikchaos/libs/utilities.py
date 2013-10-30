@@ -91,7 +91,7 @@ def decompress(stream):
     
     return zlib.decompress(stream)
 
-def factor_line(line, cmax=100, delim='\n'):
+def wrap_line(line, cmax=100, delim='\n'):
     """
     Factors a line in to max num of chars seperated
     by delimiter.

@@ -21,7 +21,7 @@ from cryptikchaos.config.service import EnvService
 from cryptikchaos.config.configuration import constants
 from cryptikchaos.libs.Table.prettytable import PrettyTable
 from cryptikchaos.libs.utilities import get_my_ip
-from cryptikchaos.libs.utilities import factor_line 
+from cryptikchaos.libs.utilities import wrap_line
 
 from kivy.logger import Logger
 from kivy.clock import Clock
@@ -95,7 +95,7 @@ class CryptikChaosApp(
             # Print logo through log
             Logger.info('\n{}'.format(constants.GUI_LOGO))
         
-    def print_message(self, msg, peerid=None, intermediate=False, factor=True):
+    def print_message(self, msg, peerid=None, intermediate=False, wrap=True):
         "Print a message in the output window."
 
         # Convert to string
@@ -131,8 +131,8 @@ class CryptikChaosApp(
         # TODO Horizontal scroll is not working
         # Setting maximum line length to 75 and 
         # adding a newline character after 75 chars
-        if factor:
-            text = factor_line(text)
+        if wrap:
+            text = wrap_line(text)
         
         text = '\n[font={}]{}[/font]'.format(
             constants.GUI_FONT_TYPE, 
@@ -272,7 +272,7 @@ class CryptikChaosApp(
                 try:
                     doc = getattr(self, 'cmd_' + arg).__doc__
                     if doc:
-                        self.print_message("%s" % str(doc), factor=False)
+                        self.print_message("%s" % str(doc), wrap=False)
                         return
                 except AttributeError:
                     pass
@@ -411,7 +411,7 @@ class CryptikChaosApp(
             for r in plist:
                 table.add_row(r)
 
-            self.print_message("List of live peers:\n{}".format(table), factor=False)
+            self.print_message("List of live peers:\n{}".format(table), wrap=False)
         else:
             self.print_message("No live peers.")
 
