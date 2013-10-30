@@ -165,7 +165,15 @@ def criptiklogo():
 def random_color_code():
     
     r = lambda: random.randint(0,255)
-    return '#{:02X}{:02X}{:02X}'.format(r(),r(),r())
+    
+    while True:
+        # Get Random color code
+        rcc ='#{:02X}{:02X}{:02X}'.format(r(),r(),r())
+        # Filter App b/w text colors
+        if (rcc != "#000000" or rcc != "#FFFFFF"):
+            break
+        
+    return rcc
 
 
 if __name__ == "__main__":
