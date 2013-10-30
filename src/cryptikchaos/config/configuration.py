@@ -20,6 +20,7 @@ import string
 from cryptikchaos.config import constants
 
 from cryptikchaos.libs.utilities import get_time
+from cryptikchaos.libs.utilities import criptiklogo
 
 # ---Application Environment----------------------------------------------####
 
@@ -47,19 +48,15 @@ constants.PEER_NAME = "MYPOD"
 constants.GUI_FONT_TYPE = "DroidSansMono.ttf"
 constants.GUI_FONT_SIZE = 14
 constants.GUI_LABEL_LEFT_PADDING = ""
+constants.GUI_LOGO = criptiklogo()
 constants.GUI_WELCOME_MSG = """
-{}==========================
-{}CryptikChaos v.{}
-{}==========================
+{}
 {}[{}]
 
 {}>> Welcome to CryptikChaos P2P Net <<
 {}>> Enter "help" for command listing <<
 """.format(
-    constants.GUI_LABEL_LEFT_PADDING,
-    constants.GUI_LABEL_LEFT_PADDING,
-    str(__version__),
-    constants.GUI_LABEL_LEFT_PADDING,
+    constants.GUI_LOGO,
     constants.GUI_LABEL_LEFT_PADDING,
     get_time(),
     constants.GUI_LABEL_LEFT_PADDING,

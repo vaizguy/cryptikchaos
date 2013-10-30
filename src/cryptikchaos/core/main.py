@@ -22,7 +22,6 @@ from cryptikchaos.config.configuration import constants
 from cryptikchaos.libs.Table.prettytable import PrettyTable
 from cryptikchaos.libs.utilities import get_my_ip
 from cryptikchaos.libs.utilities import factor_line 
-from cryptikchaos.libs.utilities import criptiklogo
 
 from kivy.logger import Logger
 from kivy.clock import Clock
@@ -75,7 +74,7 @@ class CryptikChaosApp(
 
     def start(self):
         "Start the application."
-                        
+                               
         # Print criptikchaos banner
         Clock.schedule_once(self.print_logo, 0.05)
         
@@ -91,12 +90,10 @@ class CryptikChaosApp(
         
     def print_logo(self, dt):
         "Print the criptikchaos logo"
-        
-        # Get logo
-        logo = criptiklogo()
-        
-        if logo:
-            print logo
+                
+        if constants.GUI_LOGO:
+            # Print logo through log
+            Logger.info('\n{}'.format(constants.GUI_LOGO))
         
     def print_message(self, msg, peerid=None, intermediate=False, factor=True):
         "Print a message in the output window."
