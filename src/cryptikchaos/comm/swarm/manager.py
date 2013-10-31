@@ -79,7 +79,12 @@ class SwarmManager:
             Logger.debug("Adding Peer {} , {}@{}".format(pid, host, port))
             
         # Random message color code
-        rcc = random_color_code()
+        while True:
+            # Get RCC
+            rcc = random_color_code()
+            # Check if color not used
+            if rcc not in self.list_peer_id_colors():
+                break                
 
         # Peer dictionary structure defined here
         self._peer_dict[str(pid)] = Peer({
@@ -197,7 +202,22 @@ class SwarmManager:
                  p_info["PEER_CONN_STATUS"]))
 
         return peerlist
+    
+    def list_peer_id_colors(self):
+        "Returns a list of all the peers"
 
+        rcclist = []
+
+        for k in self._peer_dict.keys():
+            # Get peer attributes/
+            p_info = self._peer_dict[k]
+            # Append id rcc
+            rcclist.append(
+                p_info["PEER_ID_COLOR"],
+            )
+
+        return rcclist
+    
     def list_live_peers(self):
         "Returns a list of all online peers"
 
