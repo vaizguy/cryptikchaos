@@ -101,8 +101,6 @@ def wrap_line(line, cmax=100, delim='\n'):
     # check if factoring required
     if len(line) <= cmax:
         return line
-    else:
-        print len(line), line
     
     # Remove any newline characters in the line
     line = re.sub(r"\r\n", " ", line)

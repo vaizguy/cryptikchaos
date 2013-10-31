@@ -37,7 +37,16 @@ class EnvService:
         i = 1
         
         for k in sorted(self.env_dict.keys()):
-            constants.append( "[" + str(i) + "] " + k )
+            v = self.env_dict[k].strip()
+            
+            if len(v[:20]) < 20:
+                constants.append(
+                (i, k, "{}".format(v.encode('string_escape')[:20]))
+                )
+            else:
+                constants.append(
+                (i, k, "{}...".format(v.encode('string_escape')[:20]))
+                )                
             i += 1
             
         return constants
@@ -78,16 +87,43 @@ class EnvService:
         """
         
         return (
-            self.deserialize_caps_conf(serialstr) == self.caps_conf_dict()
+            self.deserialize_stream_conf(serialstr) == self.caps_conf_dict()
         )
         
 if __name__ == "__main__":
     
+    from cryptikchaos.libs.Table.prettytable import PrettyTable
+    
     e = EnvService()
-    print e.list_constants()
+    lc = e.list_constants()
+    print lc
     print "Peer port = {}".format(e.get_constant("PEER_PORT"))
     print "Is configs equal: {}".format(e.config_equal(
-        e.serialize_caps_conf())
+        e.serialize_stream_conf())
     )
-    print "Len of serial config: {}".format(len(e.serialize_caps_conf()))
+    print "Len of serial config: {}".format(len(e.serialize_stream_conf()))
+    
+    def env():
+        """
+        View Application environment constants.
+        (useful for realtime debugging)
+        Usage: env
+        """
+        
+        constants = e.list_constants()
+        
+        if constants:
+            table = PrettyTable(["S.NO", "CONSTANT", "VALUE"])
+        
+            for c in constants:
+                table.add_row(c)
+            
+            print """
+                \nEnvironment Constants:
+                \nTo see value use: 'eko <constant name>'
+                \n{}""".format(table)
+        else:
+            print "No environment variables defined."
+    
+    env()
     

@@ -434,13 +434,24 @@ class CryptikChaosApp(
         Usage: env
         """
         
-        self.print_message(
-            """\n\nEnvironment Constants:\nTo see value use: 'eko <constant name>'"""
-        )
+        constants = self.list_constants()
         
-        for c in self.list_constants():
-            self.print_message(msg=c, intermediate=True)
+        if constants:
+            table = PrettyTable(["S.NO", "CONSTANT", "VALUE"])
         
+            for c in constants:
+                table.add_row(c)
+            
+            self.print_message(
+                """
+                \nEnvironment Constants:
+                \nTo see value use: 'eko <constant name>'
+                \n{}""".format(table),
+                wrap=False
+            )
+        else:
+            self.print_message(msg="No environment variables defined.")
+               
     def cmd_eko(self, cmdline):
         """
         View environment constant value.
