@@ -69,12 +69,24 @@ class ConsoleInput(TextInput):
         "Used to get console input text"
         
         return self._filter_prompt(instance.text)
+
+    def _add_text(self, instance, text=None):
+        "Used to access instance.text"
+        
+        # Change text
+        if text:
+            instance.text = "{}{}".format(
+                constants.GUI_LABEL_PROMPT_SYM, 
+                text
+            )
+        else:
+            instance.text = "{}".format(constants.GUI_LABEL_PROMPT_SYM)
     
     def _reset_prompt(self, instance):
         "Reset the prompt to default"
         
         # Clear input text in input box
-        instance.text = "{}".format(constants.GUI_LABEL_PROMPT_SYM)
+        self._add_text(instance)
         # Reset cursor
         instance.do_cursor_movement("cursor_end")
         
@@ -125,11 +137,7 @@ class ConsoleInput(TextInput):
             # first match for now ## TODO
             fcmd = pcmd_matches.pop()
             # Change text
-            instance.text = "{}{}".format(
-                constants.GUI_LABEL_PROMPT_SYM, 
-                fcmd
-            )
-
+            self._add_text(instance, fcmd)
             # move cursor to end
             self.do_cursor_movement("cursor_end")
 
