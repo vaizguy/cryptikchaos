@@ -13,6 +13,8 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.scrollview import ScrollView
 
+from cryptikchaos.config.configuration import constants
+
 import re
 
 
@@ -33,25 +35,59 @@ class ConsoleInput(TextInput):
         self.size_hint_y=0.1
         # Sets focus active
         self.focus = True
+        # Set background color
+        self.background_color = [0, 0, 0, 0]
+        # Set text color
+        self.foreground_color = [1, 1, 1, 1]
+        # Set padding for text input
+        self.padding = [25, 15, 10, 15]
         
         # Input command handler
         self.handleInput_cmd_hook = handleInput_cmd_hook
         # Get list of defined commands
         self.getCMD_cmd_hook = getCMD_cmd_hook
         
+        # Prompt length
+        self.prompt_len = len(constants.GUI_LABEL_PROMPT_SYM)
+        
         # Bind to function on entry
         self.bind(on_text_validate=self.on_enter)
+        
+        # Finally add prompt
+        self._reset_prompt(self)
+        
+    def _filter_prompt(self, text):
+        "Remove prompt symbol from text."
+        
+        if constants.GUI_LABEL_PROMPT_SYM in text: 
+            # If prompt in text
+            return text[self.prompt_len:]
+        else:
+            return text
+    
+    def _get_text(self, instance):
+        "Used to get console input text"
+        
+        return self._filter_prompt(instance.text)
+    
+    def _reset_prompt(self, instance):
+        "Reset the prompt to default"
+        
+        # Clear input text in input box
+        instance.text = "{}".format(constants.GUI_LABEL_PROMPT_SYM)
+        # Reset cursor
+        instance.do_cursor_movement("cursor_end")
         
     def on_enter(self, instance):
         "Called on text input entry"
         
         # Get data input
-        input_text = instance.text
+        input_text = self._get_text(instance)
         
         # Handle input
         if input_text:
-            # Clear text in input box
-            instance.text = ""         
+            # Reset prompt
+            self._reset_prompt(instance)
             # Handle the input
             self.handleInput_cmd_hook(input_text)
             
@@ -59,10 +95,18 @@ class ConsoleInput(TextInput):
         self.focus = True ## TODO not working.
         
     def on_text(self, instance, value):
-        "Method hook called on change of TextInput.text value"   
-
+        "Method hook called on change of TextInput.text value"
+        
+        # Prompt is readonly
+        if (
+            len(value) <= self.prompt_len or \
+            constants.GUI_LABEL_PROMPT_SYM not in value[:self.prompt_len]
+           ):
+            # Reset prompt
+            self._reset_prompt(instance)
+              
         # Partial comm
-        pcmd = value.rstrip('\t')
+        pcmd = self._filter_prompt(value).rstrip('\t')
         
         # Commands
         command_list = self.getCMD_cmd_hook()
@@ -81,13 +125,11 @@ class ConsoleInput(TextInput):
             # first match for now ## TODO
             fcmd = pcmd_matches.pop()
             # Change text
-            instance.text = fcmd
-            # position difference
-            diff = len(fcmd) - len(pcmd)
-            # get current position
-            (x, y) = self.cursor
-            # Shift cursor
-            self.cursor = (x+diff, y)
+            instance.text = "{}{}".format(
+                constants.GUI_LABEL_PROMPT_SYM, 
+                fcmd
+            )
+
             # move cursor to end
             self.do_cursor_movement("cursor_end")
 
@@ -107,6 +149,7 @@ class ConsoleWindow(GridLayout):
         self.height = 600
         self.width = 800
         
+        # Create label for console output
         self.label = Label(
             text=greeting,
             size_hint_y=None,
@@ -174,13 +217,13 @@ if __name__ == '__main__':
             # Build ConsoleWindow
             root = ConsoleWindow(
                 # Input handler hook
-                handle_input_hook=self.handle_input_hook,
+                handleInput_cmd_hook=self.handle_input_hook,
                 # Get command list hook
-                get_cmd_hook=lambda: None,
+                getCMD_cmd_hook=lambda: None,
                 # Console splash greeting
                 greeting="Testing Window!",
                 # Font type face
-                font_type="DroidSansMono.ttf",
+                font_type=constants.GUI_FONT_TYPE,
                 # Font size
                 font_size=14
             ) ## TODO messy implementation
@@ -201,6 +244,7 @@ if __name__ == '__main__':
             
             print "New heightxwidth {}x{}".format(height, width)
     
-    resource_add_path("../fonts")
+    # Add resource path
+    resource_add_path(constants.KIVY_RESOURCE_PATH)
 
     ConsoleWindowTest().run()
