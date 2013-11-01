@@ -35,9 +35,15 @@ class GUIService(App):
             font_type=constants.GUI_FONT_TYPE,
             # Font size
             font_size=constants.GUI_FONT_SIZE
-        ) ## TODO messy implementation
+        )
+        ## TODO messy implementation, here if in the
+        ## main application class we do not have self.handle_input_hook
+        ## and self.get_commands_hook the app will crash.
         
         # Apeend text to console hook
-        self.append_text = root.append_text_to_console
+        self.append_text_hook = root.append_text_to_console
+        
+        # Get App GUI Width
+        self.get_maxwidth_hook = root.get_maxwidth
         
         return root

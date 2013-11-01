@@ -64,7 +64,10 @@ class ConsoleInput(TextInput):
         # Partial comm
         pcmd = value.rstrip('\t')
         # List of commands
-        cmd_list =  [c[4:] for c in self.get_commands()]
+        if self.get_commands():
+            cmd_list =  [c[4:] for c in self.get_commands()]
+        else:
+            cmd_list = []
         # Get commands with pcmd matches
         pcmd_matches = [c for c in cmd_list if re.match(r'^{}'.format(pcmd), c)]
 
@@ -95,6 +98,9 @@ class ConsoleWindow(GridLayout):
         
         # Number of cols
         self.cols = 1
+        # Height and width
+        self.height = 600
+        self.width = 800
         
         self.label = Label(
             text=greeting,
@@ -104,7 +110,7 @@ class ConsoleWindow(GridLayout):
             markup=True,
             font_name=font_type,
             font_size=font_size,
-            text_size=(750, None),
+            text_size=(self.width-50, None),
             shorten=True,
             valign='top'
         )
@@ -114,7 +120,8 @@ class ConsoleWindow(GridLayout):
                        
         # Scroll view label
         scroll_view = ScrollView(
-            size_hint_y=0.9, 
+            size_hint_y=0.9,
+            size=(self.height, self.width)
         )
         # TODO X-axis scroll not working
         scroll_view.do_scroll_y = True
@@ -137,35 +144,57 @@ class ConsoleWindow(GridLayout):
     def append_text_to_console(self, text):
         
         self.label.text += text
-
-
-class ConsoleWindowTest(App):
-
-    def build(self):
-                
-        # Build ConsoleWindow
-        root = ConsoleWindow(
-            # Input handler hook
-            handle_input_hook=self.handle_input_hook,
-            # Get command list hook
-            get_cmd_hook=lambda: None,
-            # Console splash greeting
-            greeting="Testing Window!",
-            # Font type face
-            font_type=constants.GUI_FONT_TYPE,
-            # Font size
-            font_size=constants.GUI_FONT_SIZE
-        ) ## TODO messy implementation
         
-        return root
-    
-    def handle_input_hook(self, textbox):
+    def on_resize(self, instance, width, height):
         
-        print "Input", textbox.text
-        textbox.text = ""
-        textbox.focus = True
-        self.root.append_text_to_console("\nInput Success\n")
+        # New height and width
+        self.width = width
+        self.height = height
+        
+    def get_maxwidth(self):
+        
+        return self.width
+
             
 if __name__ == '__main__': 
-                     
+    
+    from kivy.resources import resource_add_path
+    from kivy.core.window import Window 
+    
+    class ConsoleWindowTest(App):
+
+        def build(self):
+                    
+            # Build ConsoleWindow
+            root = ConsoleWindow(
+                # Input handler hook
+                handle_input_hook=self.handle_input_hook,
+                # Get command list hook
+                get_cmd_hook=lambda: None,
+                # Console splash greeting
+                greeting="Testing Window!",
+                # Font type face
+                font_type="DroidSansMono.ttf",
+                # Font size
+                font_size=14
+            ) ## TODO messy implementation
+            
+            # Window resize hook
+            Window.bind(on_resize=self.resize)
+           
+            return root
+        
+        def handle_input_hook(self, textbox):
+            
+            print "Input", textbox.text
+            textbox.text = ""
+            textbox.focus = True
+            self.root.append_text_to_console("\nInput Success\n")
+            
+        def resize(self, instance, height, width):
+            
+            print "New heightxwidth {}x{}".format(height, width)
+    
+    resource_add_path("../fonts")
+
     ConsoleWindowTest().run()

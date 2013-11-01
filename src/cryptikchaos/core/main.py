@@ -131,14 +131,17 @@ class CryptikChaosApp(
         # Setting maximum line length to 75 and 
         # adding a newline character after 75 chars
         if wrap:
-            text = wrap_line(text)
+            # Get window size
+            wsize = self.get_maxwidth_hook()/8
+            # Wrap line
+            text = wrap_line(line=text, cmax=wsize)
         
         text = '\n[font={}]{}[/font]'.format(
             constants.GUI_FONT_TYPE, 
             text
         ) 
 
-        self.append_text(text)
+        self.append_text_hook(text)
 
     ## GUI Callback Hooks
     ## ----------------------------------------------------
