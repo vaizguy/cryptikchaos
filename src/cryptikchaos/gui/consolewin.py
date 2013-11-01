@@ -89,6 +89,7 @@ class ConsoleInput(TextInput):
         self._add_text(instance)
         # Reset cursor
         instance.do_cursor_movement("cursor_end")
+
         
     def on_enter(self, instance):
         "Called on text input entry"
@@ -130,8 +131,8 @@ class ConsoleInput(TextInput):
             cmd_list = []
             
         # Get commands with pcmd matches
-        pcmd_matches = [c for c in cmd_list if re.match(r'^{}'.format(pcmd), c)]
-
+        pcmd_matches = [c for c in cmd_list if re.match(r'\s*{}'.format(pcmd), c)]
+ 
         # command completion
         if '\t' in value and pcmd_matches:
             # first match for now ## TODO

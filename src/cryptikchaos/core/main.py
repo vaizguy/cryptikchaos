@@ -262,7 +262,9 @@ class CryptikChaosApp(
     def cmd_help(self, arg):
         """
         Displays all available command information.
-        Usage: help [command]"""
+        Quick one-time tab completion can be done by pressing the TAB key.
+        Usage: help [command]
+        """
 
         if arg:
             # XXX check arg syntax
