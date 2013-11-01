@@ -23,6 +23,8 @@ import base64
 import random
 import re
 import os
+import urllib2
+
 
 def ip_to_uint32(ip):
     """
@@ -60,23 +62,34 @@ def generate_token(uid, pkey):
         hashlib.sha512(pkey).hexdigest()
     ).hexdigest()
     
-def get_my_ip():
-    """
-    Attempt to connect to an Internet host in order to determine the
-    local machine's IP address.
-    """
+def get_nat_ip():
+    "Get IP of NAT"
     
     s = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
     host = 'localhost'
     try:
         s.connect( ( "www.google.com", 80 ) )
     except:
-        Logger.debug('No active internet connection.')
+        Logger.debug('No active NAT connection.')
         return host
     else:
         host = s.getsockname()[0]
         s.close()
         return host 
+
+def get_my_ip():
+    "Get my public IP address or if offline get my NAT IP"
+    
+    try:
+        # Get IP from curlmyip.com which gives the raw ip address
+        my_ip = urllib2.urlopen('http://curlmyip.com').read().strip()
+        
+    except urllib2.URLError:
+        Logger.debug('No active internet connection.')
+        # If offline return host
+        my_ip = 'localhost'
+    
+    return my_ip
     
 def compress(stream):
     """

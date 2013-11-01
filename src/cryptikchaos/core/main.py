@@ -20,7 +20,6 @@ from cryptikchaos.config.service import EnvService
 
 from cryptikchaos.config.configuration import constants
 from cryptikchaos.libs.Table.prettytable import PrettyTable
-from cryptikchaos.libs.utilities import get_my_ip
 from cryptikchaos.libs.utilities import wrap_line
 
 from kivy.logger import Logger
@@ -55,7 +54,7 @@ class CryptikChaosApp(
         my_host = constants.LOCAL_TEST_HOST
         # If not in test mode get LAN IP
         if not constants.ENABLE_TEST_MODE:
-            my_host = get_my_ip()
+            my_host = constants.PEER_HOST
 
         # Initiate Twisted Server & Client services
         CommService.__init__(

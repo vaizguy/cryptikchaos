@@ -21,6 +21,15 @@ from cryptikchaos.config import constants
 
 from cryptikchaos.libs.utilities import get_time
 from cryptikchaos.libs.utilities import criptiklogo
+from cryptikchaos.libs.utilities import get_my_ip
+
+
+# ---Application switches-------------------------------------------------####
+
+constants.ENABLE_TEST_MODE = True
+constants.ENABLE_COMPRESSION = True
+constants.ENABLE_SHUFFLE = True
+# ------------------------------------------------------------------------####
 
 # ---Application Environment----------------------------------------------####
 
@@ -39,7 +48,7 @@ constants.KIVY_RESOURCE_PATH = "{}/fonts".format(constants.PROJECT_PATH)
 
 constants.PEER_ID = uuid.getnode()
 constants.PEER_PORT = 1597
-constants.PEER_HOST = "127.0.0.1"
+constants.PEER_HOST = get_my_ip()
 constants.PEER_NAME = "MYPOD"
 # ------------------------------------------------------------------------####
 
@@ -124,6 +133,7 @@ constants.LOCAL_TEST_STR = ''.join(
 )
 # Test capsule type
 constants.LOCAL_TEST_STREAM_TYPE = "MTST"
+# If not in test mode get LAN IP
 # Local Test IP
 constants.LOCAL_TEST_HOST = "127.0.0.1"
 # Local Test Port
@@ -158,10 +168,4 @@ constants.MISC_HEADER = "Miscellaneous help topics:"
 constants.UNDOC_HEADER = "Undocumented commands:"
 constants.NOHELP = "*** No help on %s"
 constants.RULER = '-'
-# ------------------------------------------------------------------------####
-
-# ---Application switches-------------------------------------------------####
-constants.ENABLE_TEST_MODE = True
-constants.ENABLE_COMPRESSION = True
-constants.ENABLE_SHUFFLE = True
 # ------------------------------------------------------------------------####
