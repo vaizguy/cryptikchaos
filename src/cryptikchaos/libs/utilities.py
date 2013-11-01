@@ -11,19 +11,19 @@ from cryptikchaos.config.configuration import constants
 
 from kivy import Logger
 
-from time import gmtime, strftime
-
-import struct
-import socket
-import uuid
-import hashlib
-import zlib
-import json
-import base64
-import random
-import re
-import os
-import urllib2
+from time    import gmtime, strftime
+from struct  import pack, unpack
+from socket  import inet_aton, inet_ntoa, socket, AF_INET, SOCK_STREAM
+from uuid    import uuid5, NAMESPACE_URL
+from hashlib import sha512
+from zlib    import compress as zlib_compress, \
+                    decompress as zlib_decompress
+from json    import dumps, loads
+from base64  import b64encode, b64decode
+from random  import randint, choice
+from re      import sub
+from os      import getenv
+from urllib2 import urlopen, URLError
 
 
 def ip_to_uint32(ip):
@@ -31,16 +31,16 @@ def ip_to_uint32(ip):
     Convert IPv4 Address into 32bit integer.
     """
 
-    t = socket.inet_aton(ip)
-    return struct.unpack("!I", t)[0]
+    t = inet_aton(ip)
+    return unpack("!I", t)[0]
 
 def uint32_to_ip(ipn):
     """
     Convert 32bit integer into IP Address.
     """
 
-    t = struct.pack("!I", ipn)
-    return socket.inet_ntoa(t)
+    t = pack("!I", ipn)
+    return inet_ntoa(t)
 
 def generate_uuid(host):
     """
@@ -48,7 +48,7 @@ def generate_uuid(host):
     """
 
     return str(
-        uuid.uuid5(uuid.NAMESPACE_URL, host)
+        uuid5(NAMESPACE_URL, host)
     )[0:constants.STREAM_ID_LEN]
 
 def generate_token(uid, pkey):
@@ -57,15 +57,15 @@ def generate_token(uid, pkey):
     peer public key.
     """
 
-    return hashlib.sha512(
-        hashlib.sha512(uid).hexdigest() + \
-        hashlib.sha512(pkey).hexdigest()
+    return sha512(
+        sha512(uid).hexdigest() + \
+        sha512(pkey).hexdigest()
     ).hexdigest()
     
 def get_nat_ip():
     "Get IP of NAT"
     
-    s = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
+    s = socket.socket( AF_INET, SOCK_STREAM )
     host = 'localhost'
     try:
         s.connect( ( "www.google.com", 80 ) )
@@ -82,9 +82,9 @@ def get_my_ip():
     
     try:
         # Get IP from curlmyip.com which gives the raw ip address
-        my_ip = urllib2.urlopen('http://curlmyip.com').read().strip()
+        my_ip = urlopen('http://curlmyip.com').read().strip()
         
-    except urllib2.URLError:
+    except URLError:
         Logger.debug('No active internet connection.')
         # If offline return host
         my_ip = 'localhost'
@@ -96,14 +96,14 @@ def compress(stream):
     Compress stream using zlib lib.
     """
     
-    return zlib.compress(stream)
+    return zlib_compress(stream)
 
 def decompress(stream):
     """
     Decompress stream using zlib.
     """
     
-    return zlib.decompress(stream)
+    return zlib_decompress(stream)
 
 def wrap_line(line, cmax=100, delim='\n'):
     """
@@ -116,7 +116,7 @@ def wrap_line(line, cmax=100, delim='\n'):
         return line
     
     # Remove any newline characters in the line
-    line = re.sub(r"\r\n", " ", line)
+    line = sub(r"\r\n", " ", line)
     # Get length of line
     length = len(line)
     # Factor line into n number of lines of max chars each
@@ -137,9 +137,9 @@ def serialize(dictionary):
     returns string
     """
     
-    return base64.b64encode(
-        zlib.compress(
-            json.dumps(
+    return b64encode(
+        compress(
+            dumps(
                 dictionary
             )
         )
@@ -150,9 +150,9 @@ def deserialize(serialstr):
     Deserializes network serialized dictionary, returns dict
     """
     
-    return json.loads(
-        zlib.decompress(
-            base64.b64decode(
+    return loads(
+        decompress(
+            b64decode(
                 serialstr
             )
         )
@@ -178,13 +178,13 @@ def criptiklogo():
     else:
         # Return logo if success
         return logo.format(
-            os.getenv("USER"),
+            getenv("USER"),
             __version__
        )
 
 def random_color_code():
     
-    r = lambda: random.randint(0,255)
+    r = lambda: randint(0,255)
     
     while True:
         # Get Random color code
@@ -198,9 +198,9 @@ def random_color_code():
 
 if __name__ == "__main__":
     ## Test for factor_line
-    import string, random
+    import string
        
-    s = "".join(random.choice(string.ascii_uppercase + string.digits) for x in range(512))
+    s = "".join(choice(string.ascii_uppercase + string.digits) for x in range(512))
     
     print "line", factor_line(s)
             
