@@ -45,3 +45,8 @@ as output on your Application console. On the test server you will get a message
 reciept of random data.
 
 This signifies successful data exchange between client and test server.
+
+Discussion:
+-----------
+
+Feel free to leave your queries/suggestions on cryptikchaos@googlegroups.com
