@@ -37,11 +37,11 @@ class Stream(object):
 
         # Check length of content.
         if len(content) > constants.STREAM_CONTENT_LEN:
-            raise CapsuleOverflowError(constants.STREAM_CONTENT_LEN)
+            raise StreamOverflowError(constants.STREAM_CONTENT_LEN)
 
         # Check length of capsule type.
         if len(captype) > constants.STREAM_TYPE_LEN:
-            raise CapsuleOverflowError(constants.STREAM_TYPE_LEN)
+            raise StreamOverflowError(constants.STREAM_TYPE_LEN)
 
         # localhost - 127.0.0.1 mapping.
         if dest_host == "localhost":
@@ -60,7 +60,7 @@ class Stream(object):
         cap_dstip = ip_to_uint32(dest_host)
         # Calc capsule source IP 
         cap_srcip = ip_to_uint32(src_host)
-        # Capsule type
+        # Stream type
         cap_type = captype.upper()
         # Calculate content length
         cap_len = len(content)
@@ -134,7 +134,7 @@ class Stream(object):
 
         # Check if data is of expected chunk size
         if len(stream) != constants.STREAM_SIZE:
-            raise CapsuleOverflowError()
+            raise StreamOverflowError()
 
         (
             self._dictionary['CAP_ID'],
@@ -166,7 +166,7 @@ class Stream(object):
         return string.strip(':')
 
     def getid(self):
-        "Return Capsule ID."
+        "Return Stream ID."
 
         return self._dictionary["CAP_ID"]
 
@@ -181,7 +181,7 @@ class Stream(object):
         return uint32_to_ip(self._dictionary["CAP_SRCIP"])
 
     def gettype(self):
-        "Return Capsule protocol type."
+        "Return Stream protocol type."
 
         return self._dictionary["CAP_TYPE"]
 

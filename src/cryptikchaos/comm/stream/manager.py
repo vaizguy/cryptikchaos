@@ -45,7 +45,7 @@ class StreamManager:
         try:
             # Create and populate stream with specified data
             stream = Stream(self.peer_key, captype, capcontent, dest_host, src_host)
-        except CapsuleOverflowError:
+        except StreamOverflowError:
             Logger.error("{}".format(traceback.format_exc()))
             Logger.error("Could not pack stream.")
             return None
@@ -65,9 +65,9 @@ class StreamManager:
         try:
             # Unpack into stream
             stream.unpack(serial)
-        except CapsuleOverflowError:
+        except StreamOverflowError:
             Logger.error("{}".format(traceback.format_exc()))
-            Logger.error("Capsule format is invalid, Unpack failed.")
+            Logger.error("Stream format is invalid, Unpack failed.")
             return tuple([None]*8)
         else:
             # Store unpacked stream
