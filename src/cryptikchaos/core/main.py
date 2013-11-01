@@ -151,7 +151,7 @@ class CryptikChaosApp(
     def getCMD_cmd_hook(self):
         "Get the list of defined commands"
         
-        return [cmd for cmd in dir(self) if "cmd_" in cmd]
+        return [cmd for cmd in dir(self) if "cmd_" in cmd[:4]]
     ## ----------------------------------------------------
 
     # -----------
