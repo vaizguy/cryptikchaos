@@ -26,9 +26,9 @@ class GUIService(App):
         # Build ConsoleWindow
         root = ConsoleWindow(
             # Input handler hook
-            handle_input_hook=self.handle_input_hook,
+            handleInput_cmd_hook=self.handleInput_cmd_hook,
             # Get command list hook
-            get_cmd_hook=self.get_commands_hook,
+            getCMD_cmd_hook=self.getCMD_cmd_hook,
             # Console splash greeting
             greeting=constants.GUI_WELCOME_MSG,
             # Font type face
@@ -41,9 +41,9 @@ class GUIService(App):
         ## and self.get_commands_hook the app will crash.
         
         # Apeend text to console hook
-        self.append_text_hook = root.append_text_to_console
+        self.inputText_gui_hook = root.inputText_gui_hook
         
         # Get App GUI Width
-        self.get_maxwidth_hook = root.get_maxwidth
+        self.getMaxWidth_gui_hook = root.getMaxWidth_gui_hook
         
         return root

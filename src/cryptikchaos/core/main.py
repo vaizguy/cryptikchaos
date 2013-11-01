@@ -67,7 +67,7 @@ class CryptikChaosApp(
         )
         
         # Initiate environment
-        EnvService.__init__(self)
+        EnvService.__init__(self)     
 
         return root
 
@@ -132,25 +132,23 @@ class CryptikChaosApp(
         # adding a newline character after 75 chars
         if wrap:
             # Get window size
-            wsize = self.get_maxwidth_hook()/8
+            wsize = self.getMaxWidth_gui_hook()/8
             # Wrap line
             text = wrap_line(line=text, cmax=wsize)
         
-        text = '\n[font={}]{}[/font]'.format(
-            constants.GUI_FONT_TYPE, 
-            text
-        ) 
+        text = '\n{}'.format(text) 
 
-        self.append_text_hook(text)
+        # Send text to console
+        self.inputText_gui_hook(text)
 
-    ## GUI Callback Hooks
+    ## Console-GUI Hooks
     ## ----------------------------------------------------
-    def handle_input_hook(self, console_input):
+    def handleInput_cmd_hook(self, console_input):
         "*Send* button (and return key) event call back"
         
         return self.exec_command(console_input)
     
-    def get_commands_hook(self):
+    def getCMD_cmd_hook(self):
         "Get the list of defined commands"
         
         return [cmd for cmd in dir(self) if "cmd_" in cmd]

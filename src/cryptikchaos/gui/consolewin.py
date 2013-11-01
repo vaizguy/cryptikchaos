@@ -19,7 +19,7 @@ import re
 class ConsoleInput(TextInput):
     "Console text input class"
     
-    def __init__(self, handle_input_hook, get_cmd_hook):
+    def __init__(self, handleInput_cmd_hook, getCMD_cmd_hook):
 
         # Init super
         super(ConsoleInput, self).__init__()
@@ -35,14 +35,14 @@ class ConsoleInput(TextInput):
         self.focus = True
         
         # Input command handler
-        self.handle_input = handle_input_hook
+        self.handleInput_cmd_hook = handleInput_cmd_hook
         # Get list of defined commands
-        self.get_commands = get_cmd_hook
+        self.getCMD_cmd_hook = getCMD_cmd_hook
         
         # Bind to function on entry
-        self.bind(on_text_validate=self.new_input)
+        self.bind(on_text_validate=self.on_enter)
         
-    def new_input(self, instance):
+    def on_enter(self, instance):
         "Called on text input entry"
         
         # Get data input
@@ -53,7 +53,7 @@ class ConsoleInput(TextInput):
             # Clear text in input box
             instance.text = ""         
             # Handle the input
-            self.handle_input(input_text)
+            self.handleInput_cmd_hook(input_text)
             
         # Set focu
         self.focus = True ## TODO not working.
@@ -63,11 +63,16 @@ class ConsoleInput(TextInput):
 
         # Partial comm
         pcmd = value.rstrip('\t')
+        
+        # Commands
+        command_list = self.getCMD_cmd_hook()
+        
         # List of commands
-        if self.get_commands():
-            cmd_list =  [c[4:] for c in self.get_commands()]
+        if command_list:
+            cmd_list =  [c[4:] for c in command_list]
         else:
             cmd_list = []
+            
         # Get commands with pcmd matches
         pcmd_matches = [c for c in cmd_list if re.match(r'^{}'.format(pcmd), c)]
 
@@ -90,7 +95,7 @@ class ConsoleInput(TextInput):
 class ConsoleWindow(GridLayout):
     "Console window class."
     
-    def __init__(self, handle_input_hook, get_cmd_hook, greeting, 
+    def __init__(self, handleInput_cmd_hook, getCMD_cmd_hook, greeting, 
         font_type, font_size):
         
         # Init super
@@ -105,7 +110,6 @@ class ConsoleWindow(GridLayout):
         self.label = Label(
             text=greeting,
             size_hint_y=None,
-            height=100,
             halign='left',
             markup=True,
             font_name=font_type,
@@ -134,26 +138,28 @@ class ConsoleWindow(GridLayout):
         # Input text box
         self.console_input = ConsoleInput(
             # Input handler hook
-            handle_input_hook=handle_input_hook, 
+            handleInput_cmd_hook=handleInput_cmd_hook, 
             # CMD list hook
-            get_cmd_hook=get_cmd_hook
+            getCMD_cmd_hook=getCMD_cmd_hook
         )
         
         self.add_widget(self.console_input)
         
-    def append_text_to_console(self, text):
+    ## GUI Hooks-----------------------
+    def inputText_gui_hook(self, text):
         
         self.label.text += text
+        
+    def getMaxWidth_gui_hook(self):
+        
+        return self.width
+    ##---------------------------------
         
     def on_resize(self, instance, width, height):
         
         # New height and width
         self.width = width
         self.height = height
-        
-    def get_maxwidth(self):
-        
-        return self.width
 
             
 if __name__ == '__main__': 
