@@ -445,7 +445,7 @@ class CryptikChaosApp(
             self.print_message(
                 """
                 \nEnvironment Constants:
-                \nTo see value use: 'eko <constant name>'
+                \nTo see complete value, enter: 'eko <constant name>'
                 \n{}""".format(table),
                 wrap=False
             )

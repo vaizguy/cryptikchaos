@@ -13,7 +13,6 @@ __version__ = 0.4
 import uuid
 import hmac
 import os
-import hashlib
 import random
 import string
 
@@ -22,6 +21,7 @@ from cryptikchaos.config import constants
 from cryptikchaos.libs.utilities import get_time
 from cryptikchaos.libs.utilities import criptiklogo
 from cryptikchaos.libs.utilities import get_my_ip
+from cryptikchaos.libs.utilities import generate_key
 
 
 # ---Application switches-------------------------------------------------####
@@ -140,13 +140,6 @@ constants.LOCAL_TEST_HOST = "127.0.0.1"
 constants.LOCAL_TEST_PORT = 8888
 # Local Test PEer ID
 constants.LOCAL_TEST_PEER_ID = 888
-# Local Test keys
-constants.LOCAL_TEST_CLIENT_KEY = hashlib.sha512(
-    "TEST_CLIENT_KEY{}".format(constants.PEER_ID)
-).hexdigest()
-constants.LOCAL_TEST_SERVER_KEY = hashlib.sha512(
-    "TEST_SERVER_KEY{}".format(constants.PEER_ID)
-).hexdigest()
 # Test ID
 constants.LOCAL_TEST_STREAM_ID = str(
     uuid.uuid5(
@@ -154,6 +147,9 @@ constants.LOCAL_TEST_STREAM_ID = str(
         constants.LOCAL_TEST_HOST
     )
 )[0:constants.STREAM_ID_LEN]
+# Local Test keys
+constants.LOCAL_TEST_CLIENT_KEY = generate_key(constants.LOCAL_TEST_STREAM_ID)
+constants.LOCAL_TEST_SERVER_KEY = generate_key("888")
 # Test chksum
 constants.LOCAL_TEST_STREAM_CHKSUM = hmac.new(
     constants.LOCAL_TEST_STR

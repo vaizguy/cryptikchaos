@@ -20,7 +20,7 @@ from zlib    import compress as zlib_compress, \
                     decompress as zlib_decompress
 from json    import dumps, loads
 from base64  import b64encode, b64decode
-from random  import randint, choice
+from random  import randint, choice, getrandbits
 from re      import sub
 from os      import getenv
 from urllib2 import urlopen, URLError
@@ -183,6 +183,7 @@ def criptiklogo():
        )
 
 def random_color_code():
+    "Generate random color code, #Hex{x6}"
     
     r = lambda: randint(0,255)
     
@@ -194,6 +195,31 @@ def random_color_code():
             break
         
     return rcc
+
+def generate_key(username, private_key=None):
+    "Generate keys"
+    
+    if not private_key: 
+        # Generate private key   
+        Logger.info("Generating Private Key.")
+        private_key = sha512(
+                "{}{}{}{}".format(
+                sha512(username).hexdigest(),
+                str(getrandbits(512)),
+                str(getrandbits(512)),
+                sha512(str(getrandbits(512))).hexdigest()
+            )
+        ).hexdigest()
+    
+    Logger.info("Generating Public Key.")
+    return sha512(
+        "{}{}{}{}".format(
+            sha512(private_key).hexdigest(),
+            str(getrandbits(512)),
+            sha512(str(getrandbits(512))).hexdigest(),
+            str(getrandbits(512))
+        )
+    ).hexdigest()
 
 
 if __name__ == "__main__":
