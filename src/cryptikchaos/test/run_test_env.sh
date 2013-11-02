@@ -14,13 +14,16 @@ if [[ $1 =~ "profile" ]]; then
 
     # Launch the main client
     xterm -geometry 96x24+0+0 -e \
-        'python -m cProfile -o \
-        ${PROFILE_PATH}/profile.pstats -s time ../core/main.py'
+        'python -m cProfile -o ./profile.pstats \
+        -s time ../core/main.py'
 
     # Convert Profile statistics to a graph diag.
     ${PROFILE_PATH}/gprof2dot.py \
-        -f pstats ${PROFILE_PATH}/profile.pstats \
+        -f pstats ./profile.pstats \
         | dot -Tsvg -o ${PROFILE_PATH}/callgraph.svg
+
+    # Remove pstat file
+    rm -f ./profile.pstats 
 
 ## No profiling
 else
