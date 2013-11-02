@@ -8,7 +8,7 @@ communications between server and client and vice-versa.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.4
+__version__ = 0.5
 
 import struct
 import hmac
@@ -27,8 +27,12 @@ from cryptikchaos.libs.utilities import decompress
 from cryptikchaos.libs.obscure import shuffler
 from cryptikchaos.libs.obscure import unshuffler
 
+from cryptikchaos.libs.customtypes import TransformedDict
 
-class Stream(object):
+import hashlib 
+
+
+class Stream(TransformedDict):
 
     "Communication stream definition."
 
@@ -73,29 +77,76 @@ class Stream(object):
                 string=content, 
                 iterations=constants.STREAM_CONT_SHUFF_ITER
             )
+            
+        self._valid_keys = ['CAP_ID', 'CAP_DSTIP', 'CAP_SRCIP', 'CAP_TYPE', \
+            'CAP_CONTENT', 'CAP_LEN', 'CAP_CHKSUM', 'CAP_PKEY']
 
-        ## Populate capsule fields
-        self._dictionary = {
+        ## Populate Stream Dict
+        super(Stream, self).__init__(
+            **{
             'CAP_ID'     : cap_uid,
             'CAP_DSTIP'  : cap_dstip,
-            'CAP_SCRIP'  : cap_srcip,
+            'CAP_SRCIP'  : cap_srcip,
             'CAP_TYPE'   : cap_type,
             'CAP_CONTENT': content,
             'CAP_LEN'    : cap_len,
             'CAP_CHKSUM' : cap_hmac,
             'CAP_PKEY'   : pkey
             }
-
-    def __setitem__(self, key, item):
-
-        if key not in self._dictionary:
-            raise KeyError("The key '{}' is not defined.".format(key))
-
-        self._dictionary[key] = item
+        )
 
     def __getitem__(self, key):
+        "Get value from dictionary."
 
-        return self._dictionary[key]
+        # Get item
+        return TransformedDict.__getitem__(self, key)
+
+    def __setitem__(self, key, value):
+        "Set key value-pair in dictionary"
+        
+        if key in self._valid_keys:
+            return TransformedDict.__setitem__(self, key, value)
+        else:
+            print key, self._valid_keys
+            raise Exception("Error: Invalid peer attribute.")   
+        
+    def __delitem__(self, key):
+        "Reset key's value."
+        
+        if key in self._valid_keys:
+            # Delete the item
+            TransformedDict.__delitem__(self, key)
+            # Re-create key with no value
+            return TransformedDict.__setitem__(self, key, None)
+        else:
+            # Delete unauth key
+            return TransformedDict.__delitem__(self, key)
+        
+    def __keytransform__(self, key):
+        "Manilpulate key"
+        
+        return self._hash_key(key)
+    
+    def _hash_key(self, key):
+        "Return md5 hash of key"
+        
+        return hashlib.md5(key).hexdigest()
+    
+    def keys(self):
+        
+        return self._valid_keys
+    
+    def iteritems(self):
+        
+        return [(k, TransformedDict.__getitem__(k)) for k in self._valid_keys]
+    
+    def values(self):
+        
+        return [TransformedDict.__getitem__(k) for k in self._valid_keys]
+    
+    def items(self):
+        
+        return [(k, v) for (k, v) in self.iteritems()]
 
     def pack(self):
         "Pack data into capsule. (i.e struct packing)"
@@ -109,14 +160,15 @@ class Stream(object):
                 constants.STREAM_CHKSUM_LEN,
                 constants.STREAM_PKEY_HASH_LEN
             ),
-            self._dictionary['CAP_ID'],
-            self._dictionary['CAP_DSTIP'],
-            self._dictionary['CAP_SCRIP'],
-            self._dictionary['CAP_TYPE'],
-            self._dictionary['CAP_CONTENT'],
-            self._dictionary['CAP_LEN'],
-            self._dictionary['CAP_CHKSUM'],
-            self._dictionary['CAP_PKEY']
+            TransformedDict.__getitem__(self, 'CAP_ID'     ),
+            TransformedDict.__getitem__(self, 'CAP_DSTIP'  ),
+            TransformedDict.__getitem__(self, 'CAP_SRCIP'  ),
+            TransformedDict.__getitem__(self, 'CAP_TYPE'   ),
+            TransformedDict.__getitem__(self, 'CAP_CONTENT'),
+            TransformedDict.__getitem__(self, 'CAP_LEN'    ),
+            TransformedDict.__getitem__(self, 'CAP_CHKSUM' ),
+            TransformedDict.__getitem__(self, 'CAP_PKEY'   )
+
         )
 
         # Compress stream
@@ -137,14 +189,14 @@ class Stream(object):
             raise StreamOverflowError()
 
         (
-            self._dictionary['CAP_ID'],
-            self._dictionary['CAP_DSTIP'],
-            self._dictionary['CAP_SRCIP'],
-            self._dictionary['CAP_TYPE'],
-            self._dictionary['CAP_CONTENT'],
-            self._dictionary['CAP_LEN'],
-            self._dictionary['CAP_CHKSUM'],
-            self._dictionary['CAP_PKEY']
+           CAP_ID,
+           CAP_DSTIP,
+           CAP_SRCIP,
+           CAP_TYPE,
+           CAP_CONTENT,
+           CAP_LEN,
+           CAP_CHKSUM,
+           CAP_PKEY
         ) = struct.unpack(
                 "!{}sII{}s{}sL{}s{}s".format(
                 constants.STREAM_ID_LEN,
@@ -155,12 +207,21 @@ class Stream(object):
             ), stream
         )
 
+        self.__setitem__('CAP_ID'     , CAP_ID     ),
+        self.__setitem__('CAP_DSTIP'  , CAP_DSTIP  ),
+        self.__setitem__('CAP_SRCIP'  , CAP_SRCIP  ),
+        self.__setitem__('CAP_TYPE'   , CAP_TYPE   ),
+        self.__setitem__('CAP_CONTENT', CAP_CONTENT),
+        self.__setitem__('CAP_LEN'    , CAP_LEN    ),
+        self.__setitem__('CAP_CHKSUM' , CAP_CHKSUM ),
+        self.__setitem__('CAP_PKEY'   , CAP_PKEY   )
+
     def __str__(self):
         "String representation of capsule."
 
         string = ''
 
-        for v in self._dictionary.values():
+        for v in self.store.values():
             string += str(v) + ':'
 
         return string.strip(':')
@@ -168,30 +229,30 @@ class Stream(object):
     def getid(self):
         "Return Stream ID."
 
-        return self._dictionary["CAP_ID"]
+        return TransformedDict.__getitem__(self, "CAP_ID")
 
     def getdip(self):
         "Return Destination IP."
 
-        return uint32_to_ip(self._dictionary["CAP_DSTIP"])
+        return uint32_to_ip(TransformedDict.__getitem__(self, "CAP_DSTIP"))
 
     def getsip(self):
         "Return Destination IP."
 
-        return uint32_to_ip(self._dictionary["CAP_SRCIP"])
+        return uint32_to_ip(TransformedDict.__getitem__(self, "CAP_SRCIP"))
 
     def gettype(self):
         "Return Stream protocol type."
 
-        return self._dictionary["CAP_TYPE"]
+        return TransformedDict.__getitem__(self, "CAP_TYPE")
 
     def getcontent(self):
         "Return capsule content if its integrity is maintained."
         
         # Get content
-        content = self._dictionary[
-            "CAP_CONTENT"
-        ][0:self._dictionary["CAP_LEN"]]
+        content = TransformedDict.__getitem__(
+            self, "CAP_CONTENT"
+        )[0:TransformedDict.__getitem__(self, "CAP_LEN")]
         
         # Unshuffle content
         if constants.ENABLE_SHUFFLE:
@@ -201,7 +262,7 @@ class Stream(object):
             )
         
         # Returns content only if conent integrity is maintained   
-        if (hmac.new(content).hexdigest() == self._dictionary["CAP_CHKSUM"]):
+        if (hmac.new(content).hexdigest() == TransformedDict.__getitem__(self, "CAP_CHKSUM")):
             return content
         else:
             return None
@@ -209,17 +270,17 @@ class Stream(object):
     def getlen(self):
         "Return the capsule content length"
         
-        return self._dictionary["CAP_LEN"]
+        return TransformedDict.__getitem__(self, "CAP_LEN")
     
     def getchecksum(self):
         "Return capsule checksum"
         
-        return self._dictionary["CAP_CHKSUM"]
+        return TransformedDict.__getitem__(self, "CAP_CHKSUM")
     
     def getpkey(self):
         "Return peer's public key"
         
-        return self._dictionary["CAP_PKEY"].strip('\b')
+        return TransformedDict.__getitem__(self, "CAP_PKEY").strip('\b')
 
     def tuple(self):
         "Return capsule in tuple form."

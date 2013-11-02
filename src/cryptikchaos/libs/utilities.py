@@ -5,7 +5,7 @@ Created on Oct 17, 2013
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.4
+__version__ = 0.5
 
 from cryptikchaos.config.configuration import constants
 
@@ -15,7 +15,7 @@ from time    import gmtime, strftime
 from struct  import pack, unpack
 from socket  import inet_aton, inet_ntoa, socket, AF_INET, SOCK_STREAM
 from uuid    import uuid5, NAMESPACE_URL
-from hashlib import sha512
+from hashlib import sha512, md5
 from zlib    import compress as zlib_compress, \
                     decompress as zlib_decompress
 from json    import dumps, loads
@@ -25,6 +25,10 @@ from re      import sub
 from os      import getenv
 from urllib2 import urlopen, URLError
 
+def md5hash(string):
+    "Generate md5 hash from string."
+    
+    return md5(string).hexdigest()
 
 def ip_to_uint32(ip):
     """
@@ -41,6 +45,8 @@ def uint32_to_ip(ipn):
 
     t = pack("!I", ipn)
     return inet_ntoa(t)
+
+
 
 def generate_uuid(host):
     """
@@ -63,7 +69,7 @@ def generate_token(uid, pkey):
     ).hexdigest()
     
 def get_nat_ip():
-    "Get IP of NAT"
+    "Get IP of NAT."
     
     s = socket.socket( AF_INET, SOCK_STREAM )
     host = 'localhost'
@@ -78,7 +84,7 @@ def get_nat_ip():
         return host 
 
 def get_my_ip():
-    "Get my public IP address or if offline get my NAT IP"
+    "Get my public IP address or if offline get my NAT IP."
     
     try:
         # Get IP from curlmyip.com which gives the raw ip address
@@ -134,7 +140,7 @@ def get_time():
 def serialize(dictionary):
     """
     Converts dictionary into network tx friendly string,
-    returns string
+    returns string.
     """
     
     return b64encode(
@@ -147,7 +153,7 @@ def serialize(dictionary):
     
 def deserialize(serialstr):
     """
-    Deserializes network serialized dictionary, returns dict
+    Deserializes network serialized dictionary, returns dict.
     """
     
     return loads(
@@ -183,7 +189,7 @@ def criptiklogo():
        )
 
 def random_color_code():
-    "Generate random color code, #Hex{x6}"
+    "Generate random color code, #Hex{x6}."
     
     r = lambda: randint(0,255)
     
@@ -197,7 +203,7 @@ def random_color_code():
     return rcc
 
 def generate_key(username, private_key=None):
-    "Generate keys"
+    "Generate keys."
     
     if not private_key: 
         # Generate private key   
@@ -220,7 +226,6 @@ def generate_key(username, private_key=None):
             str(getrandbits(512))
         )
     ).hexdigest()
-
 
 if __name__ == "__main__":
     ## Test for factor_line

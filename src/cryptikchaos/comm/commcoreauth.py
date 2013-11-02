@@ -5,7 +5,7 @@ Created on Oct 6, 2013
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.4
+__version__ = 0.5
 
 # install_twisted_rector must be called before importing the reactor
 from kivy.support import install_twisted_reactor

@@ -8,7 +8,7 @@ frontend and twisted framework as the backend.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.4
+__version__ = 0.5
 
 # Add cryptikchaos path
 import pythonpath
@@ -88,7 +88,7 @@ class CryptikChaosApp(
             CommService.__del__(self)
         
     def print_logo(self, dt):
-        "Print the criptikchaos logo"
+        "Print the criptikchaos logo."
                 
         if constants.GUI_LOGO:
             # Print logo through log
@@ -144,12 +144,12 @@ class CryptikChaosApp(
     ## Console-GUI Hooks
     ## ----------------------------------------------------
     def handleInput_cmd_hook(self, console_input):
-        "*Send* button (and return key) event call back"
+        "*Send* button (and return key) event call back."
         
         return self.exec_command(console_input)
     
     def getCMD_cmd_hook(self):
-        "Get the list of defined commands"
+        "Get the list of defined commands."
         
         return [cmd for cmd in dir(self) if "cmd_" in cmd[:4]]
     ## ----------------------------------------------------
@@ -185,7 +185,7 @@ class CryptikChaosApp(
                 return func(args)
 
     def default_cmd(self, cmd):
-        "If command not found"
+        "If command not found."
 
         # Command output
         self.print_message('Invalid Command "{}"'.format(cmd))
@@ -193,7 +193,7 @@ class CryptikChaosApp(
         Logger.error('Command "%s" not found', cmd)
 
     def print_topics(self, header, cmds, maxcol):
-        "Print help topics"
+        "Print help topics."
 
         if cmds:
             self.print_message("{}".format(str(header)), None, True)

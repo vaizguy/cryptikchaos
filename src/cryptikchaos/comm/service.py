@@ -7,7 +7,7 @@ Twisted network service.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.4
+__version__ = 0.5
 
 from cryptikchaos.comm.commcoreserver import CommCoreServerFactory
 from cryptikchaos.comm.commcoreclient import CommCoreClientFactory
@@ -92,7 +92,7 @@ class CommService(
 
     def _update_peer_connection_status(self, peer_ip, peer_port, status, 
             conn):
-        "Change peer conn status based on connection/disconnection"
+        "Change peer conn status based on connection/disconnection."
 
         # Assuming Peer ID <-> Peer IP one to one relation
         pid = self.get_peerid_from_ip(peer_ip, peer_port)
@@ -135,7 +135,7 @@ class CommService(
             return True
 
     def _router(self, pid):
-        "Router decides best route to peer"
+        "Router decides best route to peer."
 
         return pid
 
@@ -259,7 +259,7 @@ class CommService(
             None)
 
     def on_server_authentication(self, connection):
-        "Used to handle server auth requests"
+        "Used to handle server auth requests."
 
         peer_ip = connection.getPeer().host
         peer_port = connection.getPeer().port
@@ -310,7 +310,7 @@ class CommService(
         )
 
     def handle_response(self, response):
-        "Handle response from server"
+        "Handle response from server."
         
         # Default value of response at server side is None
         # hence we add a check for this at the client side.
@@ -448,7 +448,7 @@ class CommService(
         return self._transfer_data(pid, dtype, msg)
 
     def add_peer_to_swarm(self, pid, host):
-        "Adds a new user through auth request chain"
+        "Adds a new user through auth request chain."
 
         port = constants.PEER_PORT
         # Assign port based on pid

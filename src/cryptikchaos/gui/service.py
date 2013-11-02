@@ -5,7 +5,7 @@ Created on Oct 8, 2013
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.4
+__version__ = 0.5
 
 from kivy.app import App
 from kivy.resources import resource_add_path

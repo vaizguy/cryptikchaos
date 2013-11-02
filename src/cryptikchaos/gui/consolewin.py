@@ -5,7 +5,7 @@ Created on Oct 15, 2013
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.4
+__version__ = 0.5
 
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
@@ -19,7 +19,7 @@ import re
 
 
 class ConsoleInput(TextInput):
-    "Console text input class"
+    "Console text input class."
     
     def __init__(self, handleInput_cmd_hook, getCMD_cmd_hook):
 
@@ -66,12 +66,12 @@ class ConsoleInput(TextInput):
             return text
     
     def _get_text(self, instance):
-        "Used to get console input text"
+        "Used to get console input text."
         
         return self._filter_prompt(instance.text)
 
     def _add_text(self, instance, text=None):
-        "Used to access instance.text"
+        "Used to access instance.text."
         
         # Change text
         if text:
@@ -83,7 +83,7 @@ class ConsoleInput(TextInput):
             instance.text = "{}".format(constants.GUI_LABEL_PROMPT_SYM)
     
     def _reset_prompt(self, instance):
-        "Reset the prompt to default"
+        "Reset the prompt to default."
         
         # Clear input text in input box
         self._add_text(instance)
@@ -92,7 +92,7 @@ class ConsoleInput(TextInput):
 
         
     def on_enter(self, instance):
-        "Called on text input entry"
+        "Called on text input entry."
         
         # Get data input
         input_text = self._get_text(instance)
@@ -108,7 +108,7 @@ class ConsoleInput(TextInput):
         self.focus = True ## TODO not working.
         
     def on_text(self, instance, value):
-        "Method hook called on change of TextInput.text value"
+        "Method hook called on change of TextInput.text value."
         
         # Prompt is readonly
         if (

@@ -7,7 +7,7 @@ Peer manager is used to Handle the peer information.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.4
+__version__ = 0.5
 
 from cryptikchaos.comm.swarm.peer import Peer
 from cryptikchaos.config.configuration import constants
@@ -161,7 +161,7 @@ class SwarmManager:
             return []
 
     def build_swarm_graph(self):
-        "Return visual graph of entire swarm"
+        "Return visual graph of entire swarm."
 
         try:
             import networkx as nx
@@ -186,7 +186,7 @@ class SwarmManager:
             return True
 
     def list_peers(self):
-        "Returns a list of all the peers"
+        "Returns a list of all the peers."
 
         peerlist = []
 
@@ -204,7 +204,7 @@ class SwarmManager:
         return peerlist
     
     def list_peer_id_colors(self):
-        "Returns a list of all the peers"
+        "Returns a list of all the peers."
 
         rcclist = []
 
@@ -219,7 +219,7 @@ class SwarmManager:
         return rcclist
     
     def list_live_peers(self):
-        "Returns a list of all online peers"
+        "Returns a list of all online peers."
 
         peerlist = []
 
@@ -267,7 +267,7 @@ class SwarmManager:
         return self.peer_connections[pid]
 
     def get_peer_key(self, pid):
-        "Get the peers key"
+        "Get the peers key."
 
         if str(pid) in self._peer_dict.keys():
             return self._peer_dict[str(pid)]["PEER_KEY"]
@@ -275,6 +275,7 @@ class SwarmManager:
             return None
         
     def get_peerid_color(self, pid):
+        "Return peer's color code."
         
         if str(pid) in self._peer_dict.keys():
             return self._peer_dict[str(pid)]["PEER_ID_COLOR"]
@@ -282,7 +283,7 @@ class SwarmManager:
             return self.my_msg_rcc
         
     def is_peer(self, pid):
-        "Check if peer got added successfully"
+        "Check if peer got added successfully."
         
         if str(pid) in self._peer_dict:
             return True

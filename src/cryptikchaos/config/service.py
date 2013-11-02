@@ -7,7 +7,7 @@ View app environment constants through the App.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.4
+__version__ = 0.5
 
 from cryptikchaos.config.configuration import constants
 from cryptikchaos.libs.utilities import serialize
@@ -62,7 +62,7 @@ class EnvService:
             return v
         
     def caps_conf_dict(self):
-        "Return all the capsule config as dict"
+        "Return all the capsule config as dict."
         
         return { 
             fkey : self.env_dict[fkey] for fkey in sorted(
