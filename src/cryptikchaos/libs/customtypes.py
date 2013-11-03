@@ -16,6 +16,14 @@ class TransformedDict(collections.MutableMapping):
         
         self.store = dict()
         self.update(dict(*args, **kwargs))  # use the free update to set keys
+        
+    def __str__(self):
+        
+        return self.store.__str__()
+    
+    def __repr__(self):
+        
+        return self.store.__repr__()
 
     def __getitem__(self, key):
         
