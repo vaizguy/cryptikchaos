@@ -25,22 +25,11 @@ from kivy.resources import resource_add_path
 # Add kivy resource paths
 resource_add_path(constants.KIVY_RESOURCE_PATH)
         
-        
-class TestServerApp(App, CommService):
+class TestServerApp(App):
     "Test sever application."
 
     def build(self):
-
-        # Initiate Twisted Server
-        CommService.__init__(
-            self,
-            peerid=constants.LOCAL_TEST_PEER_ID,
-            peerkey=constants.LOCAL_TEST_SERVER_KEY,
-            host=constants.LOCAL_TEST_HOST,
-            port=constants.LOCAL_TEST_PORT,
-            clientinit=False,
-            printer=self.print_message)
-
+        
         self.label = Label(
             text="""
             \n+Test Server started+\
@@ -55,6 +44,17 @@ class TestServerApp(App, CommService):
         )
 
         return self.label
+    
+    def on_start(self):
+        
+        # Initiate Twisted Server
+        self.comm_service = CommService(
+            peerid=constants.LOCAL_TEST_PEER_ID,
+            peerkey=constants.LOCAL_TEST_SERVER_KEY,
+            host=constants.LOCAL_TEST_HOST,
+            port=constants.LOCAL_TEST_PORT,
+            clientinit=False,
+            printer=self.print_message)
 
     def print_message(self, msg, peerid=None):
         "Print a message in the output window."
@@ -72,7 +72,7 @@ class TestServerApp(App, CommService):
             peerid = constants.LOCAL_TEST_PEER_NAME
 
         # Get peer message color
-        rcc = self.get_peerid_color(peerid)
+        rcc = self.comm_service.get_peerid_color(peerid)
 
         # Single line output with peer id
         text = "{}{}[color={}]{}[/color] : {}\n".format(

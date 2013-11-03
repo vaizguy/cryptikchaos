@@ -436,6 +436,7 @@ class CommService(
 
         # Check to see peer connection status
         if not self.get_peer_connection_status(pid):
+            print "con stat false"
             return False
 
         # Assumed Bulk message transfer

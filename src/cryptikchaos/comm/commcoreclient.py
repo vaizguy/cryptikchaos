@@ -55,7 +55,7 @@ class CommCoreClientProtocol(LineReceiver):
 
         Logger.warn("Lost connection with peer {}".format(self._peer_repr))
         
-        self.factory.app.print_message(
+        self.factory.app._print(
             "Lost connection with peer {}".format(self._peer_repr)
         )
 

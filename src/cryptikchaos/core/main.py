@@ -25,16 +25,10 @@ from cryptikchaos.libs.utilities import wrap_line
 from kivy.logger import Logger
 from kivy.clock import Clock
 
-import traceback
-
 
 class CryptikChaosApp(
     # GUI service
     GUIService,  
-    # Communications service
-    CommService, 
-    # Environment service
-    EnvService
 ):
 
     """
@@ -51,41 +45,45 @@ class CryptikChaosApp(
         root = GUIService.build(self)
         
         # Determine host based on test mode
-        my_host = constants.LOCAL_TEST_HOST
+        self.my_host = constants.LOCAL_TEST_HOST
         # If not in test mode get LAN IP
         if not constants.ENABLE_TEST_MODE:
-            my_host = constants.PEER_HOST
+            self.my_host = constants.PEER_HOST
+            
+        self.comm_service = None
 
+        return root
+    
+    def on_start(self):
+        '''Event handler for the on_start event, which is fired after
+        initialization (after build() has been called), and before the
+        application is being run.
+        '''
+        
+        # Print criptikchaos banner
+        Clock.schedule_once(self.print_logo, 0)
+        
         # Initiate Twisted Server & Client services
-        CommService.__init__(
-            self,
+        self.comm_service = CommService(
             peerid=constants.PEER_ID,
             peerkey=constants.LOCAL_TEST_CLIENT_KEY,
-            host=my_host,
+            host=self.my_host,
             port=constants.PEER_PORT,
             printer=self.print_message
         )
         
-        # Initiate environment
-        EnvService.__init__(self)     
-
-        return root
-
-    def start(self):
-        "Start the application."
-                               
-        # Print criptikchaos banner
-        Clock.schedule_once(self.print_logo, 0.05)
+        # Initiate environment service
+        self.env_service = EnvService()   
         
-        try:
-            # Run the GUI
-            self.run()
-        except:
-            # print traceback
-            print traceback.format_exc()
-        finally:
-            # Cleanup environment
-            CommService.__del__(self)
+    def on_stop(self):
+        '''Event handler for the on_stop event, which is fired when the
+        application has finished running (e.g. the window is about to be
+        closed).
+        '''
+        
+        # Close services
+        del self.comm_service
+        del self.env_service
         
     def print_logo(self, dt):
         "Print the criptikchaos logo."
@@ -109,14 +107,14 @@ class CryptikChaosApp(
         else:
         # One line print
             if not peerid:
-                peerid = self.my_peerid
+                peerid = self.comm_service.my_peerid
                 
             # If local pid, substitute with peer name
-            if peerid == self.my_peerid:
+            if peerid == self.comm_service.my_peerid:
                 peerid = constants.PEER_NAME
                 
             # Get peer message color
-            rcc = self.get_peerid_color(peerid)
+            rcc = self.comm_service.get_peerid_color(peerid)
 
             # Single line output with peer id
             text = "{}{}[color={}]{}[/color] : {}".format(
@@ -329,7 +327,7 @@ class CryptikChaosApp(
             return None
         else:
             self.print_message("Adding Peer {}.".format(pid))
-            self.add_peer_to_swarm(pid, host)
+            self.comm_service.add_peer_to_swarm(pid, host)
 
     def cmd_addtest(self, cmdline):
         """
@@ -370,7 +368,7 @@ class CryptikChaosApp(
         else:
             pass
 
-        if self.pass_message(pid, msg):
+        if self.comm_service.pass_message(pid, msg):
             # command log
             Logger.debug("Message sent to peer {}.".format(pid))
             # Display send message
@@ -436,7 +434,7 @@ class CryptikChaosApp(
         Usage: env
         """
         
-        constants = self.list_constants()
+        constants = self.env_service.list_constants()
         
         if constants:
             table = PrettyTable(["S.NO", "CONSTANT", "VALUE"])
@@ -472,4 +470,4 @@ if __name__ == '__main__':
     # Build App
     App = CryptikChaosApp()
     # Start App mainloop
-    App.start()
+    App.run()

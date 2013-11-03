@@ -101,6 +101,6 @@ class CommCoreAuthFactory(protocol.Factory):
         Logger.debug("Connection failed. {}".format(reason.getErrorMessage()))
         
         # Display error on app console
-        self.app.print_message("{}".format(reason.getErrorMessage()))
+        self.app._print("{}".format(reason.getErrorMessage()))
 
 
