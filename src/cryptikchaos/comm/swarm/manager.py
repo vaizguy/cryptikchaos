@@ -78,7 +78,7 @@ class SwarmManager(StoreManager):
             rcc = random_color_code()
             # Check if color not used
             if rcc not in self.list_peer_id_colors():
-                break                
+                break
 
         # Peer dictionary structure defined here
         self.add_store(
@@ -198,16 +198,13 @@ class SwarmManager(StoreManager):
     def list_peer_id_colors(self):
         "Returns a list of all the peers."
 
-        rcclist = []
+        rcclist = [self.my_msg_rcc]
 
-        for k in self.keys():
+        for sid in self.keys():
 
-            # Get peer attributes
-            p_info = self.get_store(k)
-
-            # Append id rcc
+            # Get peer color attributes
             rcclist.append(
-                p_info["PEER_ID_COLOR"],
+                self.get_store_item(sid, "PEER_ID_COLOR")
             )
 
         return rcclist
@@ -221,7 +218,6 @@ class SwarmManager(StoreManager):
 
             # Get peer attributes
             p_info = self.get_store(k)
-
 
             if self.get_peer_connection_status(k):
                 # Append as tuples (peer id, peer host, peer port, peer status)
@@ -271,9 +267,9 @@ class SwarmManager(StoreManager):
         "Return peer's color code."
         
         pid_rcc = self.get_store_item(pid, "PEER_ID_COLOR")
-        
+               
         if pid_rcc:
-            return self.my_msg_rcc
+            return pid_rcc
         else:
             return self.my_msg_rcc
         

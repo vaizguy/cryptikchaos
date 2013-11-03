@@ -42,7 +42,7 @@ class CryptikChaosApp(
         "Build the kivy App."
                         
         # Initiate Kivy GUI
-        root = GUIService.build(self)
+        self.gui_service = GUIService.build(self)
         
         # Determine host based on test mode
         self.my_host = constants.LOCAL_TEST_HOST
@@ -52,7 +52,7 @@ class CryptikChaosApp(
             
         self.comm_service = None
 
-        return root
+        return self.gui_service
     
     def on_start(self):
         '''Event handler for the on_start event, which is fired after
