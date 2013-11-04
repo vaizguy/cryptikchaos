@@ -453,7 +453,7 @@ class CryptikChaosApp(
         Usage: eko <constant name>
         """
         
-        v = self.get_constant(cmdline)
+        v = self.env_service.get_constant(cmdline)
         
         if v:
             self.print_message("{} => {}".format(cmdline, v))
