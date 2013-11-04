@@ -61,14 +61,17 @@ class StoreManager(object):
             return None
         
     def set_store_item(self, sid, key, value):
-        "Set item in store."
-      
-        if self.in_store(sid):
-            _dict = self._storage[sid]
+        "Set item in existing store."
+        
+        try:
+            _dict = self._storage[sid]        
+        except KeyError:
+            raise Exception(
+                "Store needs to be created before being modified."
+            ) 
+        else:
             _dict[key] = value
             self._storage[sid] = _dict
-        else:
-            return None
         
     def get_store_item(self, sid, key):
         "Return item from store."
