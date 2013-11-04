@@ -421,7 +421,15 @@ class CryptikChaosApp(
 
 if __name__ == '__main__':
 
-    # Build App
-    App = CryptikChaosApp()
-    # Start App mainloop
-    App.run()
+    try:
+        # Build App interface
+        App = CryptikChaosApp()
+        # Start App mainloop
+        App.run()
+    except KeyboardInterrupt:
+        Logger.info("Recieved Keyboard interrupt. [CTRL+C]")
+        # Stop services
+        App.on_stop()
+    else:
+        Logger.info("Closed Cryptikchaos Client.")
+

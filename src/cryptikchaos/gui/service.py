@@ -58,7 +58,7 @@ class GUIService(App):
         application is being run.
         '''
         
-        Logger.info("Cryptikchaos Application started.")
+        Logger.info("Cryptikchaos Client started.")
         
         # Print criptikchaos banner
         Clock.schedule_once(self.print_logo, 0)
@@ -87,6 +87,9 @@ class GUIService(App):
         self.comm_service.__del__()
         self.env_service.__del__()
         
+        Logger.info("Successfully closed services.")
+        Logger.info("Closing Cryptikchaos Client.")
+
     def print_logo(self, dt):
         "Print the criptikchaos logo."
                 

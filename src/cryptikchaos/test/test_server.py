@@ -74,7 +74,9 @@ class TestServerApp(App):
         
         # Close services
         self.comm_service.__del__()
-
+        
+        Logger.info("Successfully closed services.")
+        Logger.info("Closing Cryptikchaos Test Server.")
 
     def print_message(self, msg, peerid=None):
         "Print a message in the output window."
@@ -112,4 +114,14 @@ class TestServerApp(App):
         self.label.text += text
 
 if __name__ == '__main__':
-    TestServerApp().run()
+    try:
+        # Build server interface
+        TServerApp = TestServerApp()
+        # Start test server main loop
+        TServerApp.run()
+    except KeyboardInterrupt:
+        Logger.info("Recieved Keyboard interrupt. [CTRL+C]")
+        # Stop services
+        TServerApp.on_stop()
+    else:
+        Logger.info("Closed Cryptikchaos Test Server.")     
