@@ -28,7 +28,7 @@ if [[ $1 =~ "profile" ]]; then
 ## No profiling
 else
     # Remove client database    
-    rm -rf ../db/*_db
+    #rm -rf ../db/*_db # Persistant func removed temporarily
 
     # Launch test server
     xterm -geometry 96x24+0+0 -e 'sudo python ./test_server.py' &
