@@ -417,7 +417,7 @@ class CryptikChaosApp(
         Usage: graphswarm
         """
 
-        if self.build_swarm_graph():
+        if self.comm_service.swarm_manager.build_swarm_graph():
             self.print_message("Generated peer graph.")
         else:
             self.print_message("Could not generate graph.")
