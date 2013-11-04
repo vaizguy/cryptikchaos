@@ -232,5 +232,5 @@ if __name__ == "__main__":
        
     s = "".join(choice(string.ascii_uppercase + string.digits) for x in range(512))
     
-    print "line", factor_line(s)
+    print "line", wrap_line(s)
             

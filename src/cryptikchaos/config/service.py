@@ -13,6 +13,8 @@ from cryptikchaos.config.configuration import constants
 from cryptikchaos.libs.utilities import serialize
 from cryptikchaos.libs.utilities import deserialize
 
+from kivy import Logger
+
 
 class EnvService:
     """
@@ -29,6 +31,12 @@ class EnvService:
                 self.env_dict[attr] = str(
                     getattr(constants, attr)
                 ).encode('string_escape')
+                
+    def __del__(self):
+        
+        Logger.info("Clearing enviroment.")
+        # Delete env dict
+        del self.env_dict
 
     def list_constants(self):
         "List all env constants."

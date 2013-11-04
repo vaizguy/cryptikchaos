@@ -9,9 +9,13 @@ __version__ = 0.5
 
 from kivy.app import App
 from kivy.resources import resource_add_path
+from kivy.clock import Clock
+from kivy.logger import Logger
 
 from cryptikchaos.gui.consolewin import ConsoleWindow
 from cryptikchaos.config.configuration import constants
+from cryptikchaos.config.service import EnvService
+from cryptikchaos.comm.service import CommService
 
 
 class GUIService(App):
@@ -47,3 +51,45 @@ class GUIService(App):
         self.getMaxWidth_gui_hook = root.getMaxWidth_gui_hook
         
         return root
+    
+    def on_start(self):
+        '''Event handler for the on_start event, which is fired after
+        initialization (after build() has been called), and before the
+        application is being run.
+        '''
+        
+        Logger.info("Cryptikchaos Application started.")
+        
+        # Print criptikchaos banner
+        Clock.schedule_once(self.print_logo, 0)
+        
+        # Initiate Twisted Server & Client services
+        self.comm_service = CommService(
+            peerid=constants.PEER_ID,
+            peerkey=constants.LOCAL_TEST_CLIENT_KEY,
+            host=self.my_host,
+            port=constants.PEER_PORT,
+            printer=self.print_message
+        )
+        
+        # Initiate environment service
+        self.env_service = EnvService()
+        
+    def on_stop(self):
+        '''Event handler for the on_stop event, which is fired when the
+        application has finished running (e.g. the window is about to be
+        closed).
+        '''
+        
+        Logger.info("Closing services.")  
+        
+        # Close services
+        self.comm_service.__del__()
+        self.env_service.__del__()
+        
+    def print_logo(self, dt):
+        "Print the criptikchaos logo."
+                
+        if constants.GUI_LOGO:
+            # Print logo through log
+            Logger.info('\n{}'.format(constants.GUI_LOGO))

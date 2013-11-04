@@ -55,6 +55,8 @@ class StreamManager(StoreManager):
 
     def __del__(self):
 
+        Logger.info("Closing StreamStore Manager.")
+        
         # Clear stored streams
         try:
             del self.stream_dict
@@ -232,7 +234,6 @@ class StreamManager(StoreManager):
     def get_destination_ip(self, sid):
         
         i = self.get_store_item(sid, "STREAM_DSTIP")
-        print "i", i, sid
         return uint32_to_ip(i)
 
     def get_source_ip(self, sid):

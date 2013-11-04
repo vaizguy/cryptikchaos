@@ -43,7 +43,7 @@ class SwarmManager(StoreManager):
     def __del__(self):
 
         # Closing all connections
-        Logger.info("Closing all connections.")
+        Logger.info("Closing SwarmStore Manager.")
         
         peer_ids = self.list_peer_ids()
         

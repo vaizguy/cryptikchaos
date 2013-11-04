@@ -19,11 +19,13 @@ from cryptikchaos.libs.utilities import wrap_line
 from cryptikchaos.libs.utilities import get_time
 
 from kivy.app import App
+from kivy import Logger
 from kivy.uix.label import Label
 from kivy.resources import resource_add_path
 
 # Add kivy resource paths
 resource_add_path(constants.KIVY_RESOURCE_PATH)
+
         
 class TestServerApp(App):
     "Test sever application."
@@ -46,7 +48,13 @@ class TestServerApp(App):
         return self.label
     
     def on_start(self):
-        
+        '''Event handler for the on_start event, which is fired after
+        initialization (after build() has been called), and before the
+        application is being run.
+        '''
+                
+        Logger.info("Cryptikchaos Test server started.")
+
         # Initiate Twisted Server
         self.comm_service = CommService(
             peerid=constants.LOCAL_TEST_PEER_ID,
@@ -55,6 +63,18 @@ class TestServerApp(App):
             port=constants.LOCAL_TEST_PORT,
             clientinit=False,
             printer=self.print_message)
+        
+    def on_stop(self):
+        '''Event handler for the on_stop event, which is fired when the
+        application has finished running (e.g. the window is about to be
+        closed).
+        '''
+        
+        Logger.info("Closing services.")  
+        
+        # Close services
+        self.comm_service.__del__()
+
 
     def print_message(self, msg, peerid=None):
         "Print a message in the output window."

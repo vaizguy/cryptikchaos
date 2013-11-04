@@ -14,16 +14,13 @@ __version__ = 0.5
 import pythonpath
 pythonpath.AddSysPath('../../')
 
-from cryptikchaos.comm.service import CommService
 from cryptikchaos.gui.service import GUIService
-from cryptikchaos.config.service import EnvService
 
 from cryptikchaos.config.configuration import constants
 from cryptikchaos.libs.Table.prettytable import PrettyTable
 from cryptikchaos.libs.utilities import wrap_line
 
 from kivy.logger import Logger
-from kivy.clock import Clock
 
 
 class CryptikChaosApp(
@@ -53,45 +50,7 @@ class CryptikChaosApp(
         self.comm_service = None
 
         return self.gui_service
-    
-    def on_start(self):
-        '''Event handler for the on_start event, which is fired after
-        initialization (after build() has been called), and before the
-        application is being run.
-        '''
-        
-        # Print criptikchaos banner
-        Clock.schedule_once(self.print_logo, 0)
-        
-        # Initiate Twisted Server & Client services
-        self.comm_service = CommService(
-            peerid=constants.PEER_ID,
-            peerkey=constants.LOCAL_TEST_CLIENT_KEY,
-            host=self.my_host,
-            port=constants.PEER_PORT,
-            printer=self.print_message
-        )
-        
-        # Initiate environment service
-        self.env_service = EnvService()   
-        
-    def on_stop(self):
-        '''Event handler for the on_stop event, which is fired when the
-        application has finished running (e.g. the window is about to be
-        closed).
-        '''
-        
-        # Close services
-        del self.comm_service
-        del self.env_service
-        
-    def print_logo(self, dt):
-        "Print the criptikchaos logo."
-                
-        if constants.GUI_LOGO:
-            # Print logo through log
-            Logger.info('\n{}'.format(constants.GUI_LOGO))
-        
+           
     def print_message(self, msg, peerid=None, intermediate=False, wrap=True):
         "Print a message in the output window."
 
