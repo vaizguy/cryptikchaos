@@ -32,6 +32,7 @@ class SwarmManager(StoreManager):
         # Create store
         super(SwarmManager, self).__init__("SwarmStore", self._valid_keys)
 
+        # Client Attributes
         self.my_peerid = peerid
         self.my_key = peerkey
         self.my_msg_rcc = random_color_code()
@@ -135,7 +136,6 @@ class SwarmManager(StoreManager):
         if status in (True, False):
             # Set new connection status
             self.set_store_item(pid, "PEER_CONN_STATUS", status)
-
         else:
             raise Exception(
                 "Invalid Peer Connection Status, must be True or False."
@@ -201,7 +201,6 @@ class SwarmManager(StoreManager):
         rcclist = [self.my_msg_rcc]
 
         for sid in self.keys():
-
             # Get peer color attributes
             rcclist.append(
                 self.get_store_item(sid, "PEER_ID_COLOR")
@@ -209,32 +208,15 @@ class SwarmManager(StoreManager):
 
         return rcclist
     
-    def list_live_peers(self):
-        "Returns a list of all online peers."
-
-        peerlist = []
-
-        for k in self.keys():
-
-            # Get peer attributes
-            p_info = self.get_store(k)
-
-            if self.get_peer_connection_status(k):
-                # Append as tuples (peer id, peer host, peer port, peer status)
-                peerlist.append(
-                    (p_info["PEER_ID"],
-                     p_info["PEER_KEY"][0:3] + "XXXX",
-                     p_info["PEER_IP"],
-                     p_info["PEER_PORT"],
-                     p_info["PEER_CONN_STATUS"]))
-
-        return peerlist
+    def peer_table(self):
+        "Display all peers"
+        
+        return self.storage_table()
 
     def peer_host(self, pid):
         "Returns a peer's IPv4 address."
 
         return self.get_store_item(pid, "PEER_IP")
-
 
     ## Need to simplify mapping TODO
     def get_peerid_from_ip(self, peer_ip, peer_port=constants.PEER_PORT):
@@ -250,7 +232,6 @@ class SwarmManager(StoreManager):
         "Get the peer connection status."
 
         return self.get_store_item(pid, "PEER_CONN_STATUS")
-
 
     def get_peer_connection(self, pid):
         "Get the peer connection."
@@ -276,11 +257,8 @@ class SwarmManager(StoreManager):
     def is_peer(self, pid):
         "Check if peer got added successfully."
         
-        if str(pid) in self.keys():
+        return self.in_store(pid)       
 
-            return True
-        else:
-            return False
 
 if __name__ == '__main__':
     sm = SwarmManager(1000, "key")

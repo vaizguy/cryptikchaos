@@ -403,17 +403,10 @@ class CryptikChaosApp(
         Usage: peers
         """
 
-        plist = self.list_live_peers()
-
-        if plist:
-            table = PrettyTable(["ID", "KEY", "IP", "PORT", "STATUS"])
-
-            for r in plist:
-                table.add_row(r)
-
-            self.print_message("List of live peers:\n{}".format(table), wrap=False)
-        else:
-            self.print_message("No live peers.")
+        self.print_message(
+            msg=self.comm_service.peer_table(),
+            wrap=False
+        )
 
     def cmd_graphswarm(self, cmdline):
         """
