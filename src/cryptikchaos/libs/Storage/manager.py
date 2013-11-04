@@ -9,6 +9,7 @@ from cryptikchaos.libs.Table.prettytable import PrettyTable
 
 from hashlib import md5
 
+
 class StoreManager(object):
     
     def __init__(self, name, keys):

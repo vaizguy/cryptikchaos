@@ -22,7 +22,6 @@ from json    import dumps, loads
 from base64  import b64encode, b64decode
 from random  import randint, choice, getrandbits
 from re      import sub
-from os      import getenv
 from urllib2 import urlopen, URLError
 
 def md5hash(string):
@@ -184,7 +183,7 @@ def criptiklogo():
     else:
         # Return logo if success
         return logo.format(
-            getenv("USER"),
+            constants.PEER_ID,
             __version__
        )
 
