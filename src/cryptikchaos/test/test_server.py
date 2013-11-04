@@ -72,7 +72,9 @@ class TestServerApp(App):
             peerid = constants.LOCAL_TEST_PEER_NAME
 
         # Get peer message color
-        rcc = self.comm_service.get_peerid_color(peerid)
+        rcc = self.comm_service.swarm_manager.get_peerid_color(
+            peerid
+        )
 
         # Single line output with peer id
         text = "{}{}[color={}]{}[/color] : {}\n".format(
