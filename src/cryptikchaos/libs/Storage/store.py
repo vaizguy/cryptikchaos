@@ -45,7 +45,7 @@ class Store(TransformedDict):
         if key in self._valid_keys:
             return TransformedDict.__setitem__(self, key, value)
         else:
-            raise Exception("Error: Invalid peer attribute.")   
+            raise Exception("Error: Invalid peer attribute '{}'.".format(key))   
         
     def __delitem__(self, key):
         "Reset key's value."

@@ -23,7 +23,7 @@ class SwarmManager(StoreManager):
 
     def __init__(self, peerid, peerkey):
        
-        # authorized keys
+        # Authorized keys
         self._valid_keys = (
             "PEER_ID", "PEER_KEY", "PEER_IP", "PEER_PORT", \
             "PEER_CONN_STATUS", "PEER_ID_COLOR"
@@ -98,12 +98,10 @@ class SwarmManager(StoreManager):
 
         return self.delete_store(pid)
 
-
     def get_peer(self, pid):
         "Get peer from db."
         
         return self.get_store(pid)
-
 
     def add_peer_connection(self, pid, conn):
         "Add a peer connection."

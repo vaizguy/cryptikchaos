@@ -107,14 +107,16 @@ class CryptikChaosApp(
         else:
         # One line print
             if not peerid:
-                peerid = self.comm_service.my_peerid
+                peerid = self.comm_service.peerid
                 
             # If local pid, substitute with peer name
-            if peerid == self.comm_service.my_peerid:
+            if peerid == self.comm_service.peerid:
                 peerid = constants.PEER_NAME
                 
             # Get peer message color
-            rcc = self.comm_service.get_peerid_color(peerid)
+            rcc = self.comm_service.swarm_manager.get_peerid_color(
+                peerid
+            )
 
             # Single line output with peer id
             text = "{}{}[color={}]{}[/color] : {}".format(
