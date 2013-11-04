@@ -30,12 +30,7 @@ from base64 import b64encode
 import traceback
 
 
-class CommService(
-    # Manages peer swarm              
-    SwarmManager, 
-    # Capsule manager
-    StreamManager
-):
+class CommService:
 
     """
     Twisted communications service.
@@ -52,9 +47,9 @@ class CommService(
         self.peerkey = peerkey
 
         # Initialize peer manager
-        SwarmManager.__init__(self, peerid, peerkey)
+        self.swarm_manager = SwarmManager(peerid, peerkey)
         # Initialize capsule manager
-        StreamManager.__init__(self, peerkey)
+        self.stream_manager = StreamManager(peerid, peerkey)
 
         self._printer = printer
 
@@ -69,10 +64,10 @@ class CommService(
     def __del__(self):
 
         # Close swarm handler
-        SwarmManager.__del__(self)
+        self.swarm_manager.__del__()
         # Close capsule manager
-        StreamManager.__del__(self)
-
+        self.stream_manager.__del__()
+        
     def _start_server(self):
         "Start twisted server listener."
 
@@ -82,7 +77,7 @@ class CommService(
         "Start peer connections on start."
 
         # Connect to all peers
-        for (pid, _, h, p, cs, ) in self.list_peers():
+        for (pid, _, h, p, cs, ) in self.swarm_manager.list_peers():
 
             # Check conn status
             if not cs:
@@ -95,14 +90,20 @@ class CommService(
         "Change peer conn status based on connection/disconnection."
 
         # Assuming Peer ID <-> Peer IP one to one relation
-        pid = self.get_peerid_from_ip(peer_ip, peer_port)
+        pid = self.swarm_manager.get_peerid_from_ip(
+            peer_ip,
+            peer_port
+        )
 
         # Add the peer connection if it doesnt exist
         if status:
-            self.add_peer_connection(pid, conn)
+            self.swarm_manager.add_peer_connection(pid, conn)
 
         if pid:
-            return self.update_peer_connection_status(pid, status)
+            return self.swarm_manager.update_peer_connection_status(
+                pid, 
+                status
+            )
         else:
             return None
 
@@ -147,13 +148,13 @@ class CommService(
         peer_route = self._router(pid)
 
         # Get peer connection
-        conn = self.connect_to_peer(peer_route)
+        conn = self.swarm_manager.connect_to_peer(peer_route)
 
         if not desthost:
-            desthost = self.peer_host(pid)
+            desthost = self.swarm_manager.peer_host(pid)
 
         # Pack data into capsule
-        stream = self.pack_stream(
+        stream = self.stream_manager.pack_stream(
             data_class,
             data_content,
             desthost,
@@ -168,11 +169,11 @@ class CommService(
         "Print message on console with peer id."
 
         # Get peer ID
-        peer_id = self.get_peerid_from_ip(dip, port)
+        peer_id = self.swarm_manager.get_peerid_from_ip(dip, port)
 
         # Pack the message
         if not peer_id:
-            peer_id = self.my_peerid
+            peer_id = self.peerid
         # Print the message
         if self._printer:
             self._printer(msg, peer_id)
@@ -220,7 +221,10 @@ class CommService(
 
         peer_ip = connection.getPeer().host
         peer_port = connection.getPeer().port
-        peer_id = self.get_peerid_from_ip(peer_ip, peer_port)
+        peer_id = self.swarm_manager.get_peerid_from_ip(
+            peer_ip, 
+            peer_port
+        )
 
         # Announce successful server connection
         self._print(
@@ -244,7 +248,10 @@ class CommService(
 
         peer_ip = connection.getPeer().host
         peer_port = connection.getPeer().port
-        peer_id = self.get_peerid_from_ip(peer_ip, peer_port)
+        peer_id = self.swarm_manager.get_peerid_from_ip(
+            peer_ip, 
+            peer_port
+        )
 
         # Announce successful server disconnection
         self._print(
@@ -254,6 +261,7 @@ class CommService(
             peer_ip,
             peer_port
         )
+        
         # Update peer connection status to DISCONNECTED
         self._update_peer_connection_status(peer_ip, peer_port, False, 
             None)
@@ -273,7 +281,7 @@ class CommService(
             peer_port
         )
         # Pack data into capsule
-        stream = self.pack_stream(
+        stream = self.stream_manager.pack_stream(
             constants.PROTO_AUTH_TYPE,
             str(self.peerid),
             peer_ip,
@@ -322,7 +330,9 @@ class CommService(
         # Unpack received stream
         try:
             (cid, dest_ip, src_ip, c_rsp_type, content,
-                 _, chksum, pkey) = self.unpack_stream(response)
+                 _, chksum, pkey) = self.stream_manager.unpack_stream(
+                response
+            )
         except:
             raise
             return None
@@ -334,13 +344,13 @@ class CommService(
         src_pid = constants.PEER_ID
 
         ## It maybe from Test server if None
-        if not self.get_peerid_from_ip(src_ip):
-            src_pid = self.get_peerid_from_ip(
+        if not self.swarm_manager.get_peerid_from_ip(src_ip):
+            src_pid = self.swarm_manager.get_peerid_from_ip(
                 src_ip, 
                 constants.LOCAL_TEST_PORT
             )
         else:
-            src_pid = self.get_peerid_from_ip(src_ip)
+            src_pid = self.swarm_manager.get_peerid_from_ip(src_ip)
             
         ## Capsule Token Challenge
         
@@ -353,7 +363,7 @@ class CommService(
         # Generate token with stored information.
         generated_token = generate_token(
             generate_uuid(self.host),  # Generate capsule manager ID
-            self.get_peer_key(src_pid) # Get stored source peer's key
+            self.swarm_manager.get_peer_key(src_pid) # Get stored source peer's key
         )
         
         # Token challenge
@@ -401,19 +411,21 @@ class CommService(
 
         # Repsonse handling architecture should be placed here.
         (cid, dest_ip, src_ip, c_rsp_auth_type, content,
-         _, chksum, pkey) = self.unpack_stream(response)
+         _, chksum, pkey) = self.stream_manager.unpack_stream(
+            response
+        )
 
         src_port = constants.PEER_PORT
 
         ## It maybe from Test server if None
-        if not self.get_peerid_from_ip(src_ip):
+        if not self.swarm_manager.get_peerid_from_ip(src_ip):
             src_port = constants.LOCAL_TEST_PORT
 
         if c_rsp_auth_type == constants.PROTO_AACK_TYPE:
             ## Extract peer id
             pid = int(content)
             ## Add peer
-            self.add_peer(pid, pkey, src_ip, src_port)
+            self.swarm_manager.add_peer(pid, pkey, src_ip, src_port)
             ## Add peer connection
             self._update_peer_connection_status(
                 src_ip, 
@@ -435,7 +447,7 @@ class CommService(
         "Pass message to client. Capsule Type: BULK"
 
         # Check to see peer connection status
-        if not self.get_peer_connection_status(pid):
+        if not self.swarm_manager.get_peer_connection_status(pid):
             print "con stat false"
             return False
 
@@ -457,7 +469,7 @@ class CommService(
             port = constants.LOCAL_TEST_PORT
 
         # Check if peer is present
-        if self.get_peer(pid):
+        if self.swarm_manager.get_peer(pid):
             self._print(
                 "Peer already in list."
             )
@@ -484,10 +496,10 @@ class CommService(
 
         # Unpack capsule
         (cid, dest_ip, src_ip, c_rx_type, content, _, _,
-            pkey) = self.unpack_stream(serial)
+            pkey) = self.stream_manager.unpack_stream(serial)
         
         # Print test message if test server
-        if self.my_peerid == constants.LOCAL_TEST_PEER_ID and \
+        if self.peerid == constants.LOCAL_TEST_PEER_ID and \
            c_rx_type in (constants.LOCAL_TEST_STREAM_TYPE):
             self._print_test(c_rx_type, content)
           
@@ -505,7 +517,7 @@ class CommService(
             pid = int(content) # Need to check if peerid format is followed. TODO
 
             ## Add peer
-            self.add_peer(
+            self.swarm_manager.add_peer(
                 pid=pid,
                 key=pkey,
                 host=src_ip,
@@ -521,7 +533,7 @@ class CommService(
             )
 
             ## Send current peer info
-            rsp = self.pack_stream(
+            rsp = self.stream_manager.pack_stream(
                 captype=constants.PROTO_AACK_TYPE,
                 capcontent=str(self.peerid),
                 dest_host=src_ip,
@@ -547,11 +559,11 @@ class CommService(
         )
                 
         # Get stored peer key
-        src_pid = self.get_peerid_from_ip(src_ip)
+        src_pid = self.swarm_manager.get_peerid_from_ip(src_ip)
         # Generate capsule manager ID
         gen_cid = generate_uuid(self.host)
         # Get stored source peer's key
-        stored_pkey = self.get_peer_key(src_pid) 
+        stored_pkey = self.swarm_manager.get_peer_key(src_pid) 
         
         # Generate token with stored information.
         generated_token = generate_token(
@@ -569,7 +581,7 @@ class CommService(
         ## Token challenge end
 
         # Check if connection is recognized
-        if not self.get_peer(src_pid):
+        if not self.swarm_manager.get_peer(src_pid):
             Logger.warn(
                 "Unknown pid @{} attempting contact.".format(src_ip)
             )
@@ -582,7 +594,7 @@ class CommService(
         elif c_rx_type == constants.LOCAL_TEST_STREAM_TYPE:
                         
             ## Repack capsule maintaining the same content
-            rsp = self.pack_stream(
+            rsp = self.stream_manager.pack_stream(
                 captype=c_rx_type,
                 capcontent=content,
                 dest_host=src_ip,
@@ -595,7 +607,7 @@ class CommService(
                 # Message receipt successful
                 self._print(content, src_ip)
                 # Generate response
-                rsp = self.pack_stream(
+                rsp = self.stream_manager.pack_stream(
                     captype=constants.PROTO_MACK_TYPE,
                     capcontent='',
                     dest_host=src_ip,
