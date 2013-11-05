@@ -222,7 +222,7 @@ class SwarmManager(StoreManager):
 
         for (pid, _, ip, port, _) in self.list_peers():
             if ip == peer_ip and port == peer_port:
-                return int(pid)
+                return pid
 
         return None  # Add relevent catch
 

@@ -69,7 +69,7 @@ class StoreManager(object):
         except KeyError:
             raise Exception(
                 "Store needs to be created before being modified."
-            ) 
+            )
         else:
             _dict[key] = value
             self._storage[sid] = _dict

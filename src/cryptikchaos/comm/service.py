@@ -285,7 +285,7 @@ class CommService:
         # Pack data into capsule
         stream = self.stream_manager.pack_stream(
             constants.PROTO_AUTH_TYPE,
-            str(self.peerid),
+            self.peerid,
             peer_ip,
             self.host)
 
@@ -425,7 +425,7 @@ class CommService:
 
         if c_rsp_auth_type == constants.PROTO_AACK_TYPE:
             ## Extract peer id
-            pid = int(content)
+            pid = content
             ## Add peer
             self.swarm_manager.add_peer(pid, pkey, src_ip, src_port)
             ## Add peer connection
@@ -450,7 +450,8 @@ class CommService:
 
         # Check to see peer connection status
         if not self.swarm_manager.get_peer_connection_status(pid):
-            print "con stat false"
+            Logger.warn("Peer is offline.")
+            self._print("Peer is offline.")
             return False
 
         # Assumed Bulk message transfer
@@ -516,7 +517,7 @@ class CommService:
             )
 
             ## Extract peer id
-            pid = int(content) # Need to check if peerid format is followed. TODO
+            pid = content
 
             ## Add peer
             self.swarm_manager.add_peer(
@@ -537,7 +538,7 @@ class CommService:
             ## Send current peer info
             rsp = self.stream_manager.pack_stream(
                 captype=constants.PROTO_AACK_TYPE,
-                capcontent=str(self.peerid),
+                capcontent=self.peerid,
                 dest_host=src_ip,
                 src_host=self.host
             )

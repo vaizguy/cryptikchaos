@@ -22,6 +22,7 @@ from cryptikchaos.libs.utilities import get_time
 from cryptikchaos.libs.utilities import criptiklogo
 from cryptikchaos.libs.utilities import get_my_ip
 from cryptikchaos.libs.utilities import generate_key
+from cryptikchaos.libs.utilities import md5hash
 
 
 # ---Application switches-------------------------------------------------####
@@ -46,7 +47,7 @@ constants.KIVY_RESOURCE_PATH = "{}/fonts".format(constants.PROJECT_PATH)
 
 # ---peer attribute constants---------------------------------------------####
 
-constants.PEER_ID = uuid.getnode()
+constants.PEER_ID = md5hash(str(uuid.getnode()))[0:8]
 constants.PEER_PORT = 1597
 constants.PEER_HOST = get_my_ip()
 constants.PEER_NAME = "MYPOD"
@@ -139,7 +140,7 @@ constants.LOCAL_TEST_HOST = "127.0.0.1"
 # Local Test Port
 constants.LOCAL_TEST_PORT = 8888
 # Local Test PEer ID
-constants.LOCAL_TEST_PEER_ID = 888
+constants.LOCAL_TEST_PEER_ID = md5hash("TSERVER")[0:8]
 # Test ID
 constants.LOCAL_TEST_STREAM_ID = str(
     uuid.uuid5(
@@ -149,7 +150,7 @@ constants.LOCAL_TEST_STREAM_ID = str(
 )[0:constants.STREAM_ID_LEN]
 # Local Test keys
 constants.LOCAL_TEST_CLIENT_KEY = generate_key(constants.LOCAL_TEST_STREAM_ID)
-constants.LOCAL_TEST_SERVER_KEY = generate_key("888")
+constants.LOCAL_TEST_SERVER_KEY = generate_key(constants.LOCAL_TEST_PEER_ID)
 # Test chksum
 constants.LOCAL_TEST_STREAM_CHKSUM = hmac.new(
     constants.LOCAL_TEST_STR

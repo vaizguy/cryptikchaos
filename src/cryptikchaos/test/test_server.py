@@ -35,8 +35,11 @@ class TestServerApp(App):
         self.label = Label(
             text="""
             \n+Test Server started+\
-            \n[ {} ]
-            \n""".format(get_time()),
+            \n[ID {}]
+            \n[{}]""".format(
+                get_time(), 
+                constants.LOCAL_TEST_PEER_ID
+            ),
             markup=True,
             font_name=constants.GUI_FONT_TYPE,
             font_size=constants.GUI_FONT_SIZE,

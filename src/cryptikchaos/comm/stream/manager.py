@@ -224,11 +224,7 @@ class StreamManager(StoreManager):
         if (hmac.new(content).hexdigest() == self.get_store_item(sid, "STREAM_CHKSUM")):
             return content
         else:
-            print "Checksum mismatch:"
-            print hmac.new(content).hexdigest()
-            print self.get_store_item(sid, "STREAM_CHKSUM")
-            print content
-            print self.get_store_item(sid, "STREAM_CONTENT")[0:self.get_store_item(sid, "STREAM_LEN")]
+            Logger.warn("Checksum mismatch.")
             return None
         
     def get_destination_ip(self, sid):

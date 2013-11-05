@@ -281,7 +281,7 @@ class CryptikChaosApp(
         """
         
         try:
-            (pid, host) = (int(cmdline.split(' ')[0]), cmdline.split(' ')[1])
+            (pid, host) = (cmdline.split(' ')[0], cmdline.split(' ')[1])
         except:
             self.print_message("Incorrect use of command 'addpeer'.")
             self.cmd_help("addpeer")
@@ -321,7 +321,8 @@ class CryptikChaosApp(
         
         try:
             (pid, msg) = (
-                int(cmdline.split(' ')[0]), ' '.join(cmdline.split(' ')[1:]))
+                cmdline.split(' ')[0], ' '.join(cmdline.split(' ')[1:]))
+            print pid, msg
         except:
             self.print_message("Incorrect use of command 'send'")
             self.cmd_help("send")
@@ -346,7 +347,7 @@ class CryptikChaosApp(
         All testcases should be run here.
         Usage: test
         """
-        
+                
         # Print test string
         self.print_message("Sending Test String: {}".format(constants.LOCAL_TEST_STR))
         
