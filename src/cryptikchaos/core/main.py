@@ -322,7 +322,6 @@ class CryptikChaosApp(
         try:
             (pid, msg) = (
                 cmdline.split(' ')[0], ' '.join(cmdline.split(' ')[1:]))
-            print pid, msg
         except:
             self.print_message("Incorrect use of command 'send'")
             self.cmd_help("send")

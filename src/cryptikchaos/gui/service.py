@@ -61,7 +61,7 @@ class GUIService(App):
         Logger.info("Cryptikchaos Client started.")
         
         # Print criptikchaos banner
-        Clock.schedule_once(self.print_logo, 0)
+        Clock.schedule_once(self.print_logo, 1)
         
         # Initiate Twisted Server & Client services
         self.comm_service = CommService(
@@ -90,7 +90,7 @@ class GUIService(App):
         Logger.info("Successfully closed services.")
         Logger.info("Closing Cryptikchaos Client.")
 
-    def print_logo(self, dt):
+    def print_logo(self, *args):
         "Print the criptikchaos logo."
                 
         if constants.GUI_LOGO:

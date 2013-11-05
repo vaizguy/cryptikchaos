@@ -41,22 +41,20 @@ class SwarmManager(StoreManager):
         self.peer_connections = {}
 
     def __del__(self):
-
-        # Closing all connections
-        Logger.info("Closing SwarmStore Manager.")
         
         peer_ids = self.list_peer_ids()
         
         # Exit if no connections to clear
-        if not peer_ids:
-            return None
-        
-        # Remove peer connections
-        for pid in peer_ids:
-            # Update peer connection status
-            self.update_peer_connection_status(pid, False)
-            # Remove existing connection objects
-            self.peer_connections[pid] = None
+        if peer_ids:       
+            # Remove peer connections
+            for pid in peer_ids:
+                # Update peer connection status
+                self.update_peer_connection_status(pid, False)
+                # Remove existing connection objects
+                self.peer_connections[pid] = None
+           
+        # Close store 
+        StoreManager.__del__(self)
 
     def add_peer(self, pid, key, host, port):
         "Add peer to database."

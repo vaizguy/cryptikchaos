@@ -4,6 +4,8 @@ Created on Nov 3, 2013
 @author: vaizguy
 '''
 
+from kivy.logger import Logger
+
 from cryptikchaos.libs.Storage.store import Store
 from cryptikchaos.libs.Table.prettytable import PrettyTable
 
@@ -13,7 +15,14 @@ from hashlib import md5
 class StoreManager(object):
     
     def __init__(self, name, keys):
+        "Initialize store manager."
         
+        Logger.info("Opening [{}] store manager.".format(
+            name
+            )
+        )
+        
+        # Store attributes    
         self._storage = {}
         self._name = name
         self._store_keys = keys
@@ -29,6 +38,18 @@ class StoreManager(object):
         return "StoreManager({})".format(
             md5(self._storage).hexdigest()
         )
+        
+    def __del__(self):
+        "Delete store contents"
+        
+        Logger.info("Closing [{}] store manager.".format(
+            self._name
+            )
+        )    
+        
+        del self._storage
+        del self._name
+        del self._store_keys
     
     def keys(self):
         "Return the storage index keys."
@@ -100,7 +121,7 @@ class StoreManager(object):
                 # get value
                 v = _dict[k]
                 # Check on length
-                if len(str(v)) <= 15:
+                if len(str(v)) <= 10:
                     row += [_dict[k]]
                 else:
                     row += ["{}XXX".format(v[:10])]

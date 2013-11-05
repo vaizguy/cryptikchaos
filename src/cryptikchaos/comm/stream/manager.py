@@ -54,14 +54,10 @@ class StreamManager(StoreManager):
         self.peer_key = peerkey
 
     def __del__(self):
-
-        Logger.info("Closing StreamStore Manager.")
         
         # Clear stored streams
-        try:
-            del self.stream_dict
-        except AttributeError:
-            return None
+        StoreManager.__del__(self)
+
         
     def _prepare_stream(self, dest_host, src_host, stype, content):
         "Create new stream store."
