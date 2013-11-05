@@ -24,6 +24,10 @@ class TransformedDict(collections.MutableMapping):
     def __repr__(self):
         
         return self.store.__repr__()
+    
+    def __dict__(self):
+        
+        return self.store.__dict__()
 
     def __getitem__(self, key):
         

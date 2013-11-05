@@ -365,7 +365,7 @@ class CryptikChaosApp(
         """
 
         self.print_message(
-            msg=self.comm_service.peer_table(),
+            msg=self.comm_service.swarm_manager.peer_table(),
             wrap=False
         )
 

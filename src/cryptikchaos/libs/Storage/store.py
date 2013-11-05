@@ -31,6 +31,11 @@ class Store(TransformedDict):
         return "Store({})".format(
             md5(TransformedDict.__repr__(self)).hexdigest()
         )
+        
+    def __dict__(self):
+        "Return dictionary obj"
+        
+        return TransformedDict.__dict__()
                 
     def __getitem__(self, key):
         "Get value from dictionary."
