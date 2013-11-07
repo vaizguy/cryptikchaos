@@ -107,6 +107,9 @@ class StoreManager(object):
     def storage_table(self):
         "Display Store in table format."
         
+        if not self._storage.keys():
+            return None 
+        
         print "\n{} Storage Table".format(self._name) 
         
         table = PrettyTable(["ID"] + list(self._store_keys))

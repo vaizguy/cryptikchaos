@@ -98,6 +98,10 @@ class CryptikChaosApp(
 
         # Send text to console
         self.inputText_gui_hook(text)
+        
+    def print_table(self, table):
+        
+        self.print_message(msg=table, wrap=False)
 
     ## Console-GUI Hooks
     ## ----------------------------------------------------
@@ -363,9 +367,8 @@ class CryptikChaosApp(
         Usage: peers
         """
 
-        self.print_message(
-            msg=self.comm_service.swarm_manager.peer_table(),
-            wrap=False
+        self.print_table(
+            self.comm_service.swarm_manager.peer_table()
         )
 
     def cmd_graphswarm(self, cmdline):
@@ -387,9 +390,8 @@ class CryptikChaosApp(
         Usage: env
         """
         
-        self.print_message(
-            msg=self.env_service.display_table(), 
-            wrap=False
+        self.print_table(
+            self.env_service.display_table()
         )
                        
     def cmd_eko(self, cmdline):

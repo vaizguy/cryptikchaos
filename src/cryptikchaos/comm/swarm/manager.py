@@ -207,7 +207,12 @@ class SwarmManager(StoreManager):
     def peer_table(self):
         "Display all peers"
         
-        return self.storage_table()
+        table= self.storage_table()
+        
+        if table:
+            return table
+        else:
+            return "No peers in swarm."
 
     def peer_host(self, pid):
         "Returns a peer's IPv4 address."
