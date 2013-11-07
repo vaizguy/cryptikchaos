@@ -17,7 +17,6 @@ pythonpath.AddSysPath('../../')
 from cryptikchaos.gui.service import GUIService
 
 from cryptikchaos.config.configuration import constants
-from cryptikchaos.libs.Table.prettytable import PrettyTable
 from cryptikchaos.libs.utilities import wrap_line
 
 from kivy.logger import Logger
@@ -388,24 +387,11 @@ class CryptikChaosApp(
         Usage: env
         """
         
-        constants = self.env_service.list_constants()
-        
-        if constants:
-            table = PrettyTable(["S.NO", "CONSTANT", "VALUE"])
-        
-            for c in constants:
-                table.add_row(c)
-            
-            self.print_message(
-                """
-                \nEnvironment Constants:
-                \nTo see complete value, enter: 'eko <constant name>'
-                \n{}""".format(table),
-                wrap=False
-            )
-        else:
-            self.print_message(msg="No environment variables defined.")
-               
+        self.print_message(
+            msg=self.env_service.display_table(), 
+            wrap=False
+        )
+                       
     def cmd_eko(self, cmdline):
         """
         View environment constant value.

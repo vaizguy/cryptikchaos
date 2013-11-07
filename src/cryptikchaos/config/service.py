@@ -12,6 +12,7 @@ __version__ = 0.5
 from cryptikchaos.config.configuration import constants
 from cryptikchaos.libs.utilities import serialize
 from cryptikchaos.libs.utilities import deserialize
+from cryptikchaos.libs.Table.prettytable import PrettyTable
 
 from kivy import Logger
 
@@ -97,11 +98,31 @@ class EnvService:
         return (
             self.deserialize_stream_conf(serialstr) == self.caps_conf_dict()
         )
+    
+    def display_table(self):
+        """
+        View Application environment constants.
+        (useful for realtime debugging)
+        Usage: env
+        """
         
-if __name__ == "__main__":
+        constants = self.list_constants()
+        
+        if constants:
+            table = PrettyTable(["S.NO", "CONSTANT", "VALUE"])
+        
+            for c in constants:
+                table.add_row(c)
+            
+            return """
+                \nEnvironment Constants:
+                \nTo see value use: 'eko <constant name>'
+                \n{}""".format(table)
+        else:
+            return "No environment variables defined."
     
-    from cryptikchaos.libs.Table.prettytable import PrettyTable
     
+if __name__ == "__main__":    
     e = EnvService()
     lc = e.list_constants()
     print lc
@@ -111,27 +132,5 @@ if __name__ == "__main__":
     )
     print "Len of serial config: {}".format(len(e.serialize_stream_conf()))
     
-    def env():
-        """
-        View Application environment constants.
-        (useful for realtime debugging)
-        Usage: env
-        """
-        
-        constants = e.list_constants()
-        
-        if constants:
-            table = PrettyTable(["S.NO", "CONSTANT", "VALUE"])
-        
-            for c in constants:
-                table.add_row(c)
-            
-            print """
-                \nEnvironment Constants:
-                \nTo see value use: 'eko <constant name>'
-                \n{}""".format(table)
-        else:
-            print "No environment variables defined."
-    
-    env()
+    print e.display_table()
     
