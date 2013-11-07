@@ -71,13 +71,13 @@ class SwarmManager(StoreManager):
         else:
             Logger.debug("Adding Peer {} , {}@{}".format(pid, host, port))
             
-        # Random message color code
-        while True:
-            # Get RCC
-            rcc = random_color_code()
-            # Check if color not used
-            if rcc not in self.list_peer_id_colors():
-                break
+        ## Random message color code
+        #while True:
+        #    # Get RCC
+        #    rcc = random_color_code()
+        #    # Check if color not used
+        #    if rcc not in self.list_peer_id_colors():
+        #        break
 
         # Peer dictionary structure defined here
         self.add_store(
@@ -87,7 +87,7 @@ class SwarmManager(StoreManager):
                 "PEER_IP": host,
                 "PEER_PORT": port,
                 "PEER_CONN_STATUS": False,
-                "PEER_ID_COLOR" : rcc
+                "PEER_ID_COLOR" : pid
                 }
         )
 

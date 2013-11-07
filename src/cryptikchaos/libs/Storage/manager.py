@@ -124,10 +124,10 @@ class StoreManager(object):
                 # get value
                 v = _dict[k]
                 # Check on length
-                if len(str(v)) <= 10:
+                if len(str(v)) <= 8:
                     row += [_dict[k]]
                 else:
-                    row += ["{}XXX".format(v[:10])]
+                    row += ["{}..".format(v[:8])]
                       
             table.add_row(row)
                 
