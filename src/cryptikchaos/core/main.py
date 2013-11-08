@@ -22,6 +22,8 @@ from cryptikchaos.libs.utilities import wrap_line
 
 from kivy.logger import Logger
 
+from shlex import shlex
+
 
 class CryptikChaosApp(
     # GUI service
@@ -125,13 +127,15 @@ class CryptikChaosApp(
 
         if line[0] == '@':
             line = 'send {}'.format(line[1:])
+            
+        shlexer = shlex(line, posix=True)
 
         # Convert to cmd, args
-        cmd_split = line.split(' ')
+        #cmd_split = line.split(' ')
 
-        (cmd, args) = (cmd_split[0], ' '.join(cmd_split[1:]))
+        # (command, argument_string)
+        return (next(shlexer), shlexer.instream.read())
 
-        return (cmd, str(args))
 
     def exec_command(self, cmd_line):
         "Execute a command."
@@ -280,7 +284,8 @@ class CryptikChaosApp(
 
     def cmd_addpeer(self, cmdline):
         """
-        Add new peer.
+        Command: addpeer
+        Adds a new peer to your swarm.
         Usage: addpeer <pid> <host>
         """
         
@@ -296,7 +301,8 @@ class CryptikChaosApp(
 
     def cmd_addtest(self, cmdline):
         """
-        Add test server.
+        Commands: addtest
+        Adds the test server to swarm.
         Usage: addtest
         """
         
@@ -318,7 +324,9 @@ class CryptikChaosApp(
 
     def cmd_send(self, cmdline):
         """
-        Send message to other peers using peerid.
+        Command: send
+        Send a message to another peer's given ID. Peer must
+        be present in the swarm. To view swarm use command 'peers'.
         Usage: send <pid> <message>
         Alternative Short Usage: @<pid> <message>        
         """
@@ -346,8 +354,9 @@ class CryptikChaosApp(
 
     def cmd_sendtest(self, cmdline):
         """
-        Tests the pod with the test server running.
-        All testcases should be run here.
+        Command: sendtest
+        Tests the message sending capability of the client using a
+        running test server.
         Usage: test
         """
                 
@@ -364,7 +373,8 @@ class CryptikChaosApp(
 
     def cmd_peers(self, cmdline):
         """
-        View live peers.
+        Command: peers
+        View all peers present in the swarm.
         Usage: peers
         """
 
@@ -374,8 +384,9 @@ class CryptikChaosApp(
 
     def cmd_graphswarm(self, cmdline):
         """
-        View connected peers in graph format.
-        Requires: Networkx python graph library.
+        Command: grapgswarm
+        Visualize swarm using network graphing.
+        Requires: Networkx python graph library to be installed.
         Usage: graphswarm
         """
 
@@ -386,7 +397,8 @@ class CryptikChaosApp(
             
     def cmd_env(self, cmdline):
         """
-        View Application environment constants.
+        Command: env
+        View Application configuration constants.
         (useful for realtime debugging)
         Usage: env
         """
@@ -397,7 +409,9 @@ class CryptikChaosApp(
                        
     def cmd_eko(self, cmdline):
         """
-        View environment constant value.
+        Command: eko
+        View any configuration constant value.
+        To view all constants use command 'env'.
         Usage: eko <constant name>
         """
         
