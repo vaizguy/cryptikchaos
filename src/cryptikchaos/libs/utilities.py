@@ -7,14 +7,12 @@ Created on Oct 17, 2013
 __author__ = "Arun Vaidya"
 __version__ = 0.5
 
-from cryptikchaos.env.configuration import constants
-
 from kivy import Logger
 
 from time    import gmtime, strftime
 from struct  import pack, unpack
 from socket  import inet_aton, inet_ntoa, socket, AF_INET, SOCK_STREAM
-from uuid    import uuid5, NAMESPACE_URL
+from uuid    import uuid5, NAMESPACE_URL, getnode
 from hashlib import sha512, md5
 from zlib    import compress as zlib_compress, \
                     decompress as zlib_decompress
@@ -23,6 +21,7 @@ from base64  import b64encode, b64decode
 from random  import choice, getrandbits
 from re      import sub
 from urllib2 import urlopen, URLError
+from os.path import dirname, realpath
 
 def md5hash(string):
     "Generate md5 hash from string."
@@ -45,8 +44,6 @@ def uint32_to_ip(ipn):
     t = pack("!I", ipn)
     return inet_ntoa(t)
 
-
-
 def generate_uuid(host):
     """
     Generate capsule UID for particular destination host.
@@ -54,7 +51,7 @@ def generate_uuid(host):
 
     return str(
         uuid5(NAMESPACE_URL, host)
-    )[0:constants.STREAM_ID_LEN]
+    )[0:8]
 
 def generate_token(uid, pkey):
     """
@@ -134,7 +131,7 @@ def get_time():
     Get the time as a string.
     """
     
-    return strftime(constants.TIME_FORMAT, gmtime())
+    return strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
 
 def serialize(dictionary):
     """
@@ -168,8 +165,8 @@ def criptiklogo():
     Read the logo and return it as string.
     """
     
-    logofile = "{}/db/logo".format(
-        constants.PROJECT_PATH
+    logofile = "{}/../db/logo".format(
+        dirname(realpath(__file__))
     )
     
     try:
@@ -183,7 +180,7 @@ def criptiklogo():
     else:
         # Return logo if success
         return logo.format(
-            constants.PEER_ID,
+            md5hash(str(getnode()))[0:8],
             __version__
        )
 

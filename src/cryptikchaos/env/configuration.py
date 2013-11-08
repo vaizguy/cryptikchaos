@@ -140,7 +140,9 @@ constants.LOCAL_TEST_HOST = "127.0.0.1"
 # Local Test Port
 constants.LOCAL_TEST_PORT = 8888
 # Local Test PEer ID
-constants.LOCAL_TEST_PEER_ID = md5hash("TSERVER")[0:8]
+constants.LOCAL_TEST_PEER_ID = md5hash(
+    constants.LOCAL_TEST_PEER_NAME
+)[0:8]
 # Test ID
 constants.LOCAL_TEST_STREAM_ID = str(
     uuid.uuid5(
