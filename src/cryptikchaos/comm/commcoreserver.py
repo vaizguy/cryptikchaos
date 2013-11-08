@@ -20,7 +20,7 @@ import base64
 from twisted.internet import protocol
 from twisted.protocols.basic import LineReceiver
 
-from cryptikchaos.config.configuration import constants
+from cryptikchaos.env.configuration import constants
 
 
 class CommCoreServerProtocol(LineReceiver):

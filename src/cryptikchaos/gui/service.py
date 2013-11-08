@@ -13,8 +13,8 @@ from kivy.clock import Clock
 from kivy.logger import Logger
 
 from cryptikchaos.gui.consolewin import ConsoleWindow
-from cryptikchaos.config.configuration import constants
-from cryptikchaos.config.service import EnvService
+from cryptikchaos.env.configuration import constants
+from cryptikchaos.env.service import EnvService
 from cryptikchaos.comm.service import CommService
 
 

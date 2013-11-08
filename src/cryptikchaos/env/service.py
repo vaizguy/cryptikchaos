@@ -9,7 +9,7 @@ View app environment constants through the App.
 __author__ = "Arun Vaidya"
 __version__ = 0.5
 
-from cryptikchaos.config.configuration import constants
+from cryptikchaos.env.configuration import constants
 from cryptikchaos.libs.utilities import serialize
 from cryptikchaos.libs.utilities import deserialize
 from cryptikchaos.libs.Table.prettytable import PrettyTable

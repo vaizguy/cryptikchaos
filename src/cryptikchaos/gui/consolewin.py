@@ -13,7 +13,7 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.scrollview import ScrollView
 
-from cryptikchaos.config.configuration import constants
+from cryptikchaos.env.configuration import constants
 
 import re
 

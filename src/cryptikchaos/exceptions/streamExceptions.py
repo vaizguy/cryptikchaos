@@ -7,7 +7,7 @@ Created on Oct 10, 2013
 __author__ = "Arun Vaidya"
 __version__ = 0.5
 
-from cryptikchaos.config.configuration import constants
+from cryptikchaos.env.configuration import constants
 
 class StreamError(Exception):
     pass

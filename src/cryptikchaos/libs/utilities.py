@@ -7,7 +7,7 @@ Created on Oct 17, 2013
 __author__ = "Arun Vaidya"
 __version__ = 0.5
 
-from cryptikchaos.config.configuration import constants
+from cryptikchaos.env.configuration import constants
 
 from kivy import Logger
 
@@ -20,7 +20,7 @@ from zlib    import compress as zlib_compress, \
                     decompress as zlib_decompress
 from json    import dumps, loads
 from base64  import b64encode, b64decode
-from random  import randint, choice, getrandbits
+from random  import choice, getrandbits
 from re      import sub
 from urllib2 import urlopen, URLError
 
@@ -186,20 +186,6 @@ def criptiklogo():
             constants.PEER_ID,
             __version__
        )
-
-def random_color_code():
-    "Generate random color code, #Hex{x6}."
-    
-    r = lambda: randint(0,255)
-    
-    while True:
-        # Get Random color code
-        rcc ='#{:02X}{:02X}{:02X}'.format(r(),r(),r())
-        # Filter App b/w text colors
-        if (rcc != "#000000" or rcc != "#FFFFFF"):
-            break
-        
-    return rcc
 
 def generate_key(username, private_key=None):
     "Generate keys."

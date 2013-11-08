@@ -11,9 +11,7 @@ __version__ = 0.5
 
 from cryptikchaos.libs.Storage.manager import StoreManager
 
-from cryptikchaos.config.configuration import constants
-
-from cryptikchaos.libs.utilities import random_color_code
+from cryptikchaos.env.configuration import constants
 
 from kivy.logger import Logger
 
@@ -35,7 +33,7 @@ class SwarmManager(StoreManager):
         # Client Attributes
         self.my_peerid = peerid
         self.my_key = peerkey
-        self.my_msg_rcc = random_color_code()
+        self.my_msg_rcc = peerid
 
         # Hold peer commections
         self.peer_connections = {}
@@ -71,14 +69,6 @@ class SwarmManager(StoreManager):
         else:
             Logger.debug("Adding Peer {} , {}@{}".format(pid, host, port))
             
-        ## Random message color code
-        #while True:
-        #    # Get RCC
-        #    rcc = random_color_code()
-        #    # Check if color not used
-        #    if rcc not in self.list_peer_id_colors():
-        #        break
-
         # Peer dictionary structure defined here
         self.add_store(
             pid, dictionary={

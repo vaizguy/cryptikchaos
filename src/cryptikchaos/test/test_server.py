@@ -13,7 +13,7 @@ __version__ = 0.5
 import pythonpath
 pythonpath.AddSysPath('../../')
 
-from cryptikchaos.config.configuration import constants
+from cryptikchaos.env.configuration import constants
 from cryptikchaos.comm.service import CommService
 from cryptikchaos.libs.utilities import wrap_line
 from cryptikchaos.libs.utilities import get_time

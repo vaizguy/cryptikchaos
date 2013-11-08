@@ -16,7 +16,7 @@ import os
 import random
 import string
 
-from cryptikchaos.config import constants
+from cryptikchaos.env import constants
 
 from cryptikchaos.libs.utilities import get_time
 from cryptikchaos.libs.utilities import criptiklogo

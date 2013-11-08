@@ -14,7 +14,7 @@ from kivy import Logger
 
 from cryptikchaos.libs.Storage.manager import StoreManager
 
-from cryptikchaos.config.configuration import constants
+from cryptikchaos.env.configuration import constants
 
 from cryptikchaos.libs.utilities import ip_to_uint32
 from cryptikchaos.libs.utilities import uint32_to_ip

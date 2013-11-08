@@ -18,7 +18,7 @@ from twisted.protocols.basic import LineReceiver
 
 import base64
 
-from cryptikchaos.config.configuration import constants
+from cryptikchaos.env.configuration import constants
 
 
 class CommCoreAuthProtocol(LineReceiver):

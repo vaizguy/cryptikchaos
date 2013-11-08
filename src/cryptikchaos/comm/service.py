@@ -16,7 +16,7 @@ from cryptikchaos.comm.commcoreauth   import CommCoreAuthFactory
 from cryptikchaos.comm.swarm.manager import SwarmManager
 from cryptikchaos.comm.stream.manager import StreamManager
 
-from cryptikchaos.config.configuration import constants
+from cryptikchaos.env.configuration import constants
 
 from cryptikchaos.libs.utilities import generate_uuid
 from cryptikchaos.libs.utilities import generate_token

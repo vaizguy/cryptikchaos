@@ -16,7 +16,7 @@ pythonpath.AddSysPath('../../')
 
 from cryptikchaos.gui.service import GUIService
 
-from cryptikchaos.config.configuration import constants
+from cryptikchaos.env.configuration import constants
 from cryptikchaos.libs.utilities import wrap_line
 
 from kivy.logger import Logger
