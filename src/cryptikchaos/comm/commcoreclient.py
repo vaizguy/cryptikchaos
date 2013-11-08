@@ -13,13 +13,13 @@ __version__ = 0.5
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 
+from cryptikchaos.env.configuration import constants
+
 from kivy.logger import Logger
 import base64
 # connection to command server
 from twisted.internet import protocol
 from twisted.protocols.basic import LineReceiver
-
-from cryptikchaos.env.configuration import constants
 
 
 class CommCoreClientProtocol(LineReceiver):

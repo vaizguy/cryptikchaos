@@ -10,8 +10,10 @@ __author__ = "Arun Vaidya"
 __version__ = 0.5
 
 from cryptikchaos.env.configuration import constants
+
 from cryptikchaos.libs.utilities import serialize
 from cryptikchaos.libs.utilities import deserialize
+
 from cryptikchaos.libs.Table.prettytable import PrettyTable
 
 from kivy import Logger
@@ -23,6 +25,15 @@ class EnvService:
     """
     
     def __init__(self):
+        
+        ## Check and see if constants rebinding is successful
+        try:
+            constants.REBIND_CHECK = False
+        except constants.ConstError:
+            Logger.info("Environment constants are secure.")
+        else:
+            raise Exception("Error with env setup.")
+                
 
         self.env_dict = {}
 

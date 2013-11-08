@@ -7,13 +7,14 @@ Created on Oct 8, 2013
 __author__ = "Arun Vaidya"
 __version__ = 0.5
 
+from cryptikchaos.env.configuration import constants
+
 from kivy.app import App
 from kivy.resources import resource_add_path
 from kivy.clock import Clock
 from kivy.logger import Logger
 
 from cryptikchaos.gui.consolewin import ConsoleWindow
-from cryptikchaos.env.configuration import constants
 from cryptikchaos.env.service import EnvService
 from cryptikchaos.comm.service import CommService
 

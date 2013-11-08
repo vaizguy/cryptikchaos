@@ -11,14 +11,14 @@ __version__ = 0.5
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 
+from cryptikchaos.env.configuration import constants
+
 from kivy.logger import Logger
 
 from twisted.internet import protocol
 from twisted.protocols.basic import LineReceiver
 
 import base64
-
-from cryptikchaos.env.configuration import constants
 
 
 class CommCoreAuthProtocol(LineReceiver):

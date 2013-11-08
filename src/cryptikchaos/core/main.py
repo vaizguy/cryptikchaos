@@ -14,9 +14,10 @@ __version__ = 0.5
 import pythonpath
 pythonpath.AddSysPath('../../')
 
+from cryptikchaos.env.configuration import constants
+
 from cryptikchaos.gui.service import GUIService
 
-from cryptikchaos.env.configuration import constants
 from cryptikchaos.libs.utilities import wrap_line
 
 from kivy.logger import Logger

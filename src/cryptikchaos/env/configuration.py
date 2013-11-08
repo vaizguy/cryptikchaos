@@ -35,6 +35,7 @@ constants.ENABLE_SHUFFLE = True
 # ---Application Environment----------------------------------------------####
 
 constants.TIME_FORMAT = "%a, %d %b %Y %H:%M:%S +0000"
+constants.REBIND_CHECK = True
 # ------------------------------------------------------------------------####
 
 # ---Project Path CONSTANTS-----------------------------------------------####
