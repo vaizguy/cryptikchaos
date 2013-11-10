@@ -43,8 +43,6 @@ class StreamManager(StoreManager):
         # Authorized keys
         self._valid_keys = (
             'STREAM_FLAG',
-            'STREAM_DSTIP',
-            'STREAM_SRCIP',
             'STREAM_TYPE' ,
             'STREAM_CONTENT',
             'STREAM_CHKSUM',
@@ -64,38 +62,25 @@ class StreamManager(StoreManager):
         StoreManager.__del__(self)
 
         
-    def _prepare_stream(self, dest_host, src_host, stype, content,
-        flag, peer_key):
+    def _prepare_stream(self, stream_type, stream_content, stream_flag, stream_host, peer_key):
         "Create new stream store."
         
         # Check length of content.
-        if len(content) > constants.STREAM_CONTENT_LEN:
+        if len(stream_content) > constants.STREAM_CONTENT_LEN:
             raise StreamOverflowError(constants.STREAM_CONTENT_LEN)
 
         # Check length of capsule type.
-        if len(stype) > constants.STREAM_TYPE_LEN:
+        if len(stream_type) > constants.STREAM_TYPE_LEN:
             raise StreamOverflowError(constants.STREAM_TYPE_LEN)
         
-        # localhost - 127.0.0.1 mapping.
-        if dest_host == "localhost":
-            dest_host = constants.LOCAL_TEST_HOST
-        if src_host == "localhost":
-            src_host = constants.LOCAL_TEST_HOST
-        
         # Generate uid
-        stream_uid = generate_uuid(dest_host)
-        # Calc capsule destination IP integer
-        stream_dstip = ip_to_uint32(dest_host)
-        # Calc capsule source IP 
-        stream_srcip = ip_to_uint32(src_host)
+        stream_uid = generate_uuid(stream_host)
         # Stream type
-        stream_type = stype.upper()
+        stream_type = stream_type.upper()
         # Generate checksum before shuffle
-        stream_hmac = hmac.new(content).hexdigest()
+        stream_hmac = hmac.new(stream_content).hexdigest()
         # Stream peer key
         stream_key = None
-        # Stream flag
-        stream_flag = flag
         
         # Check stream signing mode
         if stream_flag == STREAM_TYPES.UNAUTH:
@@ -115,16 +100,12 @@ class StreamManager(StoreManager):
             Logger.info("Scrambling content.")
 
             stream_content = shuffler(
-                string=content,
+                string=stream_content,
                 iterations=constants.STREAM_CONT_SHUFF_ITER
             )
-        else:
-            stream_content = content
         
         dictionary = {
             'STREAM_FLAG'    :stream_flag,
-            'STREAM_DSTIP'   :stream_dstip,
-            'STREAM_SRCIP'   :stream_srcip,
             'STREAM_TYPE'    :stream_type,
             'STREAM_CONTENT' :stream_content,
             'STREAM_CHKSUM'  :stream_hmac,
@@ -136,31 +117,28 @@ class StreamManager(StoreManager):
         
         return stream_uid
 
-    def pack_stream(self, stype, content, dest_host, src_host, 
-            flag=STREAM_TYPES.AUTH, peer_key=None):
+    def pack_stream(self, stream_type, stream_content, stream_host,
+            stream_flag=STREAM_TYPES.AUTH, peer_key=None):
         "Pack data into stream."
                 
         # Create new stream
         sid = self._prepare_stream(
-            dest_host=dest_host, 
-            src_host=src_host, 
-            stype=stype, 
-            content=content, 
-            flag=flag, 
+            stream_type=stream_type, 
+            stream_content=stream_content, 
+            stream_flag=stream_flag, 
+            stream_host=stream_host,
             peer_key=peer_key
         )
 
         # Pack store into stream
         stream = struct.pack(
-            "!III{}s{}s{}s{}s".format(
+            "!I{}s{}s{}s{}s".format(
                 constants.STREAM_TYPE_LEN,
                 constants.STREAM_CONTENT_LEN,
                 constants.STREAM_CHKSUM_LEN,
                 constants.STREAM_PKEY_HASH_LEN
             ),
-            self.get_store_item(sid, 'STREAM_FLAG'     ),
-            self.get_store_item(sid, 'STREAM_DSTIP'  ),
-            self.get_store_item(sid, 'STREAM_SRCIP'  ),
+            self.get_store_item(sid, 'STREAM_FLAG'   ),
             self.get_store_item(sid, 'STREAM_TYPE'   ),
             self.get_store_item(sid, 'STREAM_CONTENT'),
             self.get_store_item(sid, 'STREAM_CHKSUM' ),
@@ -188,14 +166,12 @@ class StreamManager(StoreManager):
         # Unpack stream to variables
         (
             stream_flag,
-            stream_dstip,
-            stream_srcip,
             stream_type,
             stream_content,
             stream_hmac,
             stream_key   
         ) = struct.unpack(
-                "!III{}s{}s{}s{}s".format(
+                "!I{}s{}s{}s{}s".format(
                 constants.STREAM_TYPE_LEN,
                 constants.STREAM_CONTENT_LEN,
                 constants.STREAM_CHKSUM_LEN,
@@ -231,8 +207,6 @@ class StreamManager(StoreManager):
         
         dictionary = {
             'STREAM_FLAG'    :stream_flag,
-            'STREAM_DSTIP'   :stream_dstip,
-            'STREAM_SRCIP'   :stream_srcip,
             'STREAM_TYPE'    :stream_type,
             'STREAM_CONTENT' :stream_content,
             'STREAM_CHKSUM'  :stream_hmac,
@@ -269,29 +243,14 @@ class StreamManager(StoreManager):
             Logger.warn("Stream content checksum mismatch.")
             return None
         
-    def _get_destination_ip(self, sid):
-        
-        i = self.get_store_item(sid, "STREAM_DSTIP")
-        return uint32_to_ip(i)
-
-    def _get_source_ip(self, sid):
-
-        i = self.get_store_item(sid, "STREAM_SRCIP")
-        return uint32_to_ip(i)
-        
     def _get_tuple(self, sid):
         "Return stream contents in tuple form."
 
         return (
-            sid,
-            self._get_destination_ip(sid),
-            self._get_source_ip(sid),
             self.get_store_item(sid, "STREAM_TYPE"),
             self._get_content(sid),
-            self.get_store_item(sid, "STREAM_CONTENT"),
-            self.get_store_item(sid, "STREAM_CHKSUM"),
             self.get_store_item(sid, "STREAM_PKEY").strip('\b')
-        )       
+        )
 
     def get_stream(self, sid):
         "Return stream data in form of tuple."
@@ -302,7 +261,11 @@ class StreamManager(StoreManager):
 if __name__ == "__main__":
     
     sm = StreamManager(123, "PKEYTEST", "localhost")
-    stream = sm.pack_stream(stype="ACKN", content="Hello", dest_host="127.0.0.1", src_host="127.0.0.1", peer_key="PKEYTEST")
+    stream = sm.pack_stream(
+        stream_type="ACKN", 
+        stream_content="Hello", 
+        stream_key="PKEYTEST"
+    )
     print stream
     print sm.unpack_stream(stream)
     

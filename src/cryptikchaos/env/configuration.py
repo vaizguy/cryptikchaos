@@ -102,11 +102,6 @@ constants.STREAM_FLAG_LEN = 4
 constants.STREAM_ID_LEN = 8
 # Stream chksum length
 constants.STREAM_CHKSUM_LEN = 32
-# Stream content length byte length
-#constants.STREAM_CONTENTL_LEN = 4
-# Stream IP integer repr length
-constants.STREAM_DST_IP_LEN = 4
-constants.STREAM_SCR_IP_LEN = 4
 # Stream peer key hash length
 constants.STREAM_PKEY_HASH_LEN = 64
 
@@ -115,8 +110,6 @@ constants.STREAM_SIZE = constants.STREAM_CONTENT_LEN + \
     constants.STREAM_TYPE_LEN + \
     constants.STREAM_FLAG_LEN + \
     constants.STREAM_CHKSUM_LEN + \
-    constants.STREAM_DST_IP_LEN + \
-    constants.STREAM_SCR_IP_LEN + \
     constants.STREAM_PKEY_HASH_LEN
 
 # Stream shuffle iterations

@@ -161,10 +161,9 @@ class CommService:
 
         # Pack data into capsule
         stream = self.stream_manager.pack_stream(
-            stype=data_class,
-            content=data_content,
-            dest_host=desthost,
-            src_host=self.host, 
+            stream_type=data_class,
+            stream_content=data_content,
+            stream_host=desthost,
             peer_key=peer_key
         )
 
@@ -196,7 +195,7 @@ class CommService:
         if pid:
             key  = self.swarm_manager.get_peer_key(pid)
             
-        return (pid, key)
+        return (pid, key, host, port)
 
     def _print(self, msg, dip=constants.PEER_HOST, 
             port=constants.PEER_PORT):
@@ -317,11 +316,10 @@ class CommService:
         
         # Pack data into capsule
         stream = self.stream_manager.pack_stream(
-            stype=constants.PROTO_AUTH_TYPE,
-            content=self.peerid,
-            dest_host=peer_ip,
-            src_host=self.host,
-            flag=STREAM_TYPES.UNAUTH
+            stream_type=constants.PROTO_AUTH_TYPE,
+            stream_content=self.peerid,
+            stream_flag=STREAM_TYPES.UNAUTH,
+            stream_host=peer_ip
         )
 
         return self._write_into_connection(connection, stream)
@@ -364,33 +362,35 @@ class CommService:
             return None
         
         ## Get the sender peer's information from connection
-        (_, src_key) = self._get_source_from_connection(connection)
+        (_, src_key, src_ip, _) = self._get_source_from_connection(connection)
 
         # Repsonse handling architecture should be placed here.
         # Unpack received stream
         try:
-            (cid, dest_ip, src_ip, c_rsp_type, content,
-                 _, chksum, pkey) = self.stream_manager.unpack_stream(
-                response,
-                src_key
+            (
+                c_rsp_type, 
+                content, 
+                _
+            ) = self.stream_manager.unpack_stream(
+                stream=response,
+                peer_key=src_key
             )
         except:
             raise
             return None
         else:
             ## Check if stream ID is valid 
-            if not cid:
+            if not c_rsp_type:
                 return None
                                 
         # Currently the test case is inbuilt into the pod.
         # MSG TEST BEGIN #
         if c_rsp_type == constants.LOCAL_TEST_STREAM_TYPE:
 
-            if (cid == constants.LOCAL_TEST_STREAM_ID and
-               chksum == constants.LOCAL_TEST_STREAM_CHKSUM and
-               content == constants.LOCAL_TEST_STR and
-               dest_ip == constants.LOCAL_TEST_HOST and
-               src_ip == constants.LOCAL_TEST_HOST):
+            if (
+                content == constants.LOCAL_TEST_STR and
+                src_ip == constants.LOCAL_TEST_HOST
+            ):
                 Logger.debug("Simple Message Transfer Test Passed.")
                 self._print(
                     "Simple Message Transfer Test Passed.",
@@ -413,20 +413,20 @@ class CommService:
         elif c_rsp_type == constants.PROTO_MACK_TYPE:
             Logger.debug("Message ACK recieved from {}".format(src_ip))
 
-    def handle_auth_response(self, response):
+    def handle_auth_response(self, response, connection):
         "Handle authentication response to add peer."
+        
+        ## Get the sender peer's information from connection
+        (_, _, src_ip, src_port) = self._get_source_from_connection(connection)
 
         # Repsonse handling architecture should be placed here.
-        (cid, dest_ip, src_ip, c_rsp_auth_type, content,
-         _, chksum, pkey) = self.stream_manager.unpack_stream(
-            response
+        (
+            c_rsp_auth_type, 
+            content, 
+            pkey
+        ) = self.stream_manager.unpack_stream(
+            stream=response
         )
-
-        src_port = constants.PEER_PORT
-
-        ## It maybe from Test server if None
-        if not self.swarm_manager.get_peerid_from_ip(src_ip):
-            src_port = constants.LOCAL_TEST_PORT
 
         if c_rsp_auth_type == constants.PROTO_AACK_TYPE:
             ## Extract peer id
@@ -500,14 +500,20 @@ class CommService:
         Logger.debug("Handling Capsule : {}".format(b64encode(serial)))
         
         ## Get the sender peer's information from connection
-        (src_pid, src_key) = self._get_source_from_connection(connection)
+        (src_pid, src_key, src_ip, src_port) = self._get_source_from_connection(connection)
 
         # Response (default = None)
         rsp = None
 
         # Unpack capsule
-        (cid, dest_ip, src_ip, c_rx_type, content, _, _,
-            pkey) = self.stream_manager.unpack_stream(serial, src_key)
+        (
+            c_rx_type, 
+            content, 
+            pkey
+        ) = self.stream_manager.unpack_stream(
+            stream=serial,
+            peer_key=src_key
+        )
         
         # Print test message if test server
         if self.peerid == constants.LOCAL_TEST_PEER_ID and \
@@ -545,11 +551,10 @@ class CommService:
 
             ## Send current peer info
             rsp = self.stream_manager.pack_stream(
-                stype=constants.PROTO_AACK_TYPE,
-                content=self.peerid,
-                dest_host=src_ip,
-                src_host=self.host,
-                flag=STREAM_TYPES.UNAUTH
+                stream_type=constants.PROTO_AACK_TYPE,
+                stream_content=self.peerid,
+                stream_flag=STREAM_TYPES.UNAUTH,
+                stream_host=src_ip
             )
         
             Logger.debug("Auth Response: {}".format(b64encode(rsp)))
@@ -558,7 +563,7 @@ class CommService:
             return rsp
     
         # Check if stream ID is valid 
-        if not cid:
+        if not c_rx_type:
             Logger.error("Invalid stream id received from unpacking stream.")
             return rsp
 
@@ -577,10 +582,9 @@ class CommService:
                         
             ## Repack capsule maintaining the same content
             rsp = self.stream_manager.pack_stream(
-                stype=c_rx_type,
-                content=content,
-                dest_host=src_ip,
-                src_host=dest_ip,
+                stream_type=c_rx_type,
+                stream_content=content,
+                stream_host=src_ip,
                 peer_key=src_key
             )
 
@@ -590,10 +594,9 @@ class CommService:
             self._print(content, src_ip)
             # Generate response
             rsp = self.stream_manager.pack_stream(
-                stype=constants.PROTO_MACK_TYPE,
-                content='',
-                dest_host=src_ip,
-                src_host=dest_ip,
+                stream_type=constants.PROTO_MACK_TYPE,
+                stream_content='',
+                stream_host=src_ip,
                 peer_key=src_key
             )
         
