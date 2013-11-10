@@ -15,11 +15,9 @@ from cryptikchaos.comm.commcoreauth   import CommCoreAuthFactory
 
 from cryptikchaos.comm.swarm.manager import SwarmManager
 from cryptikchaos.comm.stream.manager import StreamManager
+from cryptikchaos.comm.stream.manager import STREAM_TYPES
 
 from cryptikchaos.env.configuration import constants
-
-from cryptikchaos.libs.utilities import generate_uuid
-from cryptikchaos.libs.utilities import generate_token
 
 from twisted.internet import reactor
 
@@ -49,7 +47,7 @@ class CommService:
         # Initialize peer manager
         self.swarm_manager = SwarmManager(peerid, peerkey)
         # Initialize capsule manager
-        self.stream_manager = StreamManager(peerid, peerkey)
+        self.stream_manager = StreamManager(peerid, peerkey, host)
 
         self._printer = printer
 
@@ -154,17 +152,51 @@ class CommService:
 
         if not desthost:
             desthost = self.swarm_manager.peer_host(pid)
+            
+        # Get peer key
+        peer_key = self.swarm_manager.get_peer_key(pid)
+        
+        if not peer_key:
+            raise Exception("No valid peer key could be found.")
 
         # Pack data into capsule
         stream = self.stream_manager.pack_stream(
-            data_class,
-            data_content,
-            desthost,
-            self.host
+            stype=data_class,
+            content=data_content,
+            dest_host=desthost,
+            src_host=self.host, 
+            peer_key=peer_key
         )
 
         # Send data over connection
         return self._write_into_connection(conn, stream)
+    
+    def _get_source_from_connection(self, connection):
+        "Return the sender peer's key"
+        
+        ## Get the sender peer's information from connection
+        # Get host
+        host = connection.getPeer().host
+        # Get port
+        port = constants.PEER_PORT
+        
+        # Test mode check if current service is handling
+        # response or recieved data, maybe a peer client or 
+        # test server
+        if constants.ENABLE_TEST_MODE and self.peerid == constants.PEER_ID:
+            port = constants.LOCAL_TEST_PORT
+            
+        # Get peer ID of stream source
+        pid  = self.swarm_manager.get_peerid_from_ip(
+            host, 
+            port
+        )
+        # Get the stream source's key
+        key = None
+        if pid:
+            key  = self.swarm_manager.get_peer_key(pid)
+            
+        return (pid, key)
 
     def _print(self, msg, dip=constants.PEER_HOST, 
             port=constants.PEER_PORT):
@@ -282,12 +314,15 @@ class CommService:
             peer_ip,
             peer_port
         )
+        
         # Pack data into capsule
         stream = self.stream_manager.pack_stream(
-            constants.PROTO_AUTH_TYPE,
-            self.peerid,
-            peer_ip,
-            self.host)
+            stype=constants.PROTO_AUTH_TYPE,
+            content=self.peerid,
+            dest_host=peer_ip,
+            src_host=self.host,
+            flag=STREAM_TYPES.UNAUTH
+        )
 
         return self._write_into_connection(connection, stream)
 
@@ -319,7 +354,7 @@ class CommService:
             "Client {}@{} disconnected.".format(peer_ip, peer_port)
         )
 
-    def handle_response(self, response):
+    def handle_response(self, response, connection):
         "Handle response from server."
         
         # Default value of response at server side is None
@@ -327,56 +362,26 @@ class CommService:
         if not response:
             self._print("Error processing response. Got None!")
             return None
+        
+        ## Get the sender peer's information from connection
+        (_, src_key) = self._get_source_from_connection(connection)
 
         # Repsonse handling architecture should be placed here.
         # Unpack received stream
         try:
             (cid, dest_ip, src_ip, c_rsp_type, content,
                  _, chksum, pkey) = self.stream_manager.unpack_stream(
-                response
+                response,
+                src_key
             )
         except:
             raise
             return None
         else:
-            pass
-
-        ## Default pid, port, incl because test pod has the same ip
-        ## but different port. Need to simplify mapping TODO
-        src_pid = constants.PEER_ID
-
-        ## It maybe from Test server if None
-        if not self.swarm_manager.get_peerid_from_ip(src_ip):
-            src_pid = self.swarm_manager.get_peerid_from_ip(
-                src_ip, 
-                constants.LOCAL_TEST_PORT
-            )
-        else:
-            src_pid = self.swarm_manager.get_peerid_from_ip(src_ip)
-            
-        ## Capsule Token Challenge
-        
-        # Generate token from recieved information.
-        received_token = generate_token(
-            cid, # Received capsule destination ID
-            pkey # Received capsule's peer key
-        )
-        
-        # Generate token with stored information.
-        generated_token = generate_token(
-            generate_uuid(self.host),  # Generate capsule manager ID
-            self.swarm_manager.get_peer_key(src_pid) # Get stored source peer's key
-        )
-        
-        # Token challenge
-        if (received_token != generated_token):
-            Logger.warning("Capsule token chanllenge fail.")
-            return None
-        else:
-            Logger.info("Capsule token challenge pass.")
-            
-        ## Token challenge enc
-                    
+            ## Check if stream ID is valid 
+            if not cid:
+                return None
+                                
         # Currently the test case is inbuilt into the pod.
         # MSG TEST BEGIN #
         if c_rsp_type == constants.LOCAL_TEST_STREAM_TYPE:
@@ -493,13 +498,16 @@ class CommService:
     def handle_recieved_data(self, serial, connection):
 
         Logger.debug("Handling Capsule : {}".format(b64encode(serial)))
+        
+        ## Get the sender peer's information from connection
+        (src_pid, src_key) = self._get_source_from_connection(connection)
 
         # Response (default = None)
         rsp = None
 
         # Unpack capsule
         (cid, dest_ip, src_ip, c_rx_type, content, _, _,
-            pkey) = self.stream_manager.unpack_stream(serial)
+            pkey) = self.stream_manager.unpack_stream(serial, src_key)
         
         # Print test message if test server
         if self.peerid == constants.LOCAL_TEST_PEER_ID and \
@@ -537,10 +545,11 @@ class CommService:
 
             ## Send current peer info
             rsp = self.stream_manager.pack_stream(
-                captype=constants.PROTO_AACK_TYPE,
-                capcontent=self.peerid,
+                stype=constants.PROTO_AACK_TYPE,
+                content=self.peerid,
                 dest_host=src_ip,
-                src_host=self.host
+                src_host=self.host,
+                flag=STREAM_TYPES.UNAUTH
             )
         
             Logger.debug("Auth Response: {}".format(b64encode(rsp)))
@@ -548,40 +557,10 @@ class CommService:
             # Send Auth response
             return rsp
     
-        ## -------------------------------------------------------------
-        ## Request is not of authentication nature and hence we
-        ## can proceed with capsule token challenge.
-        ## -------------------------------------------------------------
-        
-        ## Capsule Token Challenge
-                    
-        # Generate token from recieved information.
-        received_token = generate_token(
-            cid, # Received capsule destination ID
-            pkey # Received capsule's peer key
-        )
-                
-        # Get stored peer key
-        src_pid = self.swarm_manager.get_peerid_from_ip(src_ip)
-        # Generate capsule manager ID
-        gen_cid = generate_uuid(self.host)
-        # Get stored source peer's key
-        stored_pkey = self.swarm_manager.get_peer_key(src_pid) 
-        
-        # Generate token with stored information.
-        generated_token = generate_token(
-            gen_cid,
-            stored_pkey
-        )
-        
-        # Token challenge
-        if (received_token != generated_token):
-            Logger.warning("Capsule token chanllenge fail.")
-            return None
-        else:
-            Logger.info("Capsule token challenge pass.")
-            
-        ## Token challenge end
+        # Check if stream ID is valid 
+        if not cid:
+            Logger.error("Invalid stream id received from unpacking stream.")
+            return rsp
 
         # Check if connection is recognized
         if not self.swarm_manager.get_peer(src_pid):
@@ -598,29 +577,27 @@ class CommService:
                         
             ## Repack capsule maintaining the same content
             rsp = self.stream_manager.pack_stream(
-                captype=c_rx_type,
-                capcontent=content,
+                stype=c_rx_type,
+                content=content,
                 dest_host=src_ip,
-                src_host=dest_ip
+                src_host=dest_ip,
+                peer_key=src_key
             )
 
         elif c_rx_type == constants.PROTO_BULK_TYPE:
 
-            if content:  # integrity check
-                # Message receipt successful
-                self._print(content, src_ip)
-                # Generate response
-                rsp = self.stream_manager.pack_stream(
-                    captype=constants.PROTO_MACK_TYPE,
-                    capcontent='',
-                    dest_host=src_ip,
-                    src_host=dest_ip
-                )
-            else:
-                # Request for message again
-                Logger.error("Tampered capsule received.")
-                pass
-            
-        Logger.debug("Responded: {}".format(b64encode(rsp)))
+            # Message receipt successful
+            self._print(content, src_ip)
+            # Generate response
+            rsp = self.stream_manager.pack_stream(
+                stype=constants.PROTO_MACK_TYPE,
+                content='',
+                dest_host=src_ip,
+                src_host=dest_ip,
+                peer_key=src_key
+            )
+        
+        if rsp:
+            Logger.debug("Responded: {}".format(b64encode(rsp)))
 
         return rsp

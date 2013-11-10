@@ -53,16 +53,19 @@ def generate_uuid(host):
         uuid5(NAMESPACE_URL, host)
     )[0:8]
 
-def generate_token(uid, pkey):
+def generate_token(uid, src_pkey, dest_pkey):
     """
     Generate capsule signature from capsule destination uid and
     peer public key.
     """
 
     return sha512(
-        sha512(uid).hexdigest() + \
-        sha512(pkey).hexdigest()
-    ).hexdigest()
+        "{}{}{}".format(
+            sha512(uid      ).digest(),
+            sha512(src_pkey ).digest(),
+            sha512(dest_pkey).digest()
+        )
+    ).digest()
     
 def get_nat_ip():
     "Get IP of NAT."
@@ -197,7 +200,7 @@ def generate_key(username, private_key=None):
                 str(getrandbits(512)),
                 sha512(str(getrandbits(512))).hexdigest()
             )
-        ).hexdigest()
+        ).digest()
     
     Logger.info("Generating Public Key.")
     return sha512(
@@ -207,7 +210,11 @@ def generate_key(username, private_key=None):
             sha512(str(getrandbits(512))).hexdigest(),
             str(getrandbits(512))
         )
-    ).hexdigest()
+    ).digest()
+
+def enum(**enums):
+    
+    return type('Enum', (), enums)
 
 if __name__ == "__main__":
     ## Test for factor_line

@@ -19,8 +19,10 @@ from cryptikchaos.libs.Storage.manager import StoreManager
 from cryptikchaos.libs.utilities import ip_to_uint32
 from cryptikchaos.libs.utilities import uint32_to_ip
 from cryptikchaos.libs.utilities import generate_uuid
+from cryptikchaos.libs.utilities import generate_token
 from cryptikchaos.libs.utilities import compress
 from cryptikchaos.libs.utilities import decompress
+from cryptikchaos.libs.utilities import enum
 
 from cryptikchaos.libs.obscure import shuffler
 from cryptikchaos.libs.obscure import unshuffler
@@ -31,27 +33,30 @@ from cryptikchaos.exceptions.streamExceptions import \
 import struct
 import hmac
 
+STREAM_TYPES = enum(UNAUTH=0, AUTH=1)
 
 class StreamManager(StoreManager):
     "Stream manager class."
 
-    def __init__(self, peerid, peerkey):
+    def __init__(self, peerid, peerkey, peerhost):
         
         # Authorized keys
         self._valid_keys = (
-            'STREAM_ID',
+            'STREAM_FLAG',
             'STREAM_DSTIP',
             'STREAM_SRCIP',
             'STREAM_TYPE' ,
             'STREAM_CONTENT',
-            'STREAM_LEN',
             'STREAM_CHKSUM',
             'STREAM_PKEY'
         )
+        
         # Create store
         super(StreamManager, self).__init__("StreamStore", self._valid_keys)
         # Peer public key
         self.peer_key = peerkey
+        # Peer host
+        self.peer_host = peerhost
 
     def __del__(self):
         
@@ -59,7 +64,8 @@ class StreamManager(StoreManager):
         StoreManager.__del__(self)
 
         
-    def _prepare_stream(self, dest_host, src_host, stype, content):
+    def _prepare_stream(self, dest_host, src_host, stype, content,
+        flag, peer_key):
         "Create new stream store."
         
         # Check length of content.
@@ -86,11 +92,24 @@ class StreamManager(StoreManager):
         stream_type = stype.upper()
         # Generate checksum before shuffle
         stream_hmac = hmac.new(content).hexdigest()
-        # Calculate content length
-        stream_len = len(content)
         # Stream peer key
-        stream_pkey = self.peer_key
+        stream_key = None
+        # Stream flag
+        stream_flag = flag
         
+        # Check stream signing mode
+        if stream_flag == STREAM_TYPES.UNAUTH:
+            # Stream key is peer key
+            stream_key = self.peer_key
+            
+        elif stream_flag == STREAM_TYPES.AUTH:
+            # Generate token at source side
+            stream_key = generate_token(
+                stream_uid,
+                self.peer_key,
+                peer_key
+            )
+                              
         # Shuffle content
         if constants.ENABLE_SHUFFLE:
             Logger.info("Scrambling content.")
@@ -103,43 +122,47 @@ class StreamManager(StoreManager):
             stream_content = content
         
         dictionary = {
-            'STREAM_ID'      :stream_uid,
+            'STREAM_FLAG'    :stream_flag,
             'STREAM_DSTIP'   :stream_dstip,
             'STREAM_SRCIP'   :stream_srcip,
             'STREAM_TYPE'    :stream_type,
             'STREAM_CONTENT' :stream_content,
-            'STREAM_LEN'     :stream_len,
             'STREAM_CHKSUM'  :stream_hmac,
-            'STREAM_PKEY'    :stream_pkey           
+            'STREAM_PKEY'    :stream_key
         }
-        
+                
         # Add stream to store
         self.add_store(stream_uid, dictionary)
         
         return stream_uid
 
-    def pack_stream(self, captype="NULL", capcontent='',
-            dest_host="127.0.0.1", src_host="127.0.0.1"):
+    def pack_stream(self, stype, content, dest_host, src_host, 
+            flag=STREAM_TYPES.AUTH, peer_key=None):
         "Pack data into stream."
                 
         # Create new stream
-        sid = self._prepare_stream(dest_host, src_host, captype, capcontent)
-        
+        sid = self._prepare_stream(
+            dest_host=dest_host, 
+            src_host=src_host, 
+            stype=stype, 
+            content=content, 
+            flag=flag, 
+            peer_key=peer_key
+        )
+
         # Pack store into stream
         stream = struct.pack(
-            "!{}sII{}s{}sL{}s{}s".format(
-                constants.STREAM_ID_LEN,
+            "!III{}s{}s{}s{}s".format(
                 constants.STREAM_TYPE_LEN,
                 constants.STREAM_CONTENT_LEN,
                 constants.STREAM_CHKSUM_LEN,
                 constants.STREAM_PKEY_HASH_LEN
             ),
-            self.get_store_item(sid, 'STREAM_ID'     ),
+            self.get_store_item(sid, 'STREAM_FLAG'     ),
             self.get_store_item(sid, 'STREAM_DSTIP'  ),
             self.get_store_item(sid, 'STREAM_SRCIP'  ),
             self.get_store_item(sid, 'STREAM_TYPE'   ),
             self.get_store_item(sid, 'STREAM_CONTENT'),
-            self.get_store_item(sid, 'STREAM_LEN'    ),
             self.get_store_item(sid, 'STREAM_CHKSUM' ),
             self.get_store_item(sid, 'STREAM_PKEY'   )
         )
@@ -151,7 +174,7 @@ class StreamManager(StoreManager):
         
         return stream
 
-    def unpack_stream(self, stream):
+    def unpack_stream(self, stream, peer_key=None):
         "Unpack serial data into stream."
         
         # Decompress data stream
@@ -164,17 +187,15 @@ class StreamManager(StoreManager):
             
         # Unpack stream to variables
         (
-            stream_uid,
+            stream_flag,
             stream_dstip,
             stream_srcip,
             stream_type,
             stream_content,
-            stream_len,
             stream_hmac,
-            stream_pkey   
+            stream_key   
         ) = struct.unpack(
-                "!{}sII{}s{}sL{}s{}s".format(
-                constants.STREAM_ID_LEN,
+                "!III{}s{}s{}s{}s".format(
                 constants.STREAM_TYPE_LEN,
                 constants.STREAM_CONTENT_LEN,
                 constants.STREAM_CHKSUM_LEN,
@@ -182,29 +203,54 @@ class StreamManager(StoreManager):
             ), stream
         )
         
+        # Remove all null characters if present in content
+        stream_content = stream_content.rstrip('\0')
+
+        # Get  uid
+        stream_uid = generate_uuid(self.peer_host)
+        
+        # Check stream signing mode
+        if stream_flag == STREAM_TYPES.UNAUTH:
+            # Stream key is peer key
+            pass
+            
+        elif stream_flag == STREAM_TYPES.AUTH:    
+            # Generate token at destination side
+            stream_challenge_key = generate_token(
+                stream_uid,
+                peer_key,
+                self.peer_key
+            )
+                                      
+            # Perform key challenge
+            if stream_challenge_key != stream_key:
+                Logger.error("Token challenge Fail")
+                return [None]*8
+            else:
+                Logger.info("Token challenge Pass")
+        
         dictionary = {
-            'STREAM_ID'      :stream_uid,
+            'STREAM_FLAG'    :stream_flag,
             'STREAM_DSTIP'   :stream_dstip,
             'STREAM_SRCIP'   :stream_srcip,
             'STREAM_TYPE'    :stream_type,
             'STREAM_CONTENT' :stream_content,
-            'STREAM_LEN'     :stream_len,
             'STREAM_CHKSUM'  :stream_hmac,
-            'STREAM_PKEY'    :stream_pkey           
+            'STREAM_PKEY'    :stream_key           
         }
-        
+                        
         # Add stream to store
         self.add_store(stream_uid, dictionary)
         
-        return self.get_tuple(stream_uid)
+        return self._get_tuple(stream_uid)
     
-    def get_content(self, sid):
+    def _get_content(self, sid):
         
         # Get content
         content = self.get_store_item(
             sid, 
             "STREAM_CONTENT"
-        )[0:self.get_store_item(sid, "STREAM_LEN")]
+        )
         
         # Unshuffle content
         if constants.ENABLE_SHUFFLE:
@@ -215,51 +261,48 @@ class StreamManager(StoreManager):
                 shuffled_string=content,
                 iterations=constants.STREAM_CONT_SHUFF_ITER
             )
-        
+                    
         # Returns content only if conent integrity is maintained   
         if (hmac.new(content).hexdigest() == self.get_store_item(sid, "STREAM_CHKSUM")):
             return content
         else:
-            Logger.warn("Checksum mismatch.")
+            Logger.warn("Stream content checksum mismatch.")
             return None
         
-    def get_destination_ip(self, sid):
+    def _get_destination_ip(self, sid):
         
         i = self.get_store_item(sid, "STREAM_DSTIP")
         return uint32_to_ip(i)
 
-    def get_source_ip(self, sid):
+    def _get_source_ip(self, sid):
 
         i = self.get_store_item(sid, "STREAM_SRCIP")
         return uint32_to_ip(i)
         
-    def get_tuple(self, sid):
+    def _get_tuple(self, sid):
         "Return stream contents in tuple form."
 
         return (
-            self.get_store_item(sid, "STREAM_ID"),
-            self.get_destination_ip(sid),
-            self.get_source_ip(sid),
+            sid,
+            self._get_destination_ip(sid),
+            self._get_source_ip(sid),
             self.get_store_item(sid, "STREAM_TYPE"),
-            self.get_content(sid),
-            self.get_store_item(
-                sid, 
-                "STREAM_CONTENT"
-            )[0:self.get_store_item(sid, "STREAM_LEN")],
+            self._get_content(sid),
+            self.get_store_item(sid, "STREAM_CONTENT"),
             self.get_store_item(sid, "STREAM_CHKSUM"),
             self.get_store_item(sid, "STREAM_PKEY").strip('\b')
         )       
 
-    def get_stream(self, cid):
+    def get_stream(self, sid):
         "Return stream data in form of tuple."
 
         # Return specified stream data as tuple
-        return self.stream_dict[cid].tuple()
+        return self.stream_dict[sid].tuple()
 
 if __name__ == "__main__":
     
-    sm = StreamManager(123, "PKEYTEST")
-    stream = sm.pack_stream(captype="ACKN", capcontent="Hello", dest_host="127.0.0.1", src_host="127.0.0.1")
+    sm = StreamManager(123, "PKEYTEST", "localhost")
+    stream = sm.pack_stream(stype="ACKN", content="Hello", dest_host="127.0.0.1", src_host="127.0.0.1", peer_key="PKEYTEST")
     print stream
     print sm.unpack_stream(stream)
     

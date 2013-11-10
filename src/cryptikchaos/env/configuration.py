@@ -81,7 +81,7 @@ constants.GUI_LABEL_PROMPT = "{}{}".format(
 )
 # ------------------------------------------------------------------------####
 
-# ------------------Protocol Capsule type CONSTANTS-----------------------####
+# ------------------Protocol Stream type CONSTANTS-----------------------####
 
 constants.PROTO_BULK_TYPE = "BULK"
 constants.PROTO_MACK_TYPE = "MACK"
@@ -92,35 +92,36 @@ constants.PROTO_AACK_TYPE = "AACK"
 
 # ------------------STREAM CONSTANTS-------------------------------------####
 
-# Capsule Content Length
+# Stream Content Length
 constants.STREAM_CONTENT_LEN = 128
-# Capsule Type length
+# Stream Type length
 constants.STREAM_TYPE_LEN = 4
-# Capsule ID Length
+# Stream flag Length
+constants.STREAM_FLAG_LEN = 4
+# Stream id length
 constants.STREAM_ID_LEN = 8
-# Capsule chksum length
+# Stream chksum length
 constants.STREAM_CHKSUM_LEN = 32
-# Capsule content length byte length
-constants.STREAM_CONTENTL_LEN = 4
-# Capsule IP integer repr length
+# Stream content length byte length
+#constants.STREAM_CONTENTL_LEN = 4
+# Stream IP integer repr length
 constants.STREAM_DST_IP_LEN = 4
 constants.STREAM_SCR_IP_LEN = 4
-# Capsule peer key hash length
-constants.STREAM_PKEY_HASH_LEN = 128
+# Stream peer key hash length
+constants.STREAM_PKEY_HASH_LEN = 64
 
-# Capsule size
+# Stream size
 constants.STREAM_SIZE = constants.STREAM_CONTENT_LEN + \
     constants.STREAM_TYPE_LEN + \
-    constants.STREAM_ID_LEN + \
+    constants.STREAM_FLAG_LEN + \
     constants.STREAM_CHKSUM_LEN + \
-    constants.STREAM_CONTENTL_LEN + \
     constants.STREAM_DST_IP_LEN + \
     constants.STREAM_SCR_IP_LEN + \
     constants.STREAM_PKEY_HASH_LEN
 
-# Capsule shuffle iterations
+# Stream shuffle iterations
 constants.STREAM_CONT_SHUFF_ITER = 1000
-# Capsule line delimiter
+# Stream line delimiter
 constants.STREAM_LINE_DELIMITER = '\r\n'
 # ------------------------------------------------------------------------####
 

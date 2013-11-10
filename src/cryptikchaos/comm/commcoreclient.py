@@ -53,7 +53,9 @@ class CommCoreClientProtocol(LineReceiver):
     def connectionLost(self, reason):
         "Run when connection is lost with server."
 
-        Logger.warn("Lost connection with peer {}".format(self._peer_repr))
+        Logger.warn("Lost connection with peer {}".format(
+            self._peer_repr
+        ))
         
         self.factory.app._print(
             "Lost connection with peer {}".format(self._peer_repr)
@@ -70,7 +72,7 @@ class CommCoreClientProtocol(LineReceiver):
             )
         )
 
-        response = self.factory.app.handle_response(line)
+        response = self.factory.app.handle_response(line, self.transport)
 
         if response:
             print response
