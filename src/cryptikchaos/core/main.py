@@ -20,9 +20,9 @@ from cryptikchaos.gui.service import GUIService
 
 from cryptikchaos.libs.utilities import wrap_line
 
-from kivy.logger import Logger
+from cryptikchaos.core.parser.service import ParserService
 
-from shlex import shlex
+from kivy.logger import Logger
 
 
 class CryptikChaosApp(
@@ -36,20 +36,30 @@ class CryptikChaosApp(
     1. GUI service. (kivy.App)
     2. Twisted Network service. (twiscomm.CommService)
     """
+           
+    # Communications service
+    comm_service = None
+    # Config Environment service
+    env_service = None
+    # Lexical parser service
+    parser_service = ParserService(
+        cmd_aliases = {
+            "@" : "send",
+            "?" : "help"
+        }
+    )
 
     def build(self):
         "Build the kivy App."
-                        
+        
         # Initiate Kivy GUI
         self.gui_service = GUIService.build(self)
-        
+                                
         # Determine host based on test mode
         self.my_host = constants.LOCAL_TEST_HOST
         # If not in test mode get LAN IP
         if not constants.ENABLE_TEST_MODE:
             self.my_host = constants.PEER_HOST
-            
-        self.comm_service = None
 
         return self.gui_service
            
@@ -124,17 +134,10 @@ class CryptikChaosApp(
     # -----------
     def parse_line(self, line):
         "Parse command line."
-
-        if line[0] == '@':
-            line = 'send {}'.format(line[1:])
             
-        shlexer = shlex(line, posix=True)
-
-        # Convert to cmd, args
-        #cmd_split = line.split(' ')
-
-        # (command, argument_string)
-        return (next(shlexer), shlexer.instream.read())
+        (cmd, arg_str) = self.parser_service.parse_command(line)
+            
+        return (cmd, arg_str)
 
 
     def exec_command(self, cmd_line):
