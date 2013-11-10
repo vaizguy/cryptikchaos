@@ -339,7 +339,8 @@ class CryptikChaosApp(
             self.cmd_help("send")
             return None
         else:
-            pass
+            if not msg:
+                return None
 
         if self.comm_service.pass_message(pid, msg):
             # command log
