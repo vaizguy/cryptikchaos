@@ -59,7 +59,8 @@ class StreamManager(StoreManager):
     def __del__(self):
         
         # Clear stored streams
-        StoreManager.__del__(self)
+        if StoreManager:
+            StoreManager.__del__(self)
 
         
     def _prepare_stream(self, stream_type, stream_content, stream_flag, stream_host, peer_key):

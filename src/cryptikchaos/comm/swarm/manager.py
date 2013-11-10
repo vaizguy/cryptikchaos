@@ -24,7 +24,7 @@ class SwarmManager(StoreManager):
         # Authorized keys
         self._valid_keys = (
             "PEER_ID", "PEER_KEY", "PEER_IP", "PEER_PORT", \
-            "PEER_CONN_STATUS", "PEER_ID_COLOR"
+            "PEER_STATUS", "PEER_COLOR"
         )
         
         # Create store
@@ -76,8 +76,8 @@ class SwarmManager(StoreManager):
                 "PEER_KEY" : key,
                 "PEER_IP": host,
                 "PEER_PORT": port,
-                "PEER_CONN_STATUS": False,
-                "PEER_ID_COLOR" : pid
+                "PEER_STATUS": False,
+                "PEER_COLOR" : pid
                 }
         )
 
@@ -121,7 +121,7 @@ class SwarmManager(StoreManager):
 
         if status in (True, False):
             # Set new connection status
-            self.set_store_item(pid, "PEER_CONN_STATUS", status)
+            self.set_store_item(pid, "PEER_STATUS", status)
         else:
             raise Exception(
                 "Invalid Peer Connection Status, must be True or False."
@@ -177,7 +177,7 @@ class SwarmManager(StoreManager):
                  p_info["PEER_KEY"][0:3] + "XXXX",
                  p_info["PEER_IP"],
                  p_info["PEER_PORT"],
-                 p_info["PEER_CONN_STATUS"]))
+                 p_info["PEER_STATUS"]))
 
         return peerlist
     
@@ -189,7 +189,7 @@ class SwarmManager(StoreManager):
         for sid in self.keys():
             # Get peer color attributes
             rcclist.append(
-                self.get_store_item(sid, "PEER_ID_COLOR")
+                self.get_store_item(sid, "PEER_COLOR")
             )
 
         return rcclist
@@ -222,7 +222,7 @@ class SwarmManager(StoreManager):
     def get_peer_connection_status(self, pid):
         "Get the peer connection status."
 
-        return self.get_store_item(pid, "PEER_CONN_STATUS")
+        return self.get_store_item(pid, "PEER_STATUS")
 
     def get_peer_connection(self, pid):
         "Get the peer connection."
@@ -238,7 +238,7 @@ class SwarmManager(StoreManager):
     def get_peerid_color(self, pid):
         "Return peer's color code."
         
-        pid_rcc = self.get_store_item(pid, "PEER_ID_COLOR")
+        pid_rcc = self.get_store_item(pid, "PEER_COLOR")
                
         if pid_rcc:
             return pid_rcc
