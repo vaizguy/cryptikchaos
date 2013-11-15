@@ -161,7 +161,7 @@ class CommService:
             raise Exception("No valid peer key could be found.")
 
         # Pack data into capsule
-        (stream, stream_id) = self.stream_manager.pack_stream(
+        stream = self.stream_manager.pack_stream(
             stream_type=data_class,
             stream_content=data_content,
             stream_host=desthost,
@@ -320,7 +320,7 @@ class CommService:
         )
         
         # Pack data into capsule
-        stream, _ = self.stream_manager.pack_stream(
+        stream = self.stream_manager.pack_stream(
             stream_type=constants.PROTO_AUTH_TYPE,
             stream_content=self.peerid,
             stream_flag=STREAM_TYPES.UNAUTH,
@@ -555,7 +555,7 @@ class CommService:
             )
 
             ## Send current peer info
-            rsp, _ = self.stream_manager.pack_stream(
+            rsp = self.stream_manager.pack_stream(
                 stream_type=constants.PROTO_AACK_TYPE,
                 stream_content=self.peerid,
                 stream_flag=STREAM_TYPES.UNAUTH,
@@ -586,7 +586,7 @@ class CommService:
         elif c_rx_type == constants.LOCAL_TEST_STREAM_TYPE:
                         
             ## Repack capsule maintaining the same content
-            rsp, _ = self.stream_manager.pack_stream(
+            rsp = self.stream_manager.pack_stream(
                 stream_type=c_rx_type,
                 stream_content=content,
                 stream_host=src_ip,
@@ -598,7 +598,7 @@ class CommService:
             # Message receipt successful
             self._print(content, src_ip)
             # Generate response
-            rsp, _ = self.stream_manager.pack_stream(
+            rsp = self.stream_manager.pack_stream(
                 stream_type=constants.PROTO_MACK_TYPE,
                 stream_content='',
                 stream_host=src_ip,

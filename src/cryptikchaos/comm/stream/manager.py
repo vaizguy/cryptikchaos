@@ -151,7 +151,7 @@ class StreamManager(StoreManager):
 
             stream = compress(stream)
         
-        return (stream, sid)
+        return stream
 
     def unpack_stream(self, stream, peer_key=None):
         "Unpack serial data into stream."
