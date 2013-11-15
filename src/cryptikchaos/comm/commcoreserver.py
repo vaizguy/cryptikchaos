@@ -67,7 +67,7 @@ class CommCoreServerProtocol(LineReceiver):
             )
         )
         
-        response = self.factory.app.handle_recieved_data(line, self.transport)
+        response = self.factory.app.handle_recieved_stream(line, self.transport)
 
         if response:
             self.sendLine(response)

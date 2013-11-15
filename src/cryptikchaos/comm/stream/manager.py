@@ -151,7 +151,7 @@ class StreamManager(StoreManager):
 
             stream = compress(stream)
         
-        return stream
+        return (stream, sid)
 
     def unpack_stream(self, stream, peer_key=None):
         "Unpack serial data into stream."
@@ -256,8 +256,9 @@ class StreamManager(StoreManager):
     def get_stream(self, sid):
         "Return stream data in form of tuple."
 
-        # Return specified stream data as tuple
-        return self.stream_dict[sid].tuple()
+        # Return specified stream data
+        return self.get_store(sid)
+
 
 if __name__ == "__main__":
     

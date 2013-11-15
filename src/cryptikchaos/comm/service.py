@@ -39,6 +39,7 @@ class CommService:
                  serverinit=True, clientinit=True, printer=None):
         "Initialize communication layer."
 
+        # peer client attributes 
         self.peerid = peerid
         self.host = host
         self.port = port
@@ -160,13 +161,13 @@ class CommService:
             raise Exception("No valid peer key could be found.")
 
         # Pack data into capsule
-        stream = self.stream_manager.pack_stream(
+        (stream, stream_id) = self.stream_manager.pack_stream(
             stream_type=data_class,
             stream_content=data_content,
             stream_host=desthost,
             peer_key=peer_key
         )
-
+        
         # Send data over connection
         return self._write_into_connection(conn, stream)
     
@@ -190,6 +191,7 @@ class CommService:
             host, 
             port
         )
+        
         # Get the stream source's key
         key = None
         if pid:
@@ -274,7 +276,7 @@ class CommService:
             peer_port, 
             True, 
             connection
-        )
+        ) 
 
     def on_server_disconnection(self, connection):
         "Executed on successful server disconnection."
@@ -288,7 +290,7 @@ class CommService:
 
         # Announce successful server disconnection
         self._print(
-            "Disconnected from PID:{}--{}@{}".format(
+            "Disconnected from PID:{}-{}:{}".format(
                 peer_id, peer_ip, peer_port
             ),
             peer_ip,
@@ -298,7 +300,7 @@ class CommService:
         # Update peer connection status to DISCONNECTED
         self._update_peer_connection_status(peer_ip, peer_port, False, 
             None)
-
+        
     def on_server_authentication(self, connection):
         "Used to handle server auth requests."
 
@@ -307,7 +309,7 @@ class CommService:
 
         # Authenticate server connection
         self._print(
-            "Authenticating connection to {}@{}".format(
+            "Authenticating connection to {}:{}".format(
                 peer_ip, peer_port
             ),
             peer_ip,
@@ -315,7 +317,7 @@ class CommService:
         )
         
         # Pack data into capsule
-        stream = self.stream_manager.pack_stream(
+        stream, _ = self.stream_manager.pack_stream(
             stream_type=constants.PROTO_AUTH_TYPE,
             stream_content=self.peerid,
             stream_flag=STREAM_TYPES.UNAUTH,
@@ -331,7 +333,7 @@ class CommService:
         peer_port = connection.getPeer().port
 
         self._print(
-            "Authentication successful to {}@{}".format(peer_ip, peer_port)
+            "Authentication successful to {}:{}".format(peer_ip, peer_port)
         )
 
     def on_client_connection(self, connection):
@@ -340,7 +342,7 @@ class CommService:
         peer_ip = connection.getPeer().host
         peer_port = connection.getPeer().port
 
-        self._print("Client {}@{} connected.".format(peer_ip, peer_port))
+        self._print("Client {}:{} connected.".format(peer_ip, peer_port))
         
     def on_client_disconnection(self, connection):
         "Executed on successful client disconnection."
@@ -349,7 +351,7 @@ class CommService:
         peer_port = connection.getPeer().port
 
         self._print(
-            "Client {}@{} disconnected.".format(peer_ip, peer_port)
+            "Client {}:{} disconnected.".format(peer_ip, peer_port)
         )
 
     def handle_response(self, response, connection):
@@ -495,13 +497,13 @@ class CommService:
     # ------------------------------------------------
     # Server Protocol Method defined here
     # ------------------------------------------------
-    def handle_recieved_data(self, serial, connection):
+    def handle_recieved_stream(self, stream, connection):
 
-        Logger.debug("Handling Capsule : {}".format(b64encode(serial)))
+        Logger.debug("Handling Capsule : {}".format(b64encode(stream)))
         
         ## Get the sender peer's information from connection
         (src_pid, src_key, src_ip, src_port) = self._get_source_from_connection(connection)
-
+        
         # Response (default = None)
         rsp = None
 
@@ -511,7 +513,7 @@ class CommService:
             content, 
             pkey
         ) = self.stream_manager.unpack_stream(
-            stream=serial,
+            stream=stream,
             peer_key=src_key
         )
         
@@ -550,7 +552,7 @@ class CommService:
             )
 
             ## Send current peer info
-            rsp = self.stream_manager.pack_stream(
+            rsp, _ = self.stream_manager.pack_stream(
                 stream_type=constants.PROTO_AACK_TYPE,
                 stream_content=self.peerid,
                 stream_flag=STREAM_TYPES.UNAUTH,
@@ -562,9 +564,9 @@ class CommService:
             # Send Auth response
             return rsp
     
-        # Check if stream ID is valid 
+        # Check if stream type is valid 
         if not c_rx_type:
-            Logger.error("Invalid stream id received from unpacking stream.")
+            Logger.error("Invalid stream ID received from unpacking stream.")
             return rsp
 
         # Check if connection is recognized
@@ -573,7 +575,7 @@ class CommService:
                 "Unknown pid @{} attempting contact.".format(src_ip)
             )
 
-        Logger.debug("Received: {}".format(b64encode(serial)))
+        Logger.debug("Received: {}".format(b64encode(stream)))
 
         if c_rx_type == "PING":
             rsp = "PONG"  # Legacy
@@ -581,7 +583,7 @@ class CommService:
         elif c_rx_type == constants.LOCAL_TEST_STREAM_TYPE:
                         
             ## Repack capsule maintaining the same content
-            rsp = self.stream_manager.pack_stream(
+            rsp, _ = self.stream_manager.pack_stream(
                 stream_type=c_rx_type,
                 stream_content=content,
                 stream_host=src_ip,
@@ -593,7 +595,7 @@ class CommService:
             # Message receipt successful
             self._print(content, src_ip)
             # Generate response
-            rsp = self.stream_manager.pack_stream(
+            rsp, _ = self.stream_manager.pack_stream(
                 stream_type=constants.PROTO_MACK_TYPE,
                 stream_content='',
                 stream_host=src_ip,
@@ -604,3 +606,16 @@ class CommService:
             Logger.debug("Responded: {}".format(b64encode(rsp)))
 
         return rsp
+    
+    def send_pending_streams(self, peer_id):
+        "Send unsent streams."
+        
+        # Check stream buffer for pending streams
+        streambuffer = self.swarm_manager.get_stream_buffer(peer_id)
+        
+        if streambuffer:
+            for sid in streambuffer:
+                # Get stream
+                stream = self.stream_manager.get_stream(sid)
+                # Send stream
+                self._write_into_connection(connection, stream)

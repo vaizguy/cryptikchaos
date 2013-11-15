@@ -40,7 +40,11 @@ class CommCoreClientProtocol(LineReceiver):
 
     def connectionMade(self):
         "Run when connection is established with server."
-
+        # maintain the TCP connection
+        self.transport.setTcpKeepAlive(True) 
+        # allow Nagle algorithm
+        self.transport.setTcpNoDelay(False) 
+        
         self._peer_host = self.transport.getPeer().host
         self._peer_port = self.transport.getPeer().port
         self._peer_repr = self._peer_host + " on " + str(self._peer_port)
@@ -90,6 +94,9 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
     def __init__(self, app):
 
         self.app = app
+        self.factor = 1.6180339887498948
+        self.initialDelay = 10
+        self.delay = 30
 
     def startedConnecting(self, connector):
         "Run when initiaition of connection takes place."
@@ -111,7 +118,7 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
         "Run when connection with server is lost."
 
         Logger.debug("Lost connection: {}".format(reason.getErrorMessage()))
-
+        
         return protocol.ReconnectingClientFactory.clientConnectionLost(
             self, connector, reason
         )

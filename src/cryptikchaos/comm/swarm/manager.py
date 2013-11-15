@@ -37,6 +37,8 @@ class SwarmManager(StoreManager):
 
         # Hold peer commections
         self.peer_connections = {}
+        # Hold peer pending streams
+        self.peer_stream_buffer = {}
 
     def __del__(self):
         
@@ -80,6 +82,9 @@ class SwarmManager(StoreManager):
                 "PEER_COLOR" : pid
                 }
         )
+        
+        # init stream buffer
+        self.peer_stream_buffer[pid] = []
 
     def delete_peer(self, pid):
         "Remove unauth peer."
@@ -249,6 +254,16 @@ class SwarmManager(StoreManager):
         "Check if peer got added successfully."
         
         return self.in_store(pid)       
+    
+    def add_stream_buffer(self, pid, stream_id):
+        "Add pending streams to peer stream buffer"
+        
+        self.peer_stream_buffer[pid].append(stream_id)
+        
+    def get_stream_buffer(self, pid):
+        "Return stream buffer"
+        
+        return self.peer_stream_buffer[pid]
 
 
 if __name__ == '__main__':
