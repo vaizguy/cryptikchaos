@@ -276,7 +276,7 @@ class CommService:
             peer_port, 
             True, 
             connection
-        ) 
+        )
 
     def on_server_disconnection(self, connection):
         "Executed on successful server disconnection."
@@ -300,6 +300,9 @@ class CommService:
         # Update peer connection status to DISCONNECTED
         self._update_peer_connection_status(peer_ip, peer_port, False, 
             None)
+        
+        # Delete peer from swarm store
+        self.swarm_manager.delete_peer(peer_id)
         
     def on_server_authentication(self, connection):
         "Used to handle server auth requests."

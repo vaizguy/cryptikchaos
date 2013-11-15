@@ -28,7 +28,10 @@ class SwarmManager(StoreManager):
         )
         
         # Create store
-        super(SwarmManager, self).__init__("SwarmStore", self._valid_keys)
+        super(SwarmManager, self).__init__(
+            "{}_SwarmStore".format(peerid), 
+            self._valid_keys, 
+        )
 
         # Client Attributes
         self.my_peerid = peerid
@@ -48,10 +51,8 @@ class SwarmManager(StoreManager):
         if peer_ids:       
             # Remove peer connections
             for pid in peer_ids:
-                # Update peer connection status
-                self.update_peer_connection_status(pid, False)
-                # Remove existing connection objects
-                self.peer_connections[pid] = None
+                # Delete peer
+                self.delete_peer(pid)
            
         # Close store 
         StoreManager.__del__(self)
@@ -88,6 +89,10 @@ class SwarmManager(StoreManager):
 
     def delete_peer(self, pid):
         "Remove unauth peer."
+        
+        Logger.warn("Peer [{}] left swarm.".format(pid))
+        # remove peer connection 
+        del self.peer_connections[pid]
 
         return self.delete_store(pid)
 

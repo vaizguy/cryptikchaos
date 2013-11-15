@@ -83,7 +83,7 @@ class CommCoreAuthFactory(protocol.Factory):
     def buildProtocol(self, addr):
         "Build protocol on successful connection."
 
-        return CommCoreAuthProtocol(self)
+        return self.protocol(self)
 
     def startedConnecting(self, connector):
         "Run when initiaition of connection takes place."

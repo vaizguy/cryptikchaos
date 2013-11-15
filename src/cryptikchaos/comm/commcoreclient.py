@@ -59,7 +59,8 @@ class CommCoreClientProtocol(LineReceiver):
 
         Logger.warn("Lost connection with peer {}".format(
             self._peer_repr
-        ))
+            )
+        )
         
         self.factory.app._print(
             "Lost connection with peer {}".format(self._peer_repr)
@@ -87,16 +88,13 @@ class CommCoreClientProtocol(LineReceiver):
         Logger.error("Recieved line is more than {}".format(self.MAX_LENGTH))
         
 
-class CommCoreClientFactory(protocol.ReconnectingClientFactory):
+class CommCoreClientFactory(protocol.Factory):
 
     protocol = CommCoreClientProtocol
 
     def __init__(self, app):
 
         self.app = app
-        self.factor = 1.6180339887498948
-        self.initialDelay = 10
-        self.delay = 30
 
     def startedConnecting(self, connector):
         "Run when initiaition of connection takes place."
@@ -109,25 +107,14 @@ class CommCoreClientFactory(protocol.ReconnectingClientFactory):
         Logger.debug("Connected.")
         Logger.debug("Resetting reconnection delay.")
 
-        # Reset the delay on connection success
-        self.resetDelay()
-
-        return CommCoreClientProtocol(self)
+        return self.protocol(self)
 
     def clientConnectionLost(self, connector, reason):
         "Run when connection with server is lost."
 
         Logger.debug("Lost connection: {}".format(reason.getErrorMessage()))
-        
-        return protocol.ReconnectingClientFactory.clientConnectionLost(
-            self, connector, reason
-        )
 
     def clientConnectionFailed(self, connector, reason):
         "Run when attempt to connect with server fails."
 
         Logger.debug("Connection failed. {}".format(reason.getErrorMessage()))
-        
-        return protocol.ReconnectingClientFactory.clientConnectionFailed(
-            self, connector, reason
-        )
