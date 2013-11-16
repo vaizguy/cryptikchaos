@@ -12,6 +12,7 @@ __version__ = 0.5
 from cryptikchaos.comm.commcoreserver import CommCoreServerFactory
 from cryptikchaos.comm.commcoreclient import CommCoreClientFactory
 from cryptikchaos.comm.commcoreauth   import CommCoreAuthFactory
+from cryptikchaos.comm.sslcontext     import TLSCtxFactory
 
 from cryptikchaos.comm.swarm.manager import SwarmManager
 from cryptikchaos.comm.stream.manager import StreamManager
@@ -44,6 +45,16 @@ class CommService:
         self.host = host
         self.port = port
         self.peerkey = peerkey
+        
+        ## SSL cert, key path
+        self.sslcrt = "{}/certs/{}.crt".format(
+            constants.PROJECT_PATH,
+            self.peerid
+        )
+        self.sslkey = "{}/certs/{}.key".format(
+            constants.PROJECT_PATH,
+            self.peerid                             
+        )
 
         # Initialize peer manager
         self.swarm_manager = SwarmManager(peerid, peerkey)
@@ -72,7 +83,15 @@ class CommService:
     def _start_server(self):
         "Start twisted server listener."
 
-        reactor.listenTCP(self.port, CommCoreServerFactory(self))
+        if constants.ENABLE_TLS:
+            reactor.listenSSL(
+                self.port,
+                CommCoreServerFactory(self), 
+                TLSCtxFactory(self.sslcrt, self.sslkey)
+            )
+        else:
+            reactor.listenTCP(self.port, CommCoreServerFactory(self))
+           
 
     def _start_peer_connections(self):
         "Start peer connections on start."
@@ -230,9 +249,24 @@ class CommService:
 
         Logger.debug("Connecting to pid: {}".format(pid))
 
-        #return reactor.connectTCP(host, port, CommCoreClientFactory(self))
-        if reactor.connectTCP(host, port, CommCoreClientFactory(self)):
+        # Check if TLS is enable
+        if constants.ENABLE_TLS and reactor.connectSSL(
+            host, 
+            port, 
+            CommCoreClientFactory(self), 
+            TLSCtxFactory(self.sslcrt, self.sslkey)
+        ):
             return True
+        
+        # Use normal TCL connection        
+        elif not constants.ENABLE_TLS and reactor.connectTCP(
+            host, 
+            port, 
+            CommCoreClientFactory(self)
+        ):
+            return True
+        
+        # Could not establish connection
         else:
             return False
 
@@ -246,8 +280,24 @@ class CommService:
             )
         )
 
-        if reactor.connectTCP(host, port, CommCoreAuthFactory(self)):
+        # Check if TLS is enabled
+        if constants.ENABLE_TLS and reactor.connectSSL(
+            host, 
+            port, 
+            CommCoreAuthFactory(self), 
+            TLSCtxFactory(self.sslcrt, self.sslkey)
+        ):
             return True
+        
+        # Use normal TCL connection
+        elif not constants.ENABLE_TLS and reactor.connectTCP(
+            host, 
+            port, 
+            CommCoreAuthFactory(self)
+        ):
+            return True
+        
+        # Could not establish connection
         else:
             return False
 
@@ -491,10 +541,10 @@ class CommService:
             pass
 
         # Start a connection with peer
-        if not self.start_authentication(pid, host, port):
-            return False
-        else:
+        if self.start_authentication(pid, host, port):
             return True
+        else:
+            return False
     # ------------------------------------------------
 
     # ------------------------------------------------
@@ -620,5 +670,7 @@ class CommService:
             for sid in streambuffer:
                 # Get stream
                 stream = self.stream_manager.get_stream(sid)
+                # Get connection
+                connection = self.swarm_manager.get_peer_connection(peer_id)
                 # Send stream
                 self._write_into_connection(connection, stream)

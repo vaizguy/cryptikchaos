@@ -47,3 +47,7 @@ Thumbs.db
 
 # Adding archived code
 archive/*
+
+# Certificates and keys
+*.key
+*.crt
