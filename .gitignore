@@ -51,3 +51,6 @@ archive/*
 # Certificates and keys
 *.key
 *.crt
+*.pem
+*.req
+*.srl
