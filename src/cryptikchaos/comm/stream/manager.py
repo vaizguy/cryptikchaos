@@ -16,8 +16,6 @@ from cryptikchaos.env.configuration import constants
 
 from cryptikchaos.libs.Storage.manager import StoreManager
 
-from cryptikchaos.libs.utilities import ip_to_uint32
-from cryptikchaos.libs.utilities import uint32_to_ip
 from cryptikchaos.libs.utilities import generate_uuid
 from cryptikchaos.libs.utilities import generate_token
 from cryptikchaos.libs.utilities import compress
@@ -45,8 +43,8 @@ class StreamManager(StoreManager):
             'STREAM_FLAG',
             'STREAM_TYPE' ,
             'STREAM_CONTENT',
-            'STREAM_CHKSUM',
-            'STREAM_PKEY'
+            'STREAM_PKEY',
+            'STREAM_CHKSUM'
         )
         
         # Create store
@@ -61,7 +59,11 @@ class StreamManager(StoreManager):
         # Clear stored streams
         if StoreManager:
             StoreManager.__del__(self)
-
+            
+    def _gen_hmac(self, flag, stype, content, uid, key):
+        "Generate stream hmac."
+        
+        return hmac.new(str(flag)+stype+content+uid+key).hexdigest()
         
     def _prepare_stream(self, stream_type, stream_content, stream_flag, stream_host, peer_key):
         "Create new stream store."
@@ -78,11 +80,9 @@ class StreamManager(StoreManager):
         stream_uid = generate_uuid(stream_host)
         # Stream type
         stream_type = stream_type.upper()
-        # Generate checksum before shuffle
-        stream_hmac = hmac.new(stream_content).hexdigest()
         # Stream peer key
         stream_key = None
-        
+                
         # Check stream signing mode
         if stream_flag == STREAM_TYPES.UNAUTH:
             # Stream key is peer key
@@ -95,6 +95,15 @@ class StreamManager(StoreManager):
                 self.peer_key,
                 peer_key
             )
+            
+        # Generate checksum before shuffle
+        stream_hmac = self._gen_hmac(
+            flag=stream_flag, 
+            stype=stream_type,
+            content=stream_content,
+            uid=stream_uid,
+            key=stream_key
+        )
                               
         # Shuffle content
         if constants.ENABLE_SHUFFLE:
@@ -109,8 +118,8 @@ class StreamManager(StoreManager):
             'STREAM_FLAG'    :stream_flag,
             'STREAM_TYPE'    :stream_type,
             'STREAM_CONTENT' :stream_content,
-            'STREAM_CHKSUM'  :stream_hmac,
-            'STREAM_PKEY'    :stream_key
+            'STREAM_PKEY'    :stream_key,
+            'STREAM_CHKSUM'  :stream_hmac
         }
                 
         # Add stream to store
@@ -136,14 +145,14 @@ class StreamManager(StoreManager):
             "!I{}s{}s{}s{}s".format(
                 constants.STREAM_TYPE_LEN,
                 constants.STREAM_CONTENT_LEN,
-                constants.STREAM_CHKSUM_LEN,
-                constants.STREAM_PKEY_HASH_LEN
+                constants.STREAM_PKEY_HASH_LEN,
+                constants.STREAM_CHKSUM_LEN
             ),
             self.get_store_item(sid, 'STREAM_FLAG'   ),
             self.get_store_item(sid, 'STREAM_TYPE'   ),
             self.get_store_item(sid, 'STREAM_CONTENT'),
-            self.get_store_item(sid, 'STREAM_CHKSUM' ),
-            self.get_store_item(sid, 'STREAM_PKEY'   )
+            self.get_store_item(sid, 'STREAM_PKEY'   ),
+            self.get_store_item(sid, 'STREAM_CHKSUM' )
         )
 
         # Compress stream
@@ -169,29 +178,51 @@ class StreamManager(StoreManager):
             stream_flag,
             stream_type,
             stream_content,
-            stream_hmac,
-            stream_key   
+            stream_key,
+            stream_hmac
         ) = struct.unpack(
                 "!I{}s{}s{}s{}s".format(
                 constants.STREAM_TYPE_LEN,
                 constants.STREAM_CONTENT_LEN,
-                constants.STREAM_CHKSUM_LEN,
-                constants.STREAM_PKEY_HASH_LEN
+                constants.STREAM_PKEY_HASH_LEN,
+                constants.STREAM_CHKSUM_LEN
             ), stream
         )
         
         # Remove all null characters if present in content
         stream_content = stream_content.rstrip('\0')
-
+        
+        # Unshuffle content
+        if constants.ENABLE_SHUFFLE:
+            
+            Logger.info("Unscrambling content.")
+            
+            stream_content = unshuffler(
+                shuffled_string=stream_content,
+                iterations=constants.STREAM_CONT_SHUFF_ITER
+            )
+            
         # Get  uid
         stream_uid = generate_uuid(self.peer_host)
+        
+        # Verify stream integrity
+        if (
+            self._gen_hmac(
+                flag=stream_flag, 
+                stype=stream_type, 
+                content=stream_content, 
+                uid=stream_uid, 
+                key=stream_key
+            ) != stream_hmac
+        ):
+            return [None]*8
         
         # Check stream signing mode
         if stream_flag == STREAM_TYPES.UNAUTH:
             # Stream key is peer key
             pass
             
-        elif stream_flag == STREAM_TYPES.AUTH:    
+        elif stream_flag == STREAM_TYPES.AUTH:            
             # Generate token at destination side
             stream_challenge_key = generate_token(
                 stream_uid,
@@ -220,29 +251,14 @@ class StreamManager(StoreManager):
         return self._get_tuple(stream_uid)
     
     def _get_content(self, sid):
-        
-        # Get content
+
         content = self.get_store_item(
             sid, 
             "STREAM_CONTENT"
         )
-        
-        # Unshuffle content
-        if constants.ENABLE_SHUFFLE:
-            
-            Logger.info("Unscrambling content.")
-            
-            content = unshuffler(
-                shuffled_string=content,
-                iterations=constants.STREAM_CONT_SHUFF_ITER
-            )
-                    
-        # Returns content only if conent integrity is maintained   
-        if (hmac.new(content).hexdigest() == self.get_store_item(sid, "STREAM_CHKSUM")):
-            return content
-        else:
-            Logger.warn("Stream content checksum mismatch.")
-            return None
+
+        return content
+ 
         
     def _get_tuple(self, sid):
         "Return stream contents in tuple form."

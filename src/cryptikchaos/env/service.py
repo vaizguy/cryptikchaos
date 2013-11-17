@@ -26,7 +26,7 @@ class EnvService:
     
     def __init__(self):
         
-        ## Check and see if constants rebinding is successful
+        ## Check and see if constants rebinding is unsuccessful
         try:
             constants.REBIND_CHECK = False
         except constants.ConstError:
