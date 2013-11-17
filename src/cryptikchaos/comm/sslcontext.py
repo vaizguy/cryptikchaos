@@ -11,10 +11,12 @@ from twisted.internet import ssl
 from OpenSSL import SSL
 from kivy import Logger
 
-from cryptikchaos.env.configuration import constants
+from cryptikchaos.exceptions.sslcontextExceptions import \
+    SSLCertReadError, SSLKeyReadError
 
 
 class TLSCtxFactory(ssl.ClientContextFactory):
+    "Twisted SSL Context Factory."
     
     def __init__(self, crt, key):
         "Initializing SSL context"
@@ -31,33 +33,13 @@ class TLSCtxFactory(ssl.ClientContextFactory):
         # Get the client context factory
         ctx = ssl.ClientContextFactory.getContext(self)
         
-        # Alpha testing crt/key message
-        missing_cert_key_exception_msg = """
-            Missing SSL Certificate / Key
-            -----------------------------
-            
-            Please generate a valid SSL certificate in
-            {}/certs/{}.{}
-            (OR) 
-            Change configuration variable constants.ENABLE_TLS* to False.
-            
-            *TLS mode is still in experimental phase.
-        """
-
-        
         # Load certificate
         try:
             ctx.use_certificate_file(self.crt)
             
         except SSL.Error as e:
             Logger.error(e.message[0][2])
-            raise Exception(
-                missing_cert_key_exception_msg.format(
-                    constants.PROJECT_PATH,
-                    constants.PEER_ID,
-                    "crt"
-                )
-            )
+            raise SSLCertReadError()
             
         else:
             Logger.info("Loaded Peer SSL Certificate.")
@@ -68,13 +50,7 @@ class TLSCtxFactory(ssl.ClientContextFactory):
             
         except SSL.Error as e:
             Logger.error(e.message[0][2])
-            raise Exception(
-                missing_cert_key_exception_msg.format(
-                    constants.PROJECT_PATH,
-                    constants.PEER_ID, 
-                    "key"
-                )
-            )
+            raise SSLKeyReadError()
             
         else:
             Logger.info("Loaded Peer SSL key.")  
