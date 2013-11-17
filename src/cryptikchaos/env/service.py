@@ -32,7 +32,7 @@ class EnvService:
         except constants.ConstError:
             Logger.info("Environment constants are secure.")
         else:
-            raise Exception("Error with env setup.")
+            raise Exception("Error with environment setup.")
                 
 
         self.env_dict = {}

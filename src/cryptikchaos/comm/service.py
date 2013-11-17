@@ -46,15 +46,16 @@ class CommService:
         self.port = port
         self.peerkey = peerkey
         
-        ## SSL cert, key path
-        self.sslcrt = "{}/certs/{}.crt".format(
-            constants.PROJECT_PATH,
-            self.peerid
-        )
-        self.sslkey = "{}/certs/{}.key".format(
-            constants.PROJECT_PATH,
-            self.peerid                             
-        )
+        if constants.ENABLE_TLS:
+            ## SSL cert, key path
+            self.sslcrt = "{}/certs/{}.crt".format(
+                constants.PROJECT_PATH,
+                self.peerid
+            )
+            self.sslkey = "{}/certs/{}.key".format(
+                constants.PROJECT_PATH,
+                self.peerid                             
+            )
 
         # Initialize peer manager
         self.swarm_manager = SwarmManager(peerid, peerkey)
