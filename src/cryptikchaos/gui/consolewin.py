@@ -21,7 +21,7 @@ import re
 class ConsoleInput(TextInput):
     "Console text input class."
     
-    def __init__(self, handleInput_cmd_hook, getCMD_cmd_hook):
+    def __init__(self, handleinput_cmd_hook, getcommands_cmd_hook):
 
         # Init super
         super(ConsoleInput, self).__init__()
@@ -43,9 +43,9 @@ class ConsoleInput(TextInput):
         self.padding = [25, 20, 10, 0]
         
         # Input command handler
-        self.handleInput_cmd_hook = handleInput_cmd_hook
+        self.handleinput_cmd_hook = handleinput_cmd_hook
         # Get list of defined commands
-        self.getCMD_cmd_hook = getCMD_cmd_hook
+        self.getcommands_cmd_hook = getcommands_cmd_hook
         
         # Prompt length
         self.prompt_len = len(constants.GUI_LABEL_PROMPT_SYM)
@@ -65,9 +65,9 @@ class ConsoleInput(TextInput):
         else:
             return text
     
-    def _get_text(self, instance):
+    def _get_input_text(self, instance):
         "Used to get console input text."
-        
+                
         return self._filter_prompt(instance.text)
 
     def _add_text(self, instance, text=None):
@@ -95,14 +95,14 @@ class ConsoleInput(TextInput):
         "Called on text input entry."
         
         # Get data input
-        input_text = self._get_text(instance)
+        input_text = self._get_input_text(instance)
         
         # Handle input
         if input_text:
             # Reset prompt
             self._reset_prompt(instance)
             # Handle the input
-            self.handleInput_cmd_hook(input_text)
+            self.handleinput_cmd_hook(input_text)
             
         # Set focu
         self.focus = True ## TODO not working.
@@ -122,7 +122,7 @@ class ConsoleInput(TextInput):
         pcmd = self._filter_prompt(value).rstrip('\t')
         
         # Commands
-        command_list = self.getCMD_cmd_hook()
+        command_list = self.getcommands_cmd_hook()
         
         # List of commands
         if command_list:
@@ -146,8 +146,8 @@ class ConsoleInput(TextInput):
 class ConsoleWindow(GridLayout):
     "Console window class."
     
-    def __init__(self, handleInput_cmd_hook, getCMD_cmd_hook, greeting, 
-        font_type, font_size):
+    def __init__(self, handleinput_cmd_hook, getcommands_cmd_hook,
+        greeting, font_type, font_size):
         
         # Init super
         super(ConsoleWindow, self).__init__()
@@ -190,19 +190,19 @@ class ConsoleWindow(GridLayout):
         # Input text box
         self.console_input = ConsoleInput(
             # Input handler hook
-            handleInput_cmd_hook=handleInput_cmd_hook, 
+            handleinput_cmd_hook=handleinput_cmd_hook, 
             # CMD list hook
-            getCMD_cmd_hook=getCMD_cmd_hook
+            getcommands_cmd_hook=getcommands_cmd_hook
         )
         
         self.add_widget(self.console_input)
         
     ## GUI Hooks-----------------------
-    def inputText_gui_hook(self, text):
+    def inputtext_gui_hook(self, text):
         
         self.label.text += text
         
-    def getMaxWidth_gui_hook(self):
+    def getmaxwidth_gui_hook(self):
         
         return self.width
     ##---------------------------------

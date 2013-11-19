@@ -70,7 +70,7 @@ def generate_token(uid, src_pkey, dest_pkey):
 def get_nat_ip():
     "Get IP of NAT."
     
-    s = socket.socket( AF_INET, SOCK_STREAM )
+    s = socket( AF_INET, SOCK_STREAM )
     host = 'localhost'
     try:
         s.connect( ( "www.google.com", 80 ) )

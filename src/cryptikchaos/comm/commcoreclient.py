@@ -105,7 +105,6 @@ class CommCoreClientFactory(protocol.Factory):
         "Build protocol on successful connection."
 
         Logger.debug("Connected.")
-        Logger.debug("Resetting reconnection delay.")
 
         return self.protocol(self)
 

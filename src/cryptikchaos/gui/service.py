@@ -21,6 +21,12 @@ from cryptikchaos.comm.service import CommService
 
 class GUIService(App):
     "Graphival user interface service."
+           
+    # Init attributes
+    inputtext_gui_hook = None
+    getmaxwidth_gui_hook = None
+    comm_service = None
+    env_service = None
 
     def build(self):
         "Build the kivy App."
@@ -31,9 +37,9 @@ class GUIService(App):
         # Build ConsoleWindow
         root = ConsoleWindow(
             # Input handler hook
-            handleInput_cmd_hook=self.handleInput_cmd_hook,
+            handleinput_cmd_hook=self.handleinput_cmd_hook,
             # Get command list hook
-            getCMD_cmd_hook=self.getCMD_cmd_hook,
+            getcommands_cmd_hook=self.getcommands_cmd_hook,
             # Console splash greeting
             greeting=constants.GUI_WELCOME_MSG,
             # Font type face
@@ -46,13 +52,12 @@ class GUIService(App):
         ## and self.get_commands_hook the app will crash.
         
         # Apeend text to console hook
-        self.inputText_gui_hook = root.inputText_gui_hook
-        
+        self.inputtext_gui_hook = root.inputtext_gui_hook
         # Get App GUI Width
-        self.getMaxWidth_gui_hook = root.getMaxWidth_gui_hook
+        self.getmaxwidth_gui_hook = root.getmaxwidth_gui_hook
         
         return root
-    
+       
     def on_start(self):
         '''Event handler for the on_start event, which is fired after
         initialization (after build() has been called), and before the

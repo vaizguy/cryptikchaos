@@ -11,7 +11,7 @@ from hashlib import md5
 class Store(TransformedDict):
     "custom store"
                
-    def __init__(self, keys, dictionary={}):
+    def __init__(self, keys, dictionary):
         "Initialize dictionary."
         
         # autherized keys

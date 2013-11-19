@@ -24,6 +24,12 @@ from cryptikchaos.libs.utilities import get_my_ip
 from cryptikchaos.libs.utilities import generate_key
 from cryptikchaos.libs.utilities import md5hash
 
+try:
+    import pympler
+except ImportError:
+    constants.PYMPLER = False
+else:
+    constants.PYMPLER = True
 
 # ---Application switches-------------------------------------------------####
 

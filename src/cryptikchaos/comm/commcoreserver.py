@@ -1,7 +1,7 @@
 '''
 Created on Jul 21, 2013
 
-Twisted network server core. TODO
+Twisted network server core. 
 
 @author: vaizguy
 '''
@@ -27,12 +27,13 @@ class CommCoreServerProtocol(LineReceiver):
 
     "Server backend to pocess the commands"
 
-    def __init__(self):
+    def __init__(self, factory):
 
         self._peer_host = None
         self._peer_port = None
         self._peer_repr = None
-        
+        self.factory    = factory
+
         # Delimiter for sending line
         self.delimiter = constants.STREAM_LINE_DELIMITER
 
@@ -85,3 +86,11 @@ class CommCoreServerFactory(protocol.Factory):
     def __init__(self, app):
 
         self.app = app
+    
+    def buildProtocol(self, addr):
+        "Build protocol on successful connection."
+
+        Logger.debug("Connected.")
+
+        return self.protocol(self)
+    

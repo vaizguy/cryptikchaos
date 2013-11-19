@@ -41,6 +41,9 @@ class CryptikChaosApp(
     comm_service = None
     # Config Environment service
     env_service = None
+    # GUI service
+    gui_service = None
+    
     # Lexical parser service
     parser_service = ParserService(
         cmd_aliases = {
@@ -48,7 +51,7 @@ class CryptikChaosApp(
             "?" : "help"
         }
     )
-
+  
     def build(self):
         "Build the kivy App."
         
@@ -57,6 +60,7 @@ class CryptikChaosApp(
                                 
         # Determine host based on test mode
         self.my_host = constants.LOCAL_TEST_HOST
+        
         # If not in test mode get LAN IP
         if not constants.ENABLE_TEST_MODE:
             self.my_host = constants.PEER_HOST
@@ -103,14 +107,14 @@ class CryptikChaosApp(
         # adding a newline character after 75 chars
         if wrap:
             # Get window size
-            wsize = self.getMaxWidth_gui_hook()/8
+            wsize = self.getmaxwidth_gui_hook()/8
             # Wrap line
             text = wrap_line(line=text, cmax=wsize)
         
         text = '\n{}'.format(text) 
 
         # Send text to console
-        self.inputText_gui_hook(text)
+        self.inputtext_gui_hook(text)
         
     def print_table(self, table):
         
@@ -118,12 +122,12 @@ class CryptikChaosApp(
 
     ## Console-GUI Hooks
     ## ----------------------------------------------------
-    def handleInput_cmd_hook(self, console_input):
+    def handleinput_cmd_hook(self, console_input):
         "*Send* button (and return key) event call back."
         
         return self.exec_command(console_input)
     
-    def getCMD_cmd_hook(self):
+    def getcommands_cmd_hook(self):
         "Get the list of defined commands."
         
         return [cmd for cmd in dir(self) if "cmd_" in cmd[:4]]
@@ -294,7 +298,7 @@ class CryptikChaosApp(
         
         try:
             (pid, host) = (cmdline.split(' ')[0], cmdline.split(' ')[1])
-        except:
+        except ValueError:
             self.print_message("Incorrect use of command 'addpeer'.")
             self.cmd_help("addpeer")
             return None
@@ -302,7 +306,7 @@ class CryptikChaosApp(
             self.print_message("Adding Peer {}.".format(pid))
             self.comm_service.add_peer_to_swarm(pid, host)
 
-    def cmd_addtest(self, cmdline):
+    def cmd_addtest(self, _):
         """
         Commands: addtest
         Adds the test server to swarm.
@@ -337,7 +341,7 @@ class CryptikChaosApp(
         try:
             (pid, msg) = (
                 cmdline.split(' ')[0], ' '.join(cmdline.split(' ')[1:]))
-        except:
+        except ValueError:
             self.print_message("Incorrect use of command 'send'")
             self.cmd_help("send")
             return None
@@ -356,7 +360,7 @@ class CryptikChaosApp(
                 "Unable to send message."
             )
 
-    def cmd_sendtest(self, cmdline):
+    def cmd_sendtest(self, _):
         """
         Command: sendtest
         Tests the message sending capability of the client using a
@@ -375,7 +379,7 @@ class CryptikChaosApp(
             )
         )
 
-    def cmd_peers(self, cmdline):
+    def cmd_peers(self, _):
         """
         Command: peers
         View all peers present in the swarm.
@@ -386,7 +390,7 @@ class CryptikChaosApp(
             self.comm_service.swarm_manager.peer_table()
         )
 
-    def cmd_graphswarm(self, cmdline):
+    def cmd_graphswarm(self, _):
         """
         Command: grapgswarm
         Visualize swarm using network graphing.
@@ -399,7 +403,7 @@ class CryptikChaosApp(
         else:
             self.print_message("Could not generate graph.")
             
-    def cmd_env(self, cmdline):
+    def cmd_env(self, _):
         """
         Command: env
         View Application configuration constants.
@@ -425,12 +429,25 @@ class CryptikChaosApp(
             self.print_message("{} => {}".format(cmdline, v))
         else:
             self.print_message("{}".format(cmdline))
+            
+    # Pympler memory profiler
+    if constants.PYMPLER:
+        def cmd_memprof(self, _):
+            """
+            Command: memprof
+            Lists memory footprints of active python objects.
+            Top-50
+            Usage: memprof
+            """
+        
+            return self.env_service.memory_summary()
+
 
 if __name__ == '__main__':
 
     try:
         # Build App interface
-        App = CryptikChaosApp()
+        App = CryptikChaosApp()    
         # Start App mainloop
         App.run()
     except KeyboardInterrupt:
@@ -439,4 +456,5 @@ if __name__ == '__main__':
         App.on_stop()
     else:
         Logger.info("Closed Cryptikchaos Client.")
+        
 

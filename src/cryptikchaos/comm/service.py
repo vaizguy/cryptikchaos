@@ -9,6 +9,11 @@ Twisted network service.
 __author__ = "Arun Vaidya"
 __version__ = 0.5
 
+# install_twisted_rector must be called before importing 
+# and using the reactor
+from kivy.support import install_twisted_reactor
+install_twisted_reactor()
+
 from cryptikchaos.comm.commcoreserver import CommCoreServerFactory
 from cryptikchaos.comm.commcoreclient import CommCoreClientFactory
 from cryptikchaos.comm.commcoreauth   import CommCoreAuthFactory

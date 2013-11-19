@@ -10,13 +10,16 @@ __author__ = "Arun Vaidya"
 __version__ = 0.5
 
 from cryptikchaos.env.configuration import constants
-
+from cryptikchaos.env import constants as const
 from cryptikchaos.libs.utilities import serialize
 from cryptikchaos.libs.utilities import deserialize
 
 from cryptikchaos.libs.Table.prettytable import PrettyTable
 
 from kivy import Logger
+
+if constants.PYMPLER:
+    from pympler import summary, muppy
 
 
 class EnvService:
@@ -29,7 +32,7 @@ class EnvService:
         ## Check and see if constants rebinding is unsuccessful
         try:
             constants.REBIND_CHECK = False
-        except constants.ConstError:
+        except const.ConstError:
             Logger.info("Environment constants are secure.")
         else:
             raise Exception("Error with environment setup.")
@@ -131,6 +134,16 @@ class EnvService:
                 \n{}""".format(table)
         else:
             return "No environment variables defined."
+        
+    ## pympler inline Memory profiler Conditional code
+    if constants.PYMPLER:
+        def memory_summary(self):
+            "Using pympler summarize module to view memory summary."
+             
+            all_objects = muppy.get_objects()     
+            Logger.info("Memory Footprint:")
+            Logger.info("-----------------")
+            summary.print_(summary.summarize(all_objects), limit=50)
     
     
 if __name__ == "__main__":    

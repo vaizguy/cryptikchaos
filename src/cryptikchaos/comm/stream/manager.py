@@ -282,8 +282,9 @@ if __name__ == "__main__":
     stream = sm.pack_stream(
         stream_type="ACKN", 
         stream_content="Hello", 
-        stream_key="PKEYTEST"
-    )
+        stream_host="127.0.0.1",
+        peer_key="PKEYTEST"
+    ) 
     print stream
     print sm.unpack_stream(stream)
     

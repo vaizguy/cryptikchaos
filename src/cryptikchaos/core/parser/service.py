@@ -10,7 +10,7 @@ from shlex import shlex
 class ParserService:
     "shell-style lexical parser class."
     
-    def __init__(self, cmd_aliases={}):
+    def __init__(self, cmd_aliases):
         "Initialize parser."
         
         # Past entered commands
@@ -47,5 +47,5 @@ class ParserService:
 if __name__ == "__main__":
     
     cmd_string = "@arg1 --opt1 arg2 arg3 arg4"
-    p = Parser({"@": "cmd"})
+    p = ParserService({"@": "cmd"})
     print p.parse_command(line=cmd_string)
