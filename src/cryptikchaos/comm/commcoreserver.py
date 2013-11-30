@@ -9,11 +9,6 @@ Twisted network server core.
 __author__ = "Arun Vaidya"
 __version__ = 0.5
 
-# install_twisted_rector must be called before importing 
-# and using the reactor
-from kivy.support import install_twisted_reactor
-install_twisted_reactor()
-
 from cryptikchaos.env.configuration import constants
 
 from kivy.logger import Logger
@@ -43,7 +38,7 @@ class CommCoreServerProtocol(LineReceiver):
         self._peer_host = self.transport.getPeer().host
         self._peer_port = self.transport.getPeer().port
         self._peer_repr = self._peer_host + " on " + str(self._peer_port)
-
+        
         Logger.debug(
             "Connection success! Connected to {}".format(self._peer_repr)
         )

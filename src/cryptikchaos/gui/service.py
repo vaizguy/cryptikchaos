@@ -102,3 +102,5 @@ class GUIService(App):
         if constants.GUI_LOGO:
             # Print logo through log
             Logger.info('\n{}'.format(constants.GUI_LOGO))
+        
+        return args

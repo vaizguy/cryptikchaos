@@ -44,6 +44,9 @@ class CryptikChaosApp(
     # GUI service
     gui_service = None
     
+    # Peer host (by default is localhost)
+    my_host = constants.LOCAL_TEST_HOST
+    
     # Lexical parser service
     parser_service = ParserService(
         cmd_aliases = {
@@ -57,9 +60,6 @@ class CryptikChaosApp(
         
         # Initiate Kivy GUI
         self.gui_service = GUIService.build(self)
-                                
-        # Determine host based on test mode
-        self.my_host = constants.LOCAL_TEST_HOST
         
         # If not in test mode get LAN IP
         if not constants.ENABLE_TEST_MODE:
@@ -430,6 +430,15 @@ class CryptikChaosApp(
         else:
             self.print_message("{}".format(cmdline))
             
+    def cmd_exit(self, _):
+        """
+        Command: exit
+        Exit the application
+        Usage: exit
+        """
+        
+        self.stop()
+            
     # Pympler memory profiler
     if constants.PYMPLER:
         def cmd_memprof(self, _):
@@ -439,8 +448,9 @@ class CryptikChaosApp(
             Top-50
             Usage: memprof
             """
-        
-            return self.env_service.memory_summary()
+            
+            self.env_service.memory_summary()
+            self.print_message("Dumped Memory profile to terminal.")
 
 
 if __name__ == '__main__':

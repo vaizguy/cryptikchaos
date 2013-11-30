@@ -51,7 +51,8 @@ class EnvService:
         
         Logger.info("Clearing enviroment.")
         # Delete env dict
-        del self.env_dict
+        if not self.env_dict:
+            del self.env_dict
 
     def list_constants(self):
         "List all env constants."
@@ -143,7 +144,7 @@ class EnvService:
             all_objects = muppy.get_objects()     
             Logger.info("Memory Footprint:")
             Logger.info("-----------------")
-            summary.print_(summary.summarize(all_objects), limit=50)
+            return summary.print_(summary.summarize(all_objects), limit=50)
     
     
 if __name__ == "__main__":    

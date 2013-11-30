@@ -210,8 +210,8 @@ class ConsoleWindow(GridLayout):
     def on_resize(self, instance, width, height):
         
         # New height and width
-        self.width = width
-        self.height = height
+        instance.width = width
+        instance.height = height
 
             
 if __name__ == '__main__': 

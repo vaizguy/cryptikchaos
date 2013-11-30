@@ -14,7 +14,7 @@ from hashlib import md5
 
 class StoreManager(object):
     
-    def __init__(self, name, keys):
+    def __init__(self, name, valid_keys):
         "Initialize store manager."
         
         Logger.info("Opening [{}] store manager.".format(
@@ -25,7 +25,7 @@ class StoreManager(object):
         # Store attributes    
         self._storage = {}
         self._name = name
-        self._store_keys = keys
+        self._store_keys = valid_keys
             
     def __str__(self):
         "Store as string."
@@ -42,14 +42,15 @@ class StoreManager(object):
     def __del__(self):
         "Delete store contents"
         
-        Logger.info("Closing [{}] store manager.".format(
-            self._name
-            )
-        )    
-        
-        del self._storage
-        del self._name
-        del self._store_keys
+        if not self._name: #TODO
+            Logger.info("Closing [{}] store manager.".format(
+                self._name
+                )
+            )    
+            
+            del self._storage
+            del self._name
+            del self._store_keys
     
     def keys(self):
         "Return the storage index keys."
@@ -61,7 +62,7 @@ class StoreManager(object):
         
         return sid in self.keys()
             
-    def add_store(self, sid, dictionary={}):
+    def add_store(self, sid, dictionary):
         "Add a new store."
         
         self._storage[sid] = Store(self._store_keys, dictionary)
@@ -136,9 +137,9 @@ class StoreManager(object):
             
 if __name__ == "__main__":
     
-    keys = ["key1", "key2", "key3"]
+    k = ["key1", "key2", "key3"]
     
-    sm = StoreManager("StoreTest", keys)
+    sm = StoreManager("StoreTest", k)
     
     sm.add_store(1, {"key1": 1, "key2": 2, "key3": 3})
     sm.add_store(2, {"key1": 4, "key2": 5, "key3": 6})

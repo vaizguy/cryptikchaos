@@ -49,8 +49,12 @@ Thumbs.db
 archive/*
 
 # Certificates and keys
+src/cryptikchaos/certs/cryptikchaosCA/*
 *.key
 *.crt
 *.pem
 *.req
 *.srl
+
+# Profiler files
+*.dat

@@ -9,10 +9,6 @@ Twisted network client core.
 __author__ = "Arun Vaidya"
 __version__ = 0.5
 
-# install_twisted_rector must be called before importing the reactor
-from kivy.support import install_twisted_reactor
-install_twisted_reactor()
-
 from cryptikchaos.env.configuration import constants
 
 from kivy.logger import Logger

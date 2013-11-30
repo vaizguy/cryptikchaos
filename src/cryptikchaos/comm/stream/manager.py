@@ -33,6 +33,7 @@ import hmac
 
 STREAM_TYPES = enum(UNAUTH=0, AUTH=1)
 
+
 class StreamManager(StoreManager):
     "Stream manager class."
 
@@ -278,14 +279,14 @@ class StreamManager(StoreManager):
 
 if __name__ == "__main__":
     
-    sm = StreamManager(123, "PKEYTEST", "localhost")
-    stream = sm.pack_stream(
+    SM = StreamManager(123, "PKEYTEST", "localhost")
+    S = SM.pack_stream(
         stream_type="ACKN", 
         stream_content="Hello", 
         stream_host="127.0.0.1",
         peer_key="PKEYTEST"
     ) 
-    print stream
-    print sm.unpack_stream(stream)
+    print S
+    print SM.unpack_stream(S)
     
     

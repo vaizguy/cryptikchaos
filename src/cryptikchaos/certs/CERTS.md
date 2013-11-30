@@ -9,12 +9,18 @@ About:
 * Current format for certificate names is peerid.crt and peerid.key.
 * Both certificate and key will be placed in dir `${PROJECT_PATH}/certs/`
 
-Generate key:
+Instructions:
+------------
 
-`openssl genrsa > peer_id.key`
+* To create a certificate authority, use the CA.pl script:
+```/usr/lib/ssl/misc/CA.pl -newca```
 
-Generate self-signed SSL certificate: 
+* Rename the `demoCA` directory to `cryptikchaosCA`.
 
-`openssl req -new -x509 -key peer_id.key -out peer_id.pem -days 1000`
+* To create a new certificate signing request:
+```/usr/lib/ssl/misc/CA.pl -newreq```
 
-Replace `peer_id` with actual peer ID
+* Finally sign the certificate:
+```/usr/lib/ssl/misc/CA.pl -sign```
+
+* The last 2 steps will have to be done twice to generate both client and test server keys and certificates not before renaming them respectively.

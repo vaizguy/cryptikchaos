@@ -61,6 +61,9 @@ class CommService:
                 constants.PROJECT_PATH,
                 self.peerid                             
             )
+            self.ssca = "{}/certs/cryptikchaosCA/cacert.pem".format(
+                constants.PROJECT_PATH
+            )
 
         # Initialize peer manager
         self.swarm_manager = SwarmManager(peerid, peerkey)
@@ -93,7 +96,7 @@ class CommService:
             reactor.listenSSL(
                 self.port,
                 CommCoreServerFactory(self), 
-                TLSCtxFactory(self.sslcrt, self.sslkey)
+                TLSCtxFactory(self.sslcrt, self.sslkey, self.ssca)
             )
         else:
             reactor.listenTCP(self.port, CommCoreServerFactory(self))
@@ -103,11 +106,11 @@ class CommService:
         "Start peer connections on start."
 
         # Connect to all peers
-        for (pid, _, h, p, cs, ) in self.swarm_manager.list_peers():
+        for (pid, _, host, port, cstatus, ) in self.swarm_manager.list_peers():
 
             # Check conn status
-            if not cs:
-                self.start_connection(pid, h, p)
+            if not cstatus:
+                self.start_connection(pid, host, port)
             else:
                 pass
 
@@ -260,7 +263,7 @@ class CommService:
             host, 
             port, 
             CommCoreClientFactory(self), 
-            TLSCtxFactory(self.sslcrt, self.sslkey)
+            TLSCtxFactory(self.sslcrt, self.sslkey, self.ssca)
         ):
             return True
         
@@ -291,7 +294,7 @@ class CommService:
             host, 
             port, 
             CommCoreAuthFactory(self), 
-            TLSCtxFactory(self.sslcrt, self.sslkey)
+            TLSCtxFactory(self.sslcrt, self.sslkey, self.ssca)
         ):
             return True
         

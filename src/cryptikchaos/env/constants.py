@@ -1,7 +1,4 @@
 """
-Constant types in Python.
-"""
-__doc__ = """
 This is a variation on "Constants in Python" by Alex Martelli, from which the
 solution idea was borrowed, and enhanced according suggestions of Zoran Isailovski.
 
@@ -30,6 +27,8 @@ class _constants:
     # ConstError Exception class
     class ConstError(TypeError):
         pass
+    
+    def __init__(self):pass
     
     def __repr__(self):
         

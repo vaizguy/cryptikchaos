@@ -16,19 +16,19 @@ class SSLContextError(Exception):
 
 class SSLCertReadError(SSLContextError):
     
-    def __init__(self):
+    def __init__(self, path):
         
         self.msg = """
             Missing SSL Certificate / Key
             -----------------------------
             
-            Please generate a valid SSL certificate in
-            {}/certs/{}.crt
+            Please place a valid SSL certificate in
+            {}
             (OR) 
             Change configuration variable constants.ENABLE_TLS* to False.
             
             *TLS mode is still in experimental phase.
-        """.format(constants.PROJECT_PATH, constants.PEER_ID)
+        """.format(path)
         
     def __str__(self):
         
@@ -36,19 +36,19 @@ class SSLCertReadError(SSLContextError):
         
 class SSLKeyReadError(SSLContextError):
     
-    def __init__(self):
+    def __init__(self, path):
         
         self.msg = """
             Missing SSL Certificate / Key
             -----------------------------
             
             Please generate a valid SSL certificate in
-            {}/certs/{}.key
+            {}
             (OR) 
             Change configuration variable constants.ENABLE_TLS* to False.
             
             *TLS mode is still in experimental phase.
-        """.format(constants.PROJECT_PATH, constants.PEER_ID)
+        """.format(path)
         
     def __str__(self):
         
