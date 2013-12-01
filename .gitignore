@@ -47,6 +47,7 @@ Thumbs.db
 
 # Adding archived code
 archive/*
+*.bkp
 
 # Certificates and keys
 src/cryptikchaos/certs/cryptikchaosCA/*
