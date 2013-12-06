@@ -14,16 +14,16 @@ __version__ = 0.5
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 
+from cryptikchaos.env.configuration import constants
+
 from cryptikchaos.comm.commcoreserver import CommCoreServerFactory
 from cryptikchaos.comm.commcoreclient import CommCoreClientFactory
 from cryptikchaos.comm.commcoreauth   import CommCoreAuthFactory
-from cryptikchaos.comm.sslcontext     import TLSCtxFactory
-
-from cryptikchaos.comm.swarm.manager import SwarmManager
+from cryptikchaos.comm.swarm.manager  import SwarmManager
 from cryptikchaos.comm.stream.manager import StreamManager
 from cryptikchaos.comm.stream.manager import STREAM_TYPES
-
-from cryptikchaos.env.configuration import constants
+if constants.ENABLE_TLS:
+    from cryptikchaos.comm.sslcontext import TLSCtxFactory
 
 from twisted.internet import reactor
 
@@ -100,7 +100,6 @@ class CommService:
             )
         else:
             reactor.listenTCP(self.port, CommCoreServerFactory(self))
-           
 
     def _start_peer_connections(self):
         "Start peer connections on start."
@@ -147,7 +146,7 @@ class CommService:
         try:
             conn.sendLine(line)
         except:
-            conn.write(line + constants.STREAM_LINE_DELIMITER)
+            conn.write("{}{}".format(line, constants.STREAM_LINE_DELIMITER))
         finally:
             return True
 
