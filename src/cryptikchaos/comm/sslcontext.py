@@ -19,12 +19,13 @@ from cryptikchaos.env.configuration import constants
 class TLSCtxFactory(ssl.ClientContextFactory):
     "Twisted SSL Context Factory."
     
-    def __init__(self, crt, key, ca):
+    def __init__(self, crt, key, ca, postverify_hook):
         "Initializing SSL context"
   
         self.crt = crt
         self.key = key
         self.ca = ca
+        self.postverify_hook = postverify_hook
     
     def getContext(self):
         "Get SSL context."
@@ -117,6 +118,10 @@ class TLSCtxFactory(ssl.ClientContextFactory):
             
             # Perform post verification checks
             postverifyOK = self.postverifyCallback(subject)
+            
+            # Post verification tasks
+            if postverifyOK:
+                self.postverify_hook(connection, x509)
             
         return preverifyOK and postverifyOK
     

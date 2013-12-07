@@ -96,7 +96,7 @@ class CommService:
             reactor.listenSSL(
                 self.port,
                 CommCoreServerFactory(self), 
-                TLSCtxFactory(self.sslcrt, self.sslkey, self.ssca)
+                TLSCtxFactory(self.sslcrt, self.sslkey, self.ssca, self.on_ssl_verification)
             )
         else:
             reactor.listenTCP(self.port, CommCoreServerFactory(self))
@@ -262,7 +262,7 @@ class CommService:
             host, 
             port, 
             CommCoreClientFactory(self), 
-            TLSCtxFactory(self.sslcrt, self.sslkey, self.ssca)
+            TLSCtxFactory(self.sslcrt, self.sslkey, self.ssca, self.on_ssl_verification)
         ):
             return True
         
@@ -293,7 +293,7 @@ class CommService:
             host, 
             port, 
             CommCoreAuthFactory(self), 
-            TLSCtxFactory(self.sslcrt, self.sslkey, self.ssca)
+            TLSCtxFactory(self.sslcrt, self.sslkey, self.ssca, self.on_ssl_verification)
         ):
             return True
         
@@ -414,6 +414,11 @@ class CommService:
         self._print(
             "Client {}:{} disconnected.".format(peer_ip, peer_port)
         )
+        
+    if constants.ENABLE_TLS:
+        def on_ssl_verification(self, connection, x509):
+            # TODO
+            pass
 
     def handle_response(self, response, connection):
         "Handle response from server."
