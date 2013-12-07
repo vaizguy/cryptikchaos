@@ -31,6 +31,14 @@ except ImportError:
 else:
     constants.PYMPLER = True
 
+try:
+    import networkx as nx
+    import matplotlib.pyplot as plt
+except ImportError:
+    constants.NETWORKX = False
+else:
+    constants.NETWORKX = True
+    
 # ---Application switches-------------------------------------------------####
 
 constants.ENABLE_TEST_MODE   = True

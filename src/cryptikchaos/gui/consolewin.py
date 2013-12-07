@@ -226,9 +226,9 @@ if __name__ == '__main__':
             # Build ConsoleWindow
             root = ConsoleWindow(
                 # Input handler hook
-                handleInput_cmd_hook=self.handle_input_hook,
+                handleinput_cmd_hook=self.handle_input_hook,
                 # Get command list hook
-                getCMD_cmd_hook=lambda: None,
+                getcommands_cmd_hook=lambda: None,
                 # Console splash greeting
                 greeting="Testing Window!",
                 # Font type face

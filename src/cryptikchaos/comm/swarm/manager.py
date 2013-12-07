@@ -15,7 +15,10 @@ from cryptikchaos.env.configuration import constants
 
 from kivy.logger import Logger
 
-
+if constants.NETWORKX:
+    import networkx as nx
+    import matplotlib.pyplot as plt
+    
 class SwarmManager(StoreManager):
     "Manage peers in the swarm."
 
@@ -42,6 +45,10 @@ class SwarmManager(StoreManager):
         self.peer_connections = {}
         # Hold peer pending streams
         self.peer_stream_buffer = {}
+        
+        # Create graph
+        if constants.NETWORKX:
+            self.swarm_graph = nx.Graph()
 
     def __del__(self):
         
@@ -86,6 +93,10 @@ class SwarmManager(StoreManager):
         
         # init stream buffer
         self.peer_stream_buffer[pid] = []
+        
+        # Add peer to swarm graph
+        if constants.NETWORKX:
+            self.add_swarm_graph_node(pid)
 
     def delete_peer(self, pid):
         "Remove unauth peer."
@@ -145,32 +156,7 @@ class SwarmManager(StoreManager):
 
         except AttributeError:
             return []
-
-    def build_swarm_graph(self):
-        "Return visual graph of entire swarm."
-
-        try:
-            import networkx as nx
-            import matplotlib.pyplot as plt
-        except ImportError:
-            Logger.error("Requires Networkx & Matplotlib modules.")
-            return False
-        else:
-            # Create graph
-            swarm_graph = nx.Graph()
-
-            # Populate graph
-            for pid in self.list_peer_ids():
-                swarm_graph.add_edge(self.my_peerid, pid)
-
-            # Plot circular graph
-            nx.draw_circular(swarm_graph)
-
-            # Show graph plot
-            plt.show()
-
-            return True
-
+        
     def list_peers(self):
         "Returns a list of all the peers."
 
@@ -181,10 +167,16 @@ class SwarmManager(StoreManager):
             # Get peer attributes
             p_info = self.get_store(k)
             
+            # Concat if key is bigger than 4 chars
+            if len(p_info["PEER_KEY"]) >=4:
+                peer_key = p_info["PEER_KEY"][0:3] + "XXXX"
+            else:
+                peer_key = p_info["PEER_KEY"]
+                 
             # Append as tuples (peer id, peer host, peer port, peer status)
             peerlist.append(
                 (p_info["PEER_ID"],
-                 p_info["PEER_KEY"][0:3] + "XXXX",
+                 peer_key,
                  p_info["PEER_IP"],
                  p_info["PEER_PORT"],
                  p_info["PEER_STATUS"]))
@@ -243,7 +235,6 @@ class SwarmManager(StoreManager):
         "Get the peers key."
 
         return self.get_store_item(pid, "PEER_KEY")
-
         
     def get_peerid_color(self, pid):
         "Return peer's color code."
@@ -269,7 +260,24 @@ class SwarmManager(StoreManager):
         "Return stream buffer"
         
         return self.peer_stream_buffer[pid]
+    
+    # Swarm Graphing functions
+    if constants.NETWORKX:
+        def add_swarm_graph_node(self, pid):
+            "Add peer node to swarm graph."
+    
+            self.swarm_graph.add_edge(self.my_peerid, pid)
+            
+        def plot_swarm_graph(self):
+            "Visualize the swarm"
+            
+            # Plot circular graph
+            nx.draw_circular(self.swarm_graph)
 
+            # Show graph plot
+            plt.show()   
+            
+            return True         
 
 if __name__ == '__main__':
     sm = SwarmManager(1000, "key")

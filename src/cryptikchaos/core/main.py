@@ -389,19 +389,6 @@ class CryptikChaosApp(
         self.print_table(
             self.comm_service.swarm_manager.peer_table()
         )
-
-    def cmd_graphswarm(self, _):
-        """
-        Command: grapgswarm
-        Visualize swarm using network graphing.
-        Requires: Networkx python graph library to be installed.
-        Usage: graphswarm
-        """
-
-        if self.comm_service.swarm_manager.build_swarm_graph():
-            self.print_message("Generated peer graph.")
-        else:
-            self.print_message("Could not generate graph.")
             
     def cmd_env(self, _):
         """
@@ -452,6 +439,20 @@ class CryptikChaosApp(
             self.env_service.memory_summary()
             self.print_message("Dumped Memory profile to terminal.")
 
+    # Swarm graph visualizer
+    if constants.NETWORKX:
+        def cmd_graphswarm(self, _):
+            """
+            Command: grapgswarm
+            Visualize swarm using network graphing.
+            Requires: Networkx python graph library to be installed.
+            Usage: graphswarm
+            """
+    
+            if self.comm_service.swarm_manager.plot_swarm_graph():
+                self.print_message("Generated peer graph.")
+            else:
+                self.print_message("Could not generate graph.")
 
 if __name__ == '__main__':
 
