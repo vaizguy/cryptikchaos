@@ -250,24 +250,14 @@ class StreamManager(StoreManager):
         self.add_store(stream_uid, dictionary)
         
         return self._get_tuple(stream_uid)
-    
-    def _get_content(self, sid):
-
-        content = self.get_store_item(
-            sid, 
-            "STREAM_CONTENT"
-        )
-
-        return content
- 
-        
+            
     def _get_tuple(self, sid):
         "Return stream contents in tuple form."
 
         return (
-            self.get_store_item(sid, "STREAM_TYPE"),
-            self._get_content(sid),
-            self.get_store_item(sid, "STREAM_PKEY").strip('\b')
+            self.get_store_item(sid, "STREAM_TYPE"   ),
+            self.get_store_item(sid, "STREAM_CONTENT"),
+            self.get_store_item(sid, "STREAM_PKEY"   ).strip('\b')
         )
 
     def get_stream(self, sid):
