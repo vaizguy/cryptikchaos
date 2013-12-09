@@ -13,6 +13,8 @@ from cryptikchaos.libs.Storage.manager import StoreManager
 
 from cryptikchaos.env.configuration import constants
 
+from cryptikchaos.comm.swarm.peer import Peer
+
 from kivy.logger import Logger
 
 if constants.NETWORKX:
@@ -81,14 +83,7 @@ class SwarmManager(StoreManager):
             
         # Peer dictionary structure defined here
         self.add_store(
-            pid, dictionary={
-                "PEER_ID": pid,
-                "PEER_KEY" : key,
-                "PEER_IP": host,
-                "PEER_PORT": port,
-                "PEER_STATUS": False,
-                "PEER_COLOR" : pid
-                }
+            pid, dictionary=Peer(pid, key, host, port).dict
         )
         
         # init stream buffer

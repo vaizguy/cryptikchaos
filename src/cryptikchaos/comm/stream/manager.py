@@ -27,9 +27,10 @@ from cryptikchaos.libs.obscure import unshuffler
 
 from cryptikchaos.exceptions.streamExceptions import \
     StreamOverflowError
-    
+
+from cryptikchaos.comm.stream.stream import Stream
+
 import struct
-import hmac
 
 STREAM_TYPES = enum(UNAUTH=0, AUTH=1)
 
@@ -60,12 +61,7 @@ class StreamManager(StoreManager):
         # Clear stored streams
         if StoreManager:
             StoreManager.__del__(self)
-            
-    def _gen_hmac(self, flag, stype, content, uid, key):
-        "Generate stream hmac."
-        
-        return hmac.new(str(flag)+stype+content+uid+key).hexdigest()
-        
+                   
     def _prepare_stream(self, stream_type, stream_content, stream_flag, stream_host, peer_key):
         "Create new stream store."
         
@@ -96,16 +92,7 @@ class StreamManager(StoreManager):
                 self.peer_key,
                 peer_key
             )
-            
-        # Generate checksum before shuffle
-        stream_hmac = self._gen_hmac(
-            flag=stream_flag, 
-            stype=stream_type,
-            content=stream_content,
-            uid=stream_uid,
-            key=stream_key
-        )
-                              
+                                         
         # Shuffle content
         if constants.ENABLE_SHUFFLE:
             Logger.info("Scrambling content.")
@@ -114,17 +101,17 @@ class StreamManager(StoreManager):
                 string=stream_content,
                 iterations=constants.STREAM_CONT_SHUFF_ITER
             )
-        
-        dictionary = {
-            'STREAM_FLAG'    :stream_flag,
-            'STREAM_TYPE'    :stream_type,
-            'STREAM_CONTENT' :stream_content,
-            'STREAM_PKEY'    :stream_key,
-            'STREAM_CHKSUM'  :stream_hmac
-        }
                 
         # Add stream to store
-        self.add_store(stream_uid, dictionary)
+        self.add_store(
+                stream_uid, Stream(
+                    stream_uid, 
+                    stream_flag,
+                    stream_type,
+                    stream_content,
+                    stream_key,
+             ).dict
+        )
         
         return stream_uid
 
@@ -206,17 +193,25 @@ class StreamManager(StoreManager):
         # Get  uid
         stream_uid = generate_uuid(self.peer_host)
         
+        # Get stream
+        stream_obj = Stream(
+                     stream_uid, 
+                     stream_flag,
+                     stream_type,
+                     stream_content,
+                     stream_key,
+                )
+        
         # Verify stream integrity
-        if (
-            self._gen_hmac(
+        if not stream_obj.check_hmac(
+                uid=stream_uid, 
                 flag=stream_flag, 
                 stype=stream_type, 
                 content=stream_content, 
-                uid=stream_uid, 
-                key=stream_key
-            ) != stream_hmac
+                skey=stream_key
         ):
-            return [None]*8
+            Logger.error("Stream Checksum mismatch.")
+            return [None]*3
         
         # Check stream signing mode
         if stream_flag == STREAM_TYPES.UNAUTH:
@@ -234,20 +229,20 @@ class StreamManager(StoreManager):
             # Perform key challenge
             if stream_challenge_key != stream_key:
                 Logger.error("Token challenge Fail")
-                return [None]*8
+                return [None]*3
             else:
                 Logger.info("Token challenge Pass")
-        
-        dictionary = {
-            'STREAM_FLAG'    :stream_flag,
-            'STREAM_TYPE'    :stream_type,
-            'STREAM_CONTENT' :stream_content,
-            'STREAM_CHKSUM'  :stream_hmac,
-            'STREAM_PKEY'    :stream_key           
-        }
                         
         # Add stream to store
-        self.add_store(stream_uid, dictionary)
+        self.add_store(
+                stream_uid, Stream(
+                     stream_uid, 
+                     stream_flag,
+                     stream_type,
+                     stream_content,
+                     stream_key,
+                ).dict
+        )
         
         return self._get_tuple(stream_uid)
             

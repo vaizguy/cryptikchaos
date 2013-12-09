@@ -321,9 +321,9 @@ class CommService:
 
         # Announce successful server connection
         self._print(
-            "Connected to PID:{}--{}@{}".format(
+            constants.GUI_PEER_REPR.format(
                 peer_id, peer_ip, peer_port
-            ),
+            ) + " has entered the swarm",
             peer_ip,
             peer_port
         )
@@ -348,9 +348,9 @@ class CommService:
 
         # Announce successful server disconnection
         self._print(
-            "Disconnected from PID:{}-{}:{}".format(
+            constants.GUI_PEER_REPR.format(
                 peer_id, peer_ip, peer_port
-            ),
+            ) + " has left the swarm",
             peer_ip,
             peer_port
         )
@@ -572,7 +572,7 @@ class CommService:
         
         # Response (default = None)
         rsp = None
-
+        
         # Unpack capsule
         (
             c_rx_type, 
@@ -582,6 +582,11 @@ class CommService:
             stream=stream,
             peer_key=src_key
         )
+        
+        # Check if stream type is valid 
+        if not c_rx_type:
+            Logger.error("Invalid Stream checksum recieved.")
+            return rsp
         
         # Print test message if test server
         if self.peerid == constants.LOCAL_TEST_PEER_ID and \

@@ -94,6 +94,7 @@ constants.GUI_LABEL_PROMPT = "{}{}".format(
     constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_PROMPT_SYM
 )
+constants.GUI_PEER_REPR = "PID:{}--{}:{}"
 # ------------------------------------------------------------------------####
 
 # ------------------Protocol Stream type CONSTANTS-----------------------####
