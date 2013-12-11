@@ -32,8 +32,8 @@ else:
     constants.PYMPLER = True
 
 try:
-    import networkx as nx
-    import matplotlib.pyplot as plt
+    import networkx
+    import matplotlib.pyplot
 except ImportError:
     constants.NETWORKX = False
 else:
