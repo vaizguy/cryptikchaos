@@ -17,16 +17,11 @@ from kivy.logger import Logger
 try:
     from kivy.garden.navigationdrawer import NavigationDrawer
 except ImportError:
-    Logger.exception(
-        """
-        Please Install kivy Garden package:
-        navigationdrawer
-        
-        Command in unix (with kivy preinstalled):
-        sudo garden install navigationdrawer
-        """
-    )
-
+    from cryptikchaos.libs.garden.garden.navigationdrawer \
+        import NavigationDrawer
+else:
+    pass    
+    
 from cryptikchaos.gui.consolewin import ConsoleWindow
 from cryptikchaos.gui.navbar import NavBar
 from cryptikchaos.env.service import EnvService
