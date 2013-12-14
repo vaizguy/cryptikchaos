@@ -14,7 +14,21 @@ from kivy.resources import resource_add_path
 from kivy.clock import Clock
 from kivy.logger import Logger
 
+try:
+    from kivy.garden.navigationdrawer import NavigationDrawer
+except ImportError:
+    Logger.exception(
+        """
+        Please Install kivy Garden package:
+        navigationdrawer
+        
+        Command in unix (with kivy preinstalled):
+        sudo garden install navigationdrawer
+        """
+    )
+
 from cryptikchaos.gui.consolewin import ConsoleWindow
+from cryptikchaos.gui.navbar import NavBar
 from cryptikchaos.env.service import EnvService
 from cryptikchaos.comm.service import CommService
 
@@ -34,8 +48,19 @@ class GUIService(App):
         # Add kivy resource paths
         resource_add_path(constants.KIVY_RESOURCE_PATH)
         
+        # Main drawer
+        drawer = NavigationDrawer()
+        
+        # Set up Side pane
+        side_pane = NavBar(
+            # Input handler hook
+            handleinput_cmd_hook=self.handleinput_cmd_hook,
+            # drawer obj
+            drawer=drawer                    
+        )
+               
         # Build ConsoleWindow
-        root = ConsoleWindow(
+        main_pane = ConsoleWindow(
             # Input handler hook
             handleinput_cmd_hook=self.handleinput_cmd_hook,
             # Get command list hook
@@ -51,12 +76,19 @@ class GUIService(App):
         ## main application class we do not have self.handle_input_hook
         ## and self.get_commands_hook the app will crash.
         
-        # Apeend text to console hook
-        self.inputtext_gui_hook = root.inputtext_gui_hook
-        # Get App GUI Width
-        self.getmaxwidth_gui_hook = root.getmaxwidth_gui_hook
+        # Add main and side pane
+        drawer.add_widget(side_pane)
+        drawer.add_widget(main_pane)
         
-        return root
+        # Set animation type
+        drawer.anim_type ='reveal_below_anim'
+
+        # Apeend text to console hook
+        self.inputtext_gui_hook = main_pane.inputtext_gui_hook
+        # Get App GUI Width
+        self.getmaxwidth_gui_hook = main_pane.getmaxwidth_gui_hook
+                
+        return drawer
        
     def on_start(self):
         '''Event handler for the on_start event, which is fired after

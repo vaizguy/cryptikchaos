@@ -74,7 +74,8 @@ class CommService:
 
         self._printer = printer
         
-        # Auth request tracker dict
+        # Auth request token dictionary, stores all auth request tokens
+        # such that all acks can be validated.
         self.valid_auth_req_tokens = {}
 
         # Start the listener
