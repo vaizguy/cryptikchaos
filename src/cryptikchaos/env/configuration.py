@@ -58,7 +58,10 @@ constants.REBIND_CHECK = True
 constants.PROJECT_PATH = "{}/..".format(
     os.path.dirname(os.path.realpath(__file__))
 )
-constants.KIVY_RESOURCE_PATH = "{}/fonts".format(constants.PROJECT_PATH)
+constants.KIVY_RESOURCE_PATH_1 = "{}/fonts".format(constants.PROJECT_PATH)
+constants.KIVY_RESOURCE_PATH_2 = "{}/libs/garden/garden.navigationdrawer".format(
+    constants.PROJECT_PATH
+)
 # ------------------------------------------------------------------------####
 
 # ---peer attribute constants---------------------------------------------####

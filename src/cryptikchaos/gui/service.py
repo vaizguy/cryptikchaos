@@ -41,7 +41,8 @@ class GUIService(App):
         "Build the kivy App."
         
         # Add kivy resource paths
-        resource_add_path(constants.KIVY_RESOURCE_PATH)
+        resource_add_path(constants.KIVY_RESOURCE_PATH_1)
+        resource_add_path(constants.KIVY_RESOURCE_PATH_2)
         
         # Main drawer
         drawer = NavigationDrawer()

@@ -89,13 +89,13 @@ class NavBar(BoxLayout):
  
         ## Minimize
         # Set up button
-        minimize_button = Button(text='Minimize')
+        console_button = Button(text='Console')
         # Set height
-        minimize_button.size_hint_y = 0.05
+        console_button.size_hint_y = 0.05
         # Set action
-        minimize_button.bind(on_release=self.drawer.toggle_state)
+        console_button.bind(on_release=self.drawer.toggle_state)
         # Bind to parent
-        self.add_widget(minimize_button) 
+        self.add_widget(console_button) 
               
         ## ABOUT
         # Set up button

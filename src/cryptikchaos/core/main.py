@@ -10,6 +10,9 @@ frontend and twisted framework as the backend.
 __author__ = "Arun Vaidya"
 __version__ = 0.5
 
+import kivy
+kivy.require('1.7.2')
+
 # Add cryptikchaos path
 import pythonpath
 pythonpath.AddSysPath('../../')
