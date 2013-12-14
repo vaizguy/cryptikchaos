@@ -24,7 +24,7 @@ from kivy.uix.label import Label
 from kivy.resources import resource_add_path
 
 # Add kivy resource paths
-resource_add_path(constants.KIVY_RESOURCE_PATH)
+resource_add_path(constants.KIVY_RESOURCE_PATH_1)
 
         
 class TestServerApp(App):
