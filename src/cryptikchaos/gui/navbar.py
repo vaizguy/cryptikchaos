@@ -70,16 +70,10 @@ class NavBar(BoxLayout):
         
         # Set up label
         title_label = Label(
-            text="""\n\
-            \n [b]CryptikChaos[sup]TM[/sup][/b]\
-            \n \
-            \n Currently in development,\
-            \n Developed by vaizguy\
-            \n 2013\
-            """, 
+            text="\n\n[b]CryptikChaos[sup]TM[/sup][/b]\n[i](vaizlabs-2013)[/i]", 
             markup=True, 
             valign='top',
-            halign='left',
+            halign='center',
         )
         # Bind text size to label
         title_label.bind(size=title_label.setter('text_size')) 
