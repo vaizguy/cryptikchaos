@@ -12,7 +12,7 @@ from kivy import Logger
 from time    import gmtime, strftime
 from struct  import pack, unpack
 from socket  import inet_aton, inet_ntoa, socket, AF_INET, SOCK_STREAM
-from uuid    import uuid5, NAMESPACE_URL, getnode
+from uuid    import uuid4, uuid5, NAMESPACE_URL, getnode
 from hashlib import sha512, md5
 from zlib    import compress as zlib_compress, \
                     decompress as zlib_decompress
@@ -44,14 +44,17 @@ def uint32_to_ip(ipn):
     t = pack("!I", ipn)
     return inet_ntoa(t)
 
-def generate_uuid(host):
+def generate_uuid(host=None):
     """
     Generate capsule UID for particular destination host.
     """
-
-    return str(
-        uuid5(NAMESPACE_URL, host)
-    )[0:8]
+    
+    if host:
+        return str(
+            uuid5(NAMESPACE_URL, host)
+        )[0:8]
+    else:
+        return uuid4().hex
 
 def generate_token(uid, src_pkey, dest_pkey):
     """

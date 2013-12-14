@@ -25,6 +25,8 @@ from cryptikchaos.comm.stream.manager import STREAM_TYPES
 if constants.ENABLE_TLS:
     from cryptikchaos.comm.sslcontext import TLSCtxFactory
 
+from cryptikchaos.libs.utilities import generate_uuid
+
 from twisted.internet import reactor
 
 from kivy.logger import Logger
@@ -71,6 +73,9 @@ class CommService:
         self.stream_manager = StreamManager(peerid, peerkey, host)
 
         self._printer = printer
+        
+        # Auth request tracker dict
+        self.valid_auth_req_tokens = {}
 
         # Start the listener
         if serverinit:
@@ -167,6 +172,11 @@ class CommService:
         "Router decides best route to peer."
 
         return pid
+    
+    def _get_auth_content(self, content):
+        "Get peer id and request token from auth stream content"
+        
+        return (content[:8], content[8:])
 
     def _transfer_data(self, pid, data_class, data_content, 
             desthost=None):
@@ -210,8 +220,9 @@ class CommService:
         # Test mode check if current service is handling
         # response or recieved data, maybe a peer client or 
         # test server
-        if constants.ENABLE_TEST_MODE and self.peerid == constants.PEER_ID:
-            port = constants.LOCAL_TEST_PORT
+        if constants.ENABLE_TEST_MODE and \
+            self.peerid == constants.PEER_ID:
+                port = constants.LOCAL_TEST_PORT
             
         # Get peer ID of stream source
         pid  = self.swarm_manager.get_peerid_from_ip(
@@ -262,7 +273,12 @@ class CommService:
             host, 
             port, 
             CommCoreClientFactory(self), 
-            TLSCtxFactory(self.sslcrt, self.sslkey, self.ssca, self.on_ssl_verification)
+            TLSCtxFactory(
+                self.sslcrt, 
+                self.sslkey, 
+                self.ssca, 
+                self.on_ssl_verification
+            )
         ):
             return True
         
@@ -279,7 +295,7 @@ class CommService:
             return False
 
     def start_authentication(self, pid, host='localhost', 
-            port=constants.PEER_PORT):
+            port=constants.LOCAL_TEST_PORT):
         "Start connection with server."
 
         Logger.debug(
@@ -287,13 +303,21 @@ class CommService:
                 pid
             )
         )
+        
+        # Save request
+        self.valid_auth_req_tokens[host] = generate_uuid()
 
         # Check if TLS is enabled
         if constants.ENABLE_TLS and reactor.connectSSL(
             host, 
             port, 
             CommCoreAuthFactory(self), 
-            TLSCtxFactory(self.sslcrt, self.sslkey, self.ssca, self.on_ssl_verification)
+            TLSCtxFactory(
+                self.sslcrt, 
+                self.sslkey, 
+                self.ssca, 
+                self.on_ssl_verification
+            )
         ):
             return True
         
@@ -377,10 +401,13 @@ class CommService:
             peer_port
         )
         
+        # Gwt request ID
+        request_id = self.valid_auth_req_tokens[peer_ip]
+        
         # Pack data into capsule
         stream = self.stream_manager.pack_stream(
             stream_type=constants.PROTO_AUTH_TYPE,
-            stream_content=self.peerid,
+            stream_content=self.peerid + request_id,
             stream_flag=STREAM_TYPES.UNAUTH,
             stream_host=peer_ip
         )
@@ -392,9 +419,15 @@ class CommService:
 
         peer_ip = connection.getPeer().host
         peer_port = connection.getPeer().port
+        
+        # delete auth request id
+        del self.valid_auth_req_tokens[peer_ip]
 
         self._print(
-            "Authentication successful to {}:{}".format(peer_ip, peer_port)
+            "Authentication successful to {}:{}".format(
+                peer_ip, 
+                peer_port
+            )
         )
 
     def on_client_connection(self, connection):
@@ -430,7 +463,14 @@ class CommService:
             return None
         
         ## Get the sender peer's information from connection
-        (_, src_key, src_ip, _) = self._get_source_from_connection(connection)
+        (
+             _, 
+             src_key, 
+             src_ip,
+             _
+        ) = self._get_source_from_connection(
+            connection
+        )
 
         # Repsonse handling architecture should be placed here.
         # Unpack received stream
@@ -485,7 +525,12 @@ class CommService:
         "Handle authentication response to add peer."
         
         ## Get the sender peer's information from connection
-        (_, _, src_ip, src_port) = self._get_source_from_connection(connection)
+        (
+             _, 
+             _, 
+             src_ip, 
+             src_port
+        ) = self._get_source_from_connection(connection)
 
         # Repsonse handling architecture should be placed here.
         (
@@ -498,9 +543,32 @@ class CommService:
 
         if c_rsp_auth_type == constants.PROTO_AACK_TYPE:
             ## Extract peer id
-            pid = content
+            (pid, request_id) = self._get_auth_content(content)
+            
+            # Check if request ACK ID is valid
+            try:
+                if self.valid_auth_req_tokens[src_ip] != request_id:
+                    Logger.debug(
+                        "Recieved Invalid Request ACK ID [{}].".format(
+                            request_id
+                        )
+                    )
+                    return False
+            
+            except KeyError:
+                Logger.debug(
+                    "Recieved Invalid host '{}' request ACK.".format(
+                        src_ip
+                    )
+                )
+                return False
+            
+            else:
+                Logger.debug("Recieved valid request ACK.")
+            
             ## Add peer
             self.swarm_manager.add_peer(pid, pkey, src_ip, src_port)
+            
             ## Add peer connection
             self._update_peer_connection_status(
                 src_ip, 
@@ -508,6 +576,7 @@ class CommService:
                 False, 
                 None
             )
+                       
             ## Connect to peer using normal connection this should refresh
             ## the connection in db to normal client conn from auth conn
             self.start_connection(pid, src_ip, src_port)
@@ -568,7 +637,12 @@ class CommService:
         Logger.debug("Handling Capsule : {}".format(b64encode(stream)))
         
         ## Get the sender peer's information from connection
-        (src_pid, src_key, src_ip, src_port) = self._get_source_from_connection(connection)
+        (
+             src_pid, 
+             src_key, 
+             src_ip, 
+             src_port
+        ) = self._get_source_from_connection(connection)
         
         # Response (default = None)
         rsp = None
@@ -598,13 +672,10 @@ class CommService:
         ## handle it accordingly, this requires no capsule challenge
         ## ------------------------------------------------------------          
         if c_rx_type == constants.PROTO_AUTH_TYPE:
-
-            Logger.debug(
-                "Recieved auth request from Peer: {}".format(content)
-            )
-
             ## Extract peer id
-            pid = content
+            (pid, request_id) = self._get_auth_content(content)
+            
+            Logger.debug("Recieved auth request from Peer: {}".format(pid))
 
             ## Add peer
             self.swarm_manager.add_peer(
@@ -625,7 +696,7 @@ class CommService:
             ## Send current peer info
             rsp = self.stream_manager.pack_stream(
                 stream_type=constants.PROTO_AACK_TYPE,
-                stream_content=self.peerid,
+                stream_content=self.peerid + request_id,
                 stream_flag=STREAM_TYPES.UNAUTH,
                 stream_host=src_ip
             )
@@ -637,7 +708,9 @@ class CommService:
     
         # Check if stream type is valid 
         if not c_rx_type:
-            Logger.error("Invalid stream ID received from unpacking stream.")
+            Logger.error(
+                "Invalid stream ID received from unpacking stream."
+            )
             return rsp
 
         # Check if connection is recognized
