@@ -69,4 +69,3 @@ src/cryptikchaos/certs/cryptikchaosCA/*
 # Buildozer APK builder files
 src/cryptikchaos/bin/*
 src/cryptikchaos/.buildozer/*
-buildozer.spec
