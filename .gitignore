@@ -67,5 +67,5 @@ src/cryptikchaos/certs/cryptikchaosCA/*
 *.pstat
 
 # Buildozer APK builder files
-src/cryptikchaos/bin/*
-src/cryptikchaos/.buildozer/*
+src/bin/*
+src/.buildozer/*

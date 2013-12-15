@@ -15,10 +15,10 @@ from kivy.clock import Clock
 from kivy.logger import Logger
 
 try:
-    from kivy.garden.navigationdrawer import NavigationDrawer
-except ImportError:
-    from cryptikchaos.libs.garden.garden.navigationdrawer \
+    from cryptikchaos.libs.garden.navigationdrawer \
         import NavigationDrawer
+except ImportError:
+        from kivy.garden.navigationdrawer import NavigationDrawer
 else:
     pass    
     

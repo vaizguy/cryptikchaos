@@ -1,5 +1,8 @@
 [app]
 
+# (list) Garden requirements
+garden_requirements = garden.navigationdrawer,
+
 # (str) Title of your application
 title = CryptikChaos
 
@@ -7,13 +10,13 @@ title = CryptikChaos
 package.name = cryptikchaos
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = vaizlabs.main
+package.domain = cryptikchaos
 
 # (str) Source code where the main.py live
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py, jpeg, png, jpg, crt, key, pem
+source.include_exts = py,jpeg,png,jpg,crt,key,pem,ttf
 
 # (list) Source files to exclude (let empty to not exclude anything)
 #source.exclude_exts = spec
@@ -22,7 +25,7 @@ source.include_exts = py, jpeg, png, jpg, crt, key, pem
 source.exclude_dirs = test
 
 # (list) List of exclusions using pattern matching
-source.exclude_patterns = LICENSE, *.md, *git*
+source.exclude_patterns = LICENSE, *.md, test_server
 
 # (str) Application versioning (method 1)
 #version.regex = __version__ = '(.*)'
@@ -32,7 +35,7 @@ source.exclude_patterns = LICENSE, *.md, *git*
 version = 0.5
 
 # (list) Application requirements
-requirements = kivy,twisted
+requirements = kivy,twisted,pyopenssl
 
 # (str) Presplash of the application
 #presplash.filename = %(source.dir)s/data/presplash.png
