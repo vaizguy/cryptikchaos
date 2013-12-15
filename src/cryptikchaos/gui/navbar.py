@@ -30,14 +30,14 @@ class AboutPopUp(Popup):
         about_label = Label(
             text="""\
             \n  [b]CryptikChaos[sup]TM[/sup][/b] is a peer to peer messenger developed as a project to \
-            \n  understand how an implementation using an event driven networking \
-            \n  engine (twisted) could be applied for peer to peer communications.\
+            \n  understand how an event driven networking engine (twisted) could be \
+            \n  applied for peer to peer communications.\
             \n  [b]This application is[/b] [i]STILL[/i] [b]experimental[/b].\
             \n\
             \n  Get the code:\
             \n  [i]www.github.com/vaizguy/cryptikchaos[/i]\
             \n\
-            \n  Leave me feedback:\
+            \n  Contact:\
             \n  [i]cryptikchaos@googlegroups.com[/i]""",
             markup=True, 
             valign='top',
@@ -73,7 +73,7 @@ class NavBar(BoxLayout):
             text="\n\n[b]CryptikChaos[sup]TM[/sup][/b]\n[i](vaizlabs-2013)[/i]", 
             markup=True, 
             valign='top',
-            halign='center',
+            halign='center'
         )
         # Bind text size to label
         title_label.bind(size=title_label.setter('text_size')) 
@@ -83,7 +83,7 @@ class NavBar(BoxLayout):
         self.add_widget(title_label)
         
         ## Create popup
-        self._about_popup = AboutPopUp(
+        self.about_popup = AboutPopUp(
             dismiss_cb=lambda help_func: self.handleinput_cmd_hook("help")
         )
  
@@ -125,5 +125,5 @@ class NavBar(BoxLayout):
     def action_about(self, instance):
         
         # Open pop up
-        self._about_popup.open()       
+        self.about_popup.open()       
         

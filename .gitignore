@@ -59,8 +59,9 @@ src/cryptikchaos/certs/cryptikchaosCA/*
 
 # Profiler files
 *.dat
+*.pstat
 
 # Buildozer APK builder files
-src/cryptikchaos/core/bin/*
-src/cryptikchaos/core/.buildozer/*
+src/cryptikchaos/bin/*
+src/cryptikchaos/.buildozer/*
 buildozer.spec
