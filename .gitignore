@@ -44,6 +44,7 @@ Thumbs.db
 # Eclipse generated files #
 ###########################
 .project
+.settings
 .pydevproject
 *.pyc
 
