@@ -21,7 +21,7 @@ import re
 class ConsoleInput(TextInput):
     "Console text input class."
     
-    def __init__(self, handleinput_cmd_hook, getcommands_cmd_hook):
+    def __init__(self, font_type, font_size, handleinput_cmd_hook, getcommands_cmd_hook):
 
         # Init super
         super(ConsoleInput, self).__init__()
@@ -31,6 +31,10 @@ class ConsoleInput(TextInput):
         self.multiline=False
         # Not password input
         self.password=False
+        # Font type
+        self.font_name = font_type
+        # Font size
+        self.font_size = font_size
         # Set size
         self.size_hint_y=0.1
         # Sets focus active
@@ -155,40 +159,54 @@ class ConsoleWindow(GridLayout):
         # Number of cols
         self.cols = 1
         # Height and width
-        self.height = 600
+        self.height = 400
         self.width = 800
+        
+        # Create viewing area
+        self.view_area = GridLayout(cols = 1, size_hint = (1, None))
         
         # Create label for console output
         self.label = Label(
             text=greeting,
-            size_hint_y=None,
-            halign='left',
+            size_hint=(1, None),
             markup=True,
             font_name=font_type,
             font_size=font_size,
             text_size=(self.width-50, None),
             shorten=True,
-            valign='top'
+            valign='top',
+            halign='left',    
         )
-                        
+        
         # bind label to scrollable size
         self.label.bind(texture_size=self.label.setter('size'))
-                       
+                
+        # Add label to viewing area      
+        self.view_area.add_widget(self.label)
+                               
         # Scroll view label
-        scroll_view = ScrollView(
+        self.scroll_view = ScrollView(
             size_hint_y=0.9,
             size=(self.height, self.width)
         )
-        # TODO X-axis scroll not working
-        scroll_view.do_scroll_y = True
-        scroll_view.do_scroll_x = True
-        # Add label to scroll view
-        scroll_view.add_widget(self.label)
         
-        self.add_widget(scroll_view)
+        # TODO X-axis scroll not working
+        self.scroll_view.do_scroll_y = True
+        self.scroll_view.do_scroll_x = True
+        # Add label to scroll view
+        self.scroll_view.add_widget(self.view_area)
+        
+        # Bind text size to view area
+        self.view_area.bind(minimum_height = self.view_area.setter('height'))
+                
+        self.add_widget(self.scroll_view)
         
         # Input text box
         self.console_input = ConsoleInput(
+            # Font type
+            font_type=font_type,
+            # Font size
+            font_size=font_size,
             # Input handler hook
             handleinput_cmd_hook=handleinput_cmd_hook, 
             # CMD list hook

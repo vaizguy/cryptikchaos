@@ -119,6 +119,10 @@ def wrap_line(line, cmax=100, delim='\n'):
     by delimiter.
     """
     
+    # Convert cmax to int
+    if isinstance(cmax, float):
+        cmax = int(cmax)
+    
     # check if factoring required
     if len(line) <= cmax:
         return line

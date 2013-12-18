@@ -79,19 +79,19 @@ constants.GUI_FONT_SIZE = 14
 constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_LOGO = criptiklogo()
 constants.GUI_WELCOME_MSG = """
-{}
-{}[{}]
 
 {}>> Welcome to CryptikChaos P2P Net <<
 {}>> Drag left edge for navigation <<
 {}>> Enter "help" for command listing <<
+
+{}[{}]
+
 """.format(
-    constants.GUI_LOGO,
+    constants.GUI_LABEL_LEFT_PADDING,
+    constants.GUI_LABEL_LEFT_PADDING,
+    constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_LEFT_PADDING,
     get_time(),
-    constants.GUI_LABEL_LEFT_PADDING,
-    constants.GUI_LABEL_LEFT_PADDING,
-    constants.GUI_LABEL_LEFT_PADDING
 )
 
 constants.GUI_LABEL_PROMPT_SYM = ">> "

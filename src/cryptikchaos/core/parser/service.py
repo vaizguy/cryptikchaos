@@ -4,7 +4,8 @@ Created on Nov 10, 2013
 @author: vaizguy
 '''
 
-from shlex import shlex
+__author__ = "Arun Vaidya"
+__version__ = 0.5
 
 
 class ParserService:
@@ -15,8 +16,6 @@ class ParserService:
         
         # Past entered commands
         self.past_commands = []
-        # Shell lexer
-        self.shell_lexer = shlex
         # Set the command aliases
         self.cmd_aliases = cmd_aliases
         
@@ -34,13 +33,18 @@ class ParserService:
     def parse_command(self, line):
         "parse command into required command format."
         
+        if ' ' not in line:
+            return (line , [])
+               
         # Check for and replace aliases
         line = self._replace_aliases(line)
-        # create lexer
-        shlexer = self.shell_lexer(instream=line, posix=True)
-        # get command and args in required format
-        (cmd, arg_str) = (next(shlexer), shlexer.instream.read())
         
+        # create lexer
+        tokens = line.split(" ")
+               
+        # get command and args in required format
+        (cmd, arg_str) = (tokens[0], tokens[1:])
+
         return (cmd, arg_str)
 
 

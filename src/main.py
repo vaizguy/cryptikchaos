@@ -1,7 +1,7 @@
 '''
 Created on Jul 21, 2013
 
-Podroid is a peer to peer chat application using kivy as the
+Cryptikchaos is a peer to peer chat application using kivy as the
 frontend and twisted framework as the backend.
 
 @author: vaizguy
@@ -19,11 +19,8 @@ pythonpath.AddSysPath('../')
 pythonpath.AddSysPath('../..')
 
 from cryptikchaos.env.configuration import constants
-
 from cryptikchaos.gui.service import GUIService
-
 from cryptikchaos.libs.utilities import wrap_line
-
 from cryptikchaos.core.parser.service import ParserService
 
 from kivy.logger import Logger
