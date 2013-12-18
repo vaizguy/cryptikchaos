@@ -14,7 +14,7 @@ if [[ $1 =~ "profile" ]]; then
 
     # Launch test server
     xterm -geometry 96x24+0-0 -e \
-        "sudo python $TEST_SCRIPT" &
+        "python $TEST_SCRIPT" &
 
     # Launch the main client
     xterm -geometry 96x24+0+0 -e \
@@ -35,10 +35,10 @@ else
     #rm -rf ../db/*_db # Persistant func removed temporarily
 
     # Launch test server
-    xterm -geometry 96x24+0+0 -e "sudo python $TEST_SCRIPT" &
+    xterm -geometry 96x24+0+0 -e "python $TEST_SCRIPT" &
 
     # Launch the main client
-    xterm -geometry 96x24+0-0 -e "sudo python $MAIN_SCRIPT"
+    xterm -geometry 96x24+0-0 -e "python $MAIN_SCRIPT"
 fi
 
 
