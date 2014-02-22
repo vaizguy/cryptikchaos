@@ -428,7 +428,7 @@ class CryptikChaosApp(
         self.stop()
             
     # Pympler memory profiler
-    if constants.PYMPLER:
+    if constants.PYMPLER_AVAILABLE:
         def cmd_memprof(self, _):
             """
             Command: memprof
@@ -441,10 +441,10 @@ class CryptikChaosApp(
             self.print_message("Dumped Memory profile to terminal.")
 
     # Swarm graph visualizer
-    if constants.NETWORKX:
+    if constants.NETWORKX_AVAILABLE:
         def cmd_graphswarm(self, _):
             """
-            Command: grapgswarm
+            Command: graphswarm
             Visualize swarm using network graphing.
             Requires: Networkx python graph library to be installed.
             Usage: graphswarm

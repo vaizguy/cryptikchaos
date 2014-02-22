@@ -18,7 +18,7 @@ from cryptikchaos.libs.Table.prettytable import PrettyTable
 
 from kivy import Logger
 
-if constants.PYMPLER:
+if constants.PYMPLER_AVAILABLE:
     from pympler import summary, muppy
 
 
@@ -137,7 +137,7 @@ class EnvService:
             return "No environment variables defined."
         
     ## pympler inline Memory profiler Conditional code
-    if constants.PYMPLER:
+    if constants.PYMPLER_AVAILABLE:
         def memory_summary(self):
             "Using pympler summarize module to view memory summary."
              

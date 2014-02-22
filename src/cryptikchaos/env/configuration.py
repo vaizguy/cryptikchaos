@@ -27,17 +27,17 @@ from cryptikchaos.libs.utilities import md5hash
 try:
     import pympler
 except ImportError:
-    constants.PYMPLER = False
+    constants.PYMPLER_AVAILABLE = False
 else:
-    constants.PYMPLER = True
+    constants.PYMPLER_AVAILABLE = True
 
 try:
     import networkx
     import matplotlib.pyplot
 except ImportError:
-    constants.NETWORKX = False
+    constants.NETWORKX_AVAILABLE = False
 else:
-    constants.NETWORKX = True
+    constants.NETWORKX_AVAILABLE = True
     
 # ---Application switches-------------------------------------------------####
 

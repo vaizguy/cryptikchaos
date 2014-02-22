@@ -17,7 +17,7 @@ from cryptikchaos.comm.swarm.peer import Peer
 
 from kivy.logger import Logger
 
-if constants.NETWORKX:
+if constants.NETWORKX_AVAILABLE:
     import networkx as nx
     import matplotlib.pyplot as plt
     
@@ -49,7 +49,7 @@ class SwarmManager(StoreManager):
         self.peer_stream_buffer = {}
         
         # Create graph
-        if constants.NETWORKX:
+        if constants.NETWORKX_AVAILABLE:
             self.swarm_graph = nx.Graph()
 
     def __del__(self):
@@ -90,7 +90,7 @@ class SwarmManager(StoreManager):
         self.peer_stream_buffer[pid] = []
         
         # Add peer to swarm graph
-        if constants.NETWORKX:
+        if constants.NETWORKX_AVAILABLE:
             self.add_swarm_graph_node(pid)
 
     def delete_peer(self, pid):
@@ -257,7 +257,7 @@ class SwarmManager(StoreManager):
         return self.peer_stream_buffer[pid]
     
     # Swarm Graphing functions
-    if constants.NETWORKX:
+    if constants.NETWORKX_AVAILABLE:
         def add_swarm_graph_node(self, pid):
             "Add peer node to swarm graph."
     

@@ -34,6 +34,8 @@ class AboutPopUp(Popup):
             \n  applied for peer to peer communications.\
             \n  [b]This application is[/b] [i]STILL[/i] [b]experimental[/b].\
             \n\
+            \n  [i]Developed by vaizlabs[i]\
+            \n\
             \n  Get the code:\
             \n  [i]www.github.com/vaizguy/cryptikchaos[/i]\
             \n\
@@ -70,7 +72,7 @@ class NavBar(BoxLayout):
         
         # Set up label
         title_label = Label(
-            text="\n\n[b]CryptikChaos[sup]TM[/sup][/b]\n[i](vaizlabs-2013)[/i]", 
+            text="\n\n[b]CryptikChaos[sup]TM[/sup][/b]\n", 
             markup=True, 
             valign='top',
             halign='center'
