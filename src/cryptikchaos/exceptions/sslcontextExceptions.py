@@ -7,8 +7,6 @@ Created on Nov 17, 2013
 __author__ = "Arun Vaidya"
 __version__ = 0.5
 
-from cryptikchaos.env.configuration import constants
-
 
 class SSLContextError(Exception):
     pass
