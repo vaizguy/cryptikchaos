@@ -295,6 +295,6 @@ if __name__ == '__main__':
             print "New heightxwidth {}x{}".format(height, width)
     
     # Add resource path
-    resource_add_path(constants.KIVY_RESOURCE_PATH)
+    resource_add_path(constants.KIVY_RESOURCE_PATH_1)
 
     ConsoleWindowTest().run()
