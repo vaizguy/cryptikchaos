@@ -283,7 +283,7 @@ class CommService:
         ):
             return True
         
-        # Use normal TCL connection        
+        # Use normal TCP connection        
         elif not constants.ENABLE_TLS and reactor.connectTCP(
             host, 
             port, 
@@ -322,7 +322,7 @@ class CommService:
         ):
             return True
         
-        # Use normal TCL connection
+        # Use normal TCP connection
         elif not constants.ENABLE_TLS and reactor.connectTCP(
             host, 
             port, 
@@ -451,8 +451,11 @@ class CommService:
         
     if constants.ENABLE_TLS:
         def on_ssl_verification(self, connection, x509):
-            # TODO
-            pass
+            "post ssl verification hook"
+                  
+            ## TODO
+            # Add post TLS verification func here
+            Logger.info("TLS Verification is SUCCESSFUL!")
 
     def handle_response(self, response, connection):
         "Handle response from server."

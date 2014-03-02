@@ -54,6 +54,10 @@ class ConsoleInput(TextInput):
         # Prompt length
         self.prompt_len = len(constants.GUI_LABEL_PROMPT_SYM)
         
+        # Command buffer
+        self.command_buffer = ''
+        self.autocomplete_buffer = set()
+        
         # Bind to function on entry
         self.bind(on_text_validate=self.on_enter)
         
@@ -98,6 +102,9 @@ class ConsoleInput(TextInput):
     def on_enter(self, instance):
         "Called on text input entry."
         
+        # Clear command buffer
+        self.autocomplete_buffer = set()
+        
         # Get data input
         input_text = self._get_input_text(instance)
         
@@ -114,8 +121,15 @@ class ConsoleInput(TextInput):
     def on_text(self, instance, value):
         "Method hook called on change of TextInput.text value."
         
+        # TAB inits autofinish
+        auto_finish = 9 in [ord(c) for c in value]
+        
+        if auto_finish:
+            self.handleinput_cmd_hook("help")
+        
         # Prompt is readonly
         if (
+            auto_finish or \
             len(value) <= self.prompt_len or \
             constants.GUI_LABEL_PROMPT_SYM not in value[:self.prompt_len]
            ):
@@ -125,7 +139,7 @@ class ConsoleInput(TextInput):
         # Partial comm
         pcmd = self._filter_prompt(value).rstrip('\t')
         
-        # Commands
+        # Available list of Commands
         command_list = self.getcommands_cmd_hook()
         
         # List of commands
@@ -135,16 +149,26 @@ class ConsoleInput(TextInput):
             cmd_list = []
             
         # Get commands with pcmd matches
-        pcmd_matches = [c for c in cmd_list if re.match(r'\s*{}'.format(pcmd), c)]
- 
+        pcmd_matches = [c for c in cmd_list if re.match(r'\s*{}'.format(pcmd), c) \
+                                            and c not in self.autocomplete_buffer]
+        
+        # Sort cmd list alphabetically
+        pcmd_matches = sorted(pcmd_matches)
+               
+        # Reset autocomplete buffer
+        if auto_finish and (self.autocomplete_buffer == set([cmd[4:] for cmd in command_list])):
+            self.autocomplete_buffer = set()
+               
         # command completion
-        if '\t' in value and pcmd_matches:
+        if auto_finish and pcmd_matches:
             # first match for now ## TODO
             fcmd = pcmd_matches.pop()
+            # Send to command buffer
+            self.autocomplete_buffer.add(fcmd)
             # Change text
             self._add_text(instance, fcmd)
             # move cursor to end
-            self.do_cursor_movement("cursor_end")
+            instance.do_cursor_movement("cursor_end")
 
 
 class ConsoleWindow(GridLayout):

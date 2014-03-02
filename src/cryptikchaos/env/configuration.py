@@ -82,7 +82,7 @@ constants.GUI_WELCOME_MSG = """
 
 {}>> Welcome to CryptikChaos P2P Net <<
 {}>> Drag left edge for navigation <<
-{}>> Enter "help" for command listing <<
+{}>> Enter "help" (or) [TAB] for command listing <<
 
 {}[{}]
 
