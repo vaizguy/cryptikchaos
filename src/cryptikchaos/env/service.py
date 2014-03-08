@@ -7,7 +7,7 @@ View app environment constants through the App.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.5
+__version__ = "0.6"
 
 from cryptikchaos.env.configuration import constants
 from cryptikchaos.env import constants as const

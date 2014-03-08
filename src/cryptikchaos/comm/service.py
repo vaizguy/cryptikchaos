@@ -7,7 +7,7 @@ Twisted network service.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.5
+__version__ = "0.6"
 
 # install_twisted_rector must be called before importing 
 # and using the reactor

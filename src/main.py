@@ -8,7 +8,7 @@ frontend and twisted framework as the backend.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.5
+__version__ = "0.6"
 
 import kivy
 kivy.require('1.7.2')

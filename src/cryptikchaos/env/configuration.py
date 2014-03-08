@@ -8,7 +8,7 @@ Must be changed with care.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.5
+__version__ = "0.6"
 
 import uuid
 import hmac

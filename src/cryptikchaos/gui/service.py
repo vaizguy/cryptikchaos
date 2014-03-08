@@ -5,7 +5,7 @@ Created on Oct 8, 2013
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.5
+__version__ = "0.6"
 
 from cryptikchaos.env.configuration import constants
 

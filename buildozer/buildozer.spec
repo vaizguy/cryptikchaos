@@ -28,11 +28,11 @@ source.exclude_dirs = archive,test
 source.exclude_patterns = LICENSE,test
 
 # (str) Application versioning (method 1)
-#version.regex = __version__ = '(.*)'
-#version.filename = %(source.dir)s/main.py
+version.regex = __version__ = "(.*)"
+version.filename = %(source.dir)s/main.py
 
 # (str) Application versioning (method 2)
-version = 0.5
+#version = 0.5
 
 # (list) Application requirements
 requirements = kivy,twisted,pyopenssl

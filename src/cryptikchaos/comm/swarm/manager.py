@@ -7,7 +7,7 @@ Peer manager is used to Handle the peer information.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = 0.5
+__version__ = "0.6"
 
 from cryptikchaos.libs.Storage.manager import StoreManager
 
