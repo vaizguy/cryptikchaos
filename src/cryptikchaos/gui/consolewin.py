@@ -57,6 +57,7 @@ class ConsoleInput(TextInput):
         # Command buffer
         self.command_buffer = ''
         self.autocomplete_buffer = set()
+        self.help_displayed_flag = False
         
         # Bind to function on entry
         self.bind(on_text_validate=self.on_enter)
@@ -95,11 +96,15 @@ class ConsoleInput(TextInput):
         
         # Clear input text in input box
         self._add_text(instance)
+        
         # Reset cursor
         instance.do_cursor_movement("cursor_end")
         
     def on_enter(self, instance):
         "Called on text input entry."
+        
+        # Clear help displayed flag
+        self.help_displayed_flag = False
         
         # Clear command buffer
         self.autocomplete_buffer = set()
@@ -114,14 +119,18 @@ class ConsoleInput(TextInput):
             # Handle the input
             self.handleinput_cmd_hook(input_text)
             
-        # Set focu
+        # Set focus
         self.focus = True ## TODO not working.
         
     def on_tab(self, instance, pcmd):
         "Method hook for entry of [TAB]"
               
-        # Display commands
-        self.handleinput_cmd_hook("help")
+        if not self.help_displayed_flag:
+            # Display help
+            self.handleinput_cmd_hook("help")
+            
+            # Set help displayed flag
+            self.help_displayed_flag = True
         
         # Reset prompt 
         self._reset_prompt(instance)
@@ -137,7 +146,7 @@ class ConsoleInput(TextInput):
         pcmd_matches = sorted(pcmd_matches)
                
         # Reset autocomplete buffer
-        if (self.autocomplete_buffer == set([cmd[4:] for cmd in command_list])):
+        if (self.autocomplete_buffer == set(command_list)):
             self.autocomplete_buffer = set()
                
         # command completion
