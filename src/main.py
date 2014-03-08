@@ -407,12 +407,20 @@ class CryptikChaosApp(
         """
         Command: eko
         View any configuration constant value.
+        If constant name is not present then the 
+        name will be echoed to output.
         To view all constants use command 'env'.
         Usage: eko <constant name>
         """
         
+        # Force value to be string
+        if isinstance(cmdline, list):
+            cmdline = " ".join(cmdline)
+        
+        # Get constant
         v = self.env_service.get_constant(cmdline)
         
+        # Print constant value or string
         if v:
             self.print_message("{} => {}".format(cmdline, v))
         else:
