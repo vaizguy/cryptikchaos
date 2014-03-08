@@ -24,9 +24,9 @@ To run the application:
 * run `python main.py` in terminal.
 
 Setting up test environment:
-* Go to `src/cryptikchaos/test/`
-* run `./run_test_env.sh` in terminal.
-* you will currently be prompted for respective pem passwords on any connection request as well as accessing the peer certificates, if `constants.ENABLE_TLS = True`, these are the private passwords used during creation of certificate signing reqest, more instructions are available in `src/cryptikchaos/certs/CERTS.md`. This is still in development.
+* In module `src/cryptikchaos/env/configuration.py` make sure `constants.ENABLE_TEST_MODE = True`
+* Go to `src/cryptikchaos/test/` and run `./run_test_env.sh` in terminal.
+* you will be prompted for respective pem passwords on any connection request as well as accessing the peer certificates, if `constants.ENABLE_TLS = True`, these are the private passwords used during creation of certificate signing reqest, more instructions are available in `src/cryptikchaos/certs/CERTS.md`. This is still in development.
 
 Run a simple send message test:
 -------------------------------
