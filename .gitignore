@@ -67,5 +67,8 @@ src/cryptikchaos/certs/cryptikchaosCA/*
 *.dat
 *.pstat
 
-# Buildozer APK builder files
-buildozer/*
+# Buildozer files
+.buildozer
+buildozer/bin
+android-ndk-r9b
+adt-bundle-linux-x86_64-20131030
