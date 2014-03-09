@@ -219,7 +219,7 @@ class CommService:
         port = constants.PEER_PORT
         
         # Test mode check if current service is handling
-        # response or recieved data, maybe a peer client or 
+        # response or received data, maybe a peer client or 
         # test server
         if constants.ENABLE_TEST_MODE and \
             self.peerid == constants.PEER_ID:
@@ -436,7 +436,7 @@ class CommService:
         )
 
     def on_client_connection(self, connection):
-        "Execued on successful client connection."
+        "Executed on successful client connection."
 
         peer_ip = connection.getPeer().host
         peer_port = connection.getPeer().port
@@ -480,7 +480,7 @@ class CommService:
             connection
         )
 
-        # Repsonse handling architecture should be placed here.
+        # Response handling architecture should be placed here.
         # Unpack received stream
         try:
             (
@@ -527,7 +527,7 @@ class CommService:
                 )
 
         elif c_rsp_type == constants.PROTO_MACK_TYPE:
-            Logger.debug("Message ACK recieved from {}".format(src_ip))
+            Logger.debug("Message ACK received from {}".format(src_ip))
 
     def handle_auth_response(self, response, connection):
         "Handle authentication response to add peer."
@@ -540,7 +540,7 @@ class CommService:
              src_port
         ) = self._get_source_from_connection(connection)
 
-        # Repsonse handling architecture should be placed here.
+        # Response handling architecture should be placed here.
         (
             c_rsp_auth_type, 
             content, 
@@ -557,7 +557,7 @@ class CommService:
             try:
                 if self.valid_auth_req_tokens[src_ip] != request_id:
                     Logger.debug(
-                        "Recieved Invalid Request ACK ID [{}].".format(
+                        "Received Invalid Request ACK ID [{}].".format(
                             request_id
                         )
                     )
@@ -565,14 +565,14 @@ class CommService:
             
             except KeyError:
                 Logger.debug(
-                    "Recieved Invalid host '{}' request ACK.".format(
+                    "Received Invalid host '{}' request ACK.".format(
                         src_ip
                     )
                 )
                 return False
             
             else:
-                Logger.debug("Recieved valid request ACK.")
+                Logger.debug("Received valid request ACK.")
             
             ## Add peer
             self.swarm_manager.add_peer(pid, pkey, src_ip, src_port)
@@ -640,7 +640,7 @@ class CommService:
     # ------------------------------------------------
     # Server Protocol Method defined here
     # ------------------------------------------------
-    def handle_recieved_stream(self, stream, connection):
+    def handle_received_stream(self, stream, connection):
 
         Logger.debug("Handling Capsule : {}".format(b64encode(stream)))
         
@@ -667,7 +667,7 @@ class CommService:
         
         # Check if stream type is valid 
         if not c_rx_type:
-            Logger.error("Invalid Stream checksum recieved.")
+            Logger.error("Invalid Stream checksum received.")
             return rsp
         
         # Print test message if test server
@@ -683,7 +683,7 @@ class CommService:
             ## Extract peer id
             (pid, request_id) = self._get_auth_content(content)
             
-            Logger.debug("Recieved auth request from Peer: {}".format(pid))
+            Logger.debug("Received auth request from Peer: {}".format(pid))
 
             ## Add peer
             self.swarm_manager.add_peer(
