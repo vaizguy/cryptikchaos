@@ -162,7 +162,7 @@ class SwarmManager(StoreManager):
             # Get peer attributes
             p_info = self.get_store(k)
             
-            # Concat if key is bigger than 4 chars
+            # Concatenate if key is bigger than 4 chars
             if len(p_info["PEER_KEY"]) >=4:
                 peer_key = p_info["PEER_KEY"][0:3] + "XXXX"
             else:
@@ -214,7 +214,7 @@ class SwarmManager(StoreManager):
             if ip == peer_ip and port == peer_port:
                 return pid
 
-        return None  # Add relevent catch
+        return None  # Add relevant catch
 
     def get_peer_connection_status(self, pid):
         "Get the peer connection status."

@@ -344,22 +344,23 @@ class CommService:
             peer_port
         )
 
-        # Announce successful server connection
-        self._print(
-            constants.GUI_PEER_REPR.format(
-                peer_id, peer_ip, peer_port
-            ) + " has entered the swarm",
-            peer_ip,
-            peer_port
-        )
-
-        # Update peer connection status to CONNECTED
-        self._update_peer_connection_status(
-            peer_ip, 
-            peer_port, 
-            True, 
-            connection
-        )
+        if peer_id:
+            # Announce successful server connection
+            self._print(
+                constants.GUI_PEER_REPR.format(
+                    peer_id, peer_ip, peer_port
+                ) + " has entered the swarm",
+                peer_ip,
+                peer_port
+            )
+    
+            # Update peer connection status to CONNECTED
+            self._update_peer_connection_status(
+                peer_ip, 
+                peer_port, 
+                True, 
+                connection
+            )
 
     def on_server_disconnection(self, connection):
         "Executed on successful server disconnection."
@@ -402,7 +403,7 @@ class CommService:
             peer_port
         )
         
-        # Gwt request ID
+        # Get request ID
         request_id = self.valid_auth_req_tokens[peer_ip]
         
         # Pack data into capsule
