@@ -278,7 +278,7 @@ if __name__ == '__main__':
                 # Input handler hook
                 handleinput_cmd_hook=self.handle_input_hook,
                 # Get command list hook
-                getcommands_cmd_hook=lambda: None,
+                getcommands_cmd_hook=lambda: [],
                 # Console splash greeting
                 greeting="Testing Window!",
                 # Font type face
@@ -292,12 +292,9 @@ if __name__ == '__main__':
            
             return root
         
-        def handle_input_hook(self, textbox):
+        def handle_input_hook(self, text):
             
-            print "Input", textbox.text
-            textbox.text = ""
-            textbox.focus = True
-            self.root.append_text_to_console("\nInput Success\n")
+            print "Input", text
             
         def resize(self, instance, height, width):
             
