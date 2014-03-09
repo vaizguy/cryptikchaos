@@ -343,7 +343,8 @@ class CommService:
             peer_ip, 
             peer_port
         )
-
+        
+        # If peer id is valid
         if peer_id:
             # Announce successful server connection
             self._print(
@@ -371,22 +372,24 @@ class CommService:
             peer_ip, 
             peer_port
         )
-
-        # Announce successful server disconnection
-        self._print(
-            constants.GUI_PEER_REPR.format(
-                peer_id, peer_ip, peer_port
-            ) + " has left the swarm",
-            peer_ip,
-            peer_port
-        )
         
-        # Update peer connection status to DISCONNECTED
-        self._update_peer_connection_status(peer_ip, peer_port, False, 
-            None)
-        
-        # Delete peer from swarm store
-        self.swarm_manager.delete_peer(peer_id)
+        # If peer id is valid
+        if peer_id:
+            # Announce successful server disconnection
+            self._print(
+                constants.GUI_PEER_REPR.format(
+                    peer_id, peer_ip, peer_port
+                ) + " has left the swarm",
+                peer_ip,
+                peer_port
+            )
+            
+            # Update peer connection status to DISCONNECTED
+            self._update_peer_connection_status(peer_ip, peer_port, False, 
+                None)
+            
+            # Delete peer from swarm store
+            self.swarm_manager.delete_peer(peer_id)
         
     def on_server_authentication(self, connection):
         "Used to handle server auth requests."
