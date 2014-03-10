@@ -55,15 +55,15 @@ class CommCoreServerProtocol(LineReceiver):
         self.factory.app.on_client_disconnection(self.transport)
 
     def lineReceived(self, line):
-        "Run when response is recieved from client."
+        "Run when response is received from client."
 
         Logger.debug(
-            "SERVER: Recieved : {}, Data Length: {}".format(
+            "SERVER: received : {}, Data Length: {}".format(
                 base64.b64encode(line), len(line)
             )
         )
         
-        response = self.factory.app.handle_recieved_stream(line, self.transport)
+        response = self.factory.app.handle_received_stream(line, self.transport)
 
         if response:
             self.sendLine(response)
@@ -71,7 +71,7 @@ class CommCoreServerProtocol(LineReceiver):
     def lineLengthExceeded(self, line):
         "Run when line length is exceeded."
         
-        Logger.error("Recieved line is more than {}".format(self.MAX_LENGTH))
+        Logger.error("received line is more than {}".format(self.MAX_LENGTH))
 
 
 class CommCoreServerFactory(protocol.Factory):
