@@ -69,7 +69,7 @@ class CommService:
 
         # Initialize peer manager
         self.swarm_manager = SwarmManager(peerid, peerkey)
-        # Initialize capsule manager
+        # Initialize stream manager
         self.stream_manager = StreamManager(peerid, peerkey, host)
 
         self._printer = printer
@@ -92,7 +92,7 @@ class CommService:
         
         # Close swarm handler
         self.swarm_manager.__del__()
-        # Close capsule manager
+        # Close stream manager
         self.stream_manager.__del__()
         
     def _start_server(self):
@@ -144,7 +144,7 @@ class CommService:
     def _sendLine(self, conn, line):
         "Implementing sendLine method locally."
         
-        # If capsule packing fails line=None
+        # If stream packing fails line=None
         if not line:
             Logger.error("No stream to send.")
             return None
@@ -198,7 +198,7 @@ class CommService:
         if not peer_key:
             raise Exception("No valid peer key could be found.")
 
-        # Pack data into capsule
+        # Pack data into stream
         stream = self.stream_manager.pack_stream(
             stream_type=data_class,
             stream_content=data_content,
@@ -409,7 +409,7 @@ class CommService:
         # Get request ID
         request_id = self.valid_auth_req_tokens[peer_ip]
         
-        # Pack data into capsule
+        # Pack data into stream
         stream = self.stream_manager.pack_stream(
             stream_type=constants.PROTO_AUTH_TYPE,
             stream_content=self.peerid + request_id,
@@ -596,7 +596,7 @@ class CommService:
     # Client Protocol Method defined here
     # ------------------------------------------------
     def pass_message(self, pid, msg):
-        "Pass message to client. Capsule Type: BULK"
+        "Pass message to client. Stream Type: BULK"
 
         # Check to see peer connection status
         if not self.swarm_manager.get_peer_connection_status(pid):
@@ -627,8 +627,6 @@ class CommService:
                 "Peer already in list."
             )
             return False
-        else:
-            pass
 
         # Start a connection with peer
         if self.start_authentication(pid, host, port):
@@ -642,7 +640,7 @@ class CommService:
     # ------------------------------------------------
     def handle_received_stream(self, stream, connection):
 
-        Logger.debug("Handling Capsule : {}".format(b64encode(stream)))
+        Logger.debug("Handling Stream : {}".format(b64encode(stream)))
         
         ## Get the sender peer's information from connection
         (
@@ -655,7 +653,7 @@ class CommService:
         # Response (default = None)
         rsp = None
         
-        # Unpack capsule
+        # Unpack stream
         (
             c_rx_type, 
             content, 
@@ -677,7 +675,7 @@ class CommService:
           
         ## ------------------------------------------------------------      
         ## Check if the request is an AUTH request and 
-        ## handle it accordingly, this requires no capsule challenge
+        ## handle it accordingly, this requires no stream challenge
         ## ------------------------------------------------------------          
         if c_rx_type == constants.PROTO_AUTH_TYPE:
             ## Extract peer id
@@ -734,7 +732,7 @@ class CommService:
 
         elif c_rx_type == constants.LOCAL_TEST_STREAM_TYPE:
                         
-            ## Repack capsule maintaining the same content
+            ## Repack stream maintaining the same content
             rsp = self.stream_manager.pack_stream(
                 stream_type=c_rx_type,
                 stream_content=content,

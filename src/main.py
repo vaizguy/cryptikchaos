@@ -240,8 +240,11 @@ class CryptikChaosApp(
         Quick one-time tab completion can be done by pressing the TAB key.
         Usage: help [command]
         """
-
+        
         if arg:
+            ## quick fix. arg is now a list
+            arg = arg[0]
+            
             # XXX check arg syntax
             try:
                 func = getattr(self, 'help_' + arg)
