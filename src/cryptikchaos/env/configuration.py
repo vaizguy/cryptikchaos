@@ -51,6 +51,10 @@ constants.ENABLE_TLS         = True
 
 constants.TIME_FORMAT = "%a, %d %b %Y %H:%M:%S +0000"
 constants.REBIND_CHECK = True
+constants.CMD_ALIASES = {
+            "@" : "send",
+            "?" : "help"
+        }
 # ------------------------------------------------------------------------####
 
 # ---Project Path CONSTANTS-----------------------------------------------####

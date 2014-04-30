@@ -52,7 +52,7 @@ class AboutPopUp(Popup):
         self.content = about_label
                
         # Set pop up size
-        self.size_hint=(0.7, 0.5)
+        #self.size_hint=(0.7, 0.5)
 
 class NavBar(BoxLayout):
     

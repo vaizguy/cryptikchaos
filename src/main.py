@@ -50,10 +50,7 @@ class CryptikChaosApp(
     
     # Lexical parser service
     parser_service = ParserService(
-        cmd_aliases = {
-            "@" : "send",
-            "?" : "help"
-        }
+        cmd_aliases = constants.CMD_ALIASES 
     )
   
     def build(self):
