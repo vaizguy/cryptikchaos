@@ -28,19 +28,21 @@ class AboutPopUp(Popup):
 
         # information about app label
         about_label = Label(
-            text="""\
-            \n  [b]CryptikChaos[sup]TM[/sup][/b] is a peer to peer messenger developed as a project to \
-            \n  understand how an event driven networking engine (twisted) could be \
-            \n  applied for peer to peer communications.\
-            \n  [b]This application is[/b] [i]STILL[/i] [b]experimental[/b].\
-            \n\
-            \n  [i]Developed by vaizlabs[i]\
-            \n\
-            \n  Get the code:\
-            \n  [i]www.github.com/vaizguy/cryptikchaos[/i]\
-            \n\
-            \n  Contact:\
-            \n  [i]cryptikchaos@googlegroups.com[/i]""",
+            text="""
+
+[b]CryptikChaos[sup]TM[/sup][/b] is a P2P messenger.
+
+[b]This application is[/b] [i]STILL[/i] [b]experimental[/b].
+
+[i]Developed by vaizlabs.[i]
+
+Get the code:
+[i]www.github.com/vaizguy/cryptikchaos[/i]
+
+Contact:
+[i]cryptikchaos@googlegroups.com[/i]
+
+""",
             markup=True, 
             valign='top',
             halign='left',
