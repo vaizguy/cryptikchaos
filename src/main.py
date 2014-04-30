@@ -461,7 +461,7 @@ class CryptikChaosApp(
             if self.comm_service.swarm_manager.plot_swarm_graph():
                 self.print_message("Generated peer graph.")
             else:
-                self.print_message("Could not generate graph.")
+                self.print_message("No peers in swarm.")
 
 if __name__ == '__main__':
 

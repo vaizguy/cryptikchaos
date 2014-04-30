@@ -266,6 +266,10 @@ class SwarmManager(StoreManager):
         def plot_swarm_graph(self):
             "Visualize the swarm"
             
+            # Check if no peers in swarm
+            if not self.list_peers():
+                return False                
+            
             # Plot circular graph
             nx.draw_circular(self.swarm_graph)
 
