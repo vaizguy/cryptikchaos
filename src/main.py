@@ -32,10 +32,9 @@ class CryptikChaosApp(
 ):
 
     """
-    Main kivy app class.
-    Contains both
-    1. GUI service. (kivy.App)
-    2. Twisted Network service. (twiscomm.CommService)
+    Main Application class.
+    Inherits from GUI service. (gui.service.GUIService)
+
     """
            
     # Communications service
@@ -290,7 +289,7 @@ class CryptikChaosApp(
     # Command definitions
     # ---------------------------
 
-    def cmd_addpeer(self, cmdline):
+    def cmd_addpeer(self, *cmdline):
         """
         Command: addpeer
         Adds a new peer to your swarm.
@@ -298,7 +297,7 @@ class CryptikChaosApp(
         """
         
         try:
-            (pid, host) = (cmdline.split(' ')[0], cmdline.split(' ')[1])
+            (pid, host) = (cmdline[0], cmdline[1])
         except ValueError:
             self.print_message("Incorrect use of command 'addpeer'.")
             self.cmd_help("addpeer")
@@ -324,13 +323,11 @@ class CryptikChaosApp(
         
         # Add Test server to swarm
         self.cmd_addpeer(
-            "{} {}".format(
-                constants.LOCAL_TEST_PEER_ID,
-                constants.LOCAL_TEST_HOST
-            )
+            constants.LOCAL_TEST_PEER_ID,
+            constants.LOCAL_TEST_HOST
         )
 
-    def cmd_send(self, cmdline):
+    def cmd_send(self, *cmdline):
         """
         Command: send
         Send a message to another peer's given ID. Peer must
@@ -341,7 +338,7 @@ class CryptikChaosApp(
         
         try:
             (pid, msg) = (
-                cmdline.split(' ')[0], ' '.join(cmdline.split(' ')[1:]))
+                cmdline[0], ' '.join(cmdline[1:]))
         except ValueError:
             self.print_message("Incorrect use of command 'send'")
             self.cmd_help("send")
@@ -374,10 +371,8 @@ class CryptikChaosApp(
         
         # Check sending of message.
         self.cmd_send(
-            "{} {}".format(
-                constants.LOCAL_TEST_PEER_ID,
-                constants.LOCAL_TEST_STR
-            )
+            constants.LOCAL_TEST_PEER_ID,
+            constants.LOCAL_TEST_STR
         )
 
     def cmd_peers(self, _):

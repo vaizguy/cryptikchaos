@@ -600,8 +600,8 @@ class CommService:
 
         # Check to see peer connection status
         if not self.swarm_manager.get_peer_connection_status(pid):
-            Logger.warn("Peer is offline.")
-            self._print("Peer is offline.")
+            Logger.warn("Peer {} is offline.".format(pid))
+            self._print("Peer {} is offline.".format(pid))
             return False
 
         # Assumed Bulk message transfer
