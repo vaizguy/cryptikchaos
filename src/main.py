@@ -289,7 +289,7 @@ class CryptikChaosApp(
     # Command definitions
     # ---------------------------
 
-    def cmd_addpeer(self, *cmdline):
+    def cmd_addpeer(self, cmdline=[]):
         """
         Command: addpeer
         Adds a new peer to your swarm.
@@ -323,8 +323,7 @@ class CryptikChaosApp(
         
         # Add Test server to swarm
         self.cmd_addpeer(
-            constants.LOCAL_TEST_PEER_ID,
-            constants.LOCAL_TEST_HOST
+            [constants.LOCAL_TEST_PEER_ID, constants.LOCAL_TEST_HOST]
         )
 
     def cmd_send(self, cmdline=[]):
@@ -372,8 +371,7 @@ class CryptikChaosApp(
         
         # Check sending of message.
         self.cmd_send(
-            constants.LOCAL_TEST_PEER_ID,
-            constants.LOCAL_TEST_STR
+            [constants.LOCAL_TEST_PEER_ID, constants.LOCAL_TEST_STR]
         )
 
     def cmd_peers(self, _):
