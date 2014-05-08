@@ -327,7 +327,7 @@ class CryptikChaosApp(
             constants.LOCAL_TEST_HOST
         )
 
-    def cmd_send(self, *cmdline):
+    def cmd_send(self, cmdline=[]):
         """
         Command: send
         Send a message to another peer's given ID. Peer must
@@ -345,6 +345,7 @@ class CryptikChaosApp(
             return None
         else:
             if not msg:
+                Logger.warn("Please enter a message to send.")
                 return None
 
         if self.comm_service.pass_message(pid, msg):
@@ -398,7 +399,7 @@ class CryptikChaosApp(
             self.env_service.display_table()
         )
                        
-    def cmd_eko(self, cmdline):
+    def cmd_eko(self, cmdline=[]):
         """
         Command: eko
         View any configuration constant value.

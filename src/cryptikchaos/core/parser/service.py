@@ -7,9 +7,10 @@ Created on Nov 10, 2013
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
+from kivy.logger import Logger
 
 class ParserService:
-    "shell-style lexical parser class."
+    "shell-style parser class."
     
     def __init__(self, cmd_aliases):
         "Initialize parser."
@@ -26,6 +27,7 @@ class ParserService:
             # Check if alias is present
             if line[0] == alias:
                 cmd = self.cmd_aliases[alias]
+                Logger.info("Encountered alias '{}', Replacing with '{}'.".format(alias, cmd))
                 line = "{} {}".format(cmd, line[1:])
                 
         return line
@@ -39,7 +41,7 @@ class ParserService:
         # Check for and replace aliases
         line = self._replace_aliases(line)
         
-        # create lexer
+        # split line
         tokens = line.split(" ")
                
         # get command and args in required format
