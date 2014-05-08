@@ -3,7 +3,7 @@
 # Path to profile database
 PROFILE_PATH="../../../profile"
 # Path to main app
-MAIN_SCRIPT="../../main.py"
+MAIN_SCRIPT="./main.py"
 # Path to test server app
 TEST_SCRIPT="./test_server.py"
 
