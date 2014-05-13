@@ -175,7 +175,7 @@ def criptiklogo():
     Read the logo and return it as string.
     """
     
-    logofile = "{}/../db/logo".format(
+    logofile = "{}/../data/logo".format(
         dirname(realpath(__file__))
     )
     
