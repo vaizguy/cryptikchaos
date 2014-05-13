@@ -41,10 +41,11 @@ else:
     
 # ---Application switches-------------------------------------------------####
 
-constants.ENABLE_TEST_MODE   = True
-constants.ENABLE_COMPRESSION = True
-constants.ENABLE_SHUFFLE     = True
-constants.ENABLE_TLS         = True
+constants.ENABLE_TEST_MODE    = True
+constants.ENABLE_COMPRESSION  = True
+constants.ENABLE_SHUFFLE      = True
+constants.ENABLE_TLS          = True
+constants.ENABLE_ANDROID_MODE = False
 # ------------------------------------------------------------------------####
 
 # ---Application Environment----------------------------------------------####

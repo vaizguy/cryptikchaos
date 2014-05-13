@@ -190,9 +190,11 @@ class ConsoleWindow(GridLayout):
         
         # Number of cols
         self.cols = 1
-        # Height and width
-        self.height = 400
-        self.width = 800
+        
+        if not constants.ENABLE_ANDROID_MODE:
+            # Height and width
+            self.height = 400
+            self.width = 800
         
         # Create viewing area
         self.view_area = GridLayout(cols = 1, size_hint = (1, None))
@@ -204,11 +206,13 @@ class ConsoleWindow(GridLayout):
             markup=True,
             font_name=font_type,
             font_size=font_size,
-            text_size=(self.width-50, None),
-            shorten=True,
             valign='top',
             halign='left',    
         )
+        
+        if not constants.ENABLE_ANDROID_MODE:
+            self.label.text_size=(self.width-50, None)
+            self.label.shorten=True,
         
         # bind label to scrollable size
         self.label.bind(texture_size=self.label.setter('size'))
@@ -219,8 +223,10 @@ class ConsoleWindow(GridLayout):
         # Scroll view label
         self.scroll_view = ScrollView(
             size_hint_y=0.9,
-            size=(self.height, self.width)
         )
+        
+        if not constants.ENABLE_ANDROID_MODE:
+            self.scroll_view.size=(self.height, self.width)
         
         # TODO X-axis scroll not working
         self.scroll_view.do_scroll_y = True
