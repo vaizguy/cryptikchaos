@@ -88,13 +88,16 @@ constants.GUI_WELCOME_MSG = """
 {}>> Welcome to CryptikChaos P2P Net <<
 {}>> Drag left edge for navigation <<
 {}>> Enter "help" (or) [TAB] for command listing <<
-
+{}>> {} - {} <<
 {}[{}]
 
 """.format(
     constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_LEFT_PADDING,
+    constants.GUI_LABEL_LEFT_PADDING,
+    constants.PEER_ID,
+    constants.PEER_HOST,    
     constants.GUI_LABEL_LEFT_PADDING,
     get_time(),
 )

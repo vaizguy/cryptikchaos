@@ -44,7 +44,8 @@ class ConsoleInput(TextInput):
         # Set text color
         self.foreground_color = [1, 1, 1, 1]
         # Set padding for text input
-        self.padding = [25, 20, 10, 0]
+        if not constants.ENABLE_ANDROID_MODE:            
+            self.padding = [25, 20, 10, 0]
         
         # Input command handler
         self.handleinput_cmd_hook = handleinput_cmd_hook

@@ -303,7 +303,7 @@ class CryptikChaosApp(
             self.cmd_help("addpeer")
             return None
         else:
-            self.print_message("Adding Peer {}.".format(pid))
+            self.print_message("Adding Peer {} @ {}.".format(pid, host))
             self.comm_service.add_peer_to_swarm(pid, host)
 
     def cmd_addtest(self, _):
