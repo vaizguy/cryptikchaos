@@ -20,16 +20,18 @@ Dependencies:
 
 **Tested with:**
 
- Minimum Requirements;
+* Minimum Requirements;
 
 | Module         | Version    | Use                | 
+|----------------|------------|--------------------|
 | Python         | 2.7.6      | Language           |
 | Kivy           | v1.8.0-dev | NDK                | 
 | Twisted Python | 13.2.0     | Communications FWK | 
 
- Optional Packages;
+* Optional Packages;
 
 | Module   | Version | Use               |
+|----------|---------|-------------------|
 | Pympler  | 0.2.1   | Memory Profiler   |
 | Networkx | 1.8.1   | Network Graph PKG |
 
