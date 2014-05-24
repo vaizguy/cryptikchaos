@@ -83,12 +83,16 @@ constants.GUI_FONT_TYPE = "DroidSansMono.ttf"
 constants.GUI_FONT_SIZE = 14
 constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_LOGO = criptiklogo()
+if not constants.ENABLE_ANDROID_MODE:
+    constants.GUI_FONT_COLOR = "#00E217"
+else:
+    constants.GUI_FONT_COLOR = "#FFFFFF"
 constants.GUI_WELCOME_MSG = """
 
 {}>> Welcome to CryptikChaos P2P Net <<
 {}>> Drag left edge for navigation <<
 {}>> Enter "help" (or) [TAB] for command listing <<
-{}>> {} - {} <<
+{}>> Peer {}--{} <<
 {}[{}]
 
 """.format(
@@ -107,7 +111,7 @@ constants.GUI_LABEL_PROMPT = "{}{}".format(
     constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_PROMPT_SYM
 )
-constants.GUI_PEER_REPR = "PID:{}--{}:{}"
+constants.GUI_PEER_REPR = "Peer {}--{}:{}"
 # ------------------------------------------------------------------------####
 
 # ------------------Protocol Stream type CONSTANTS-----------------------####

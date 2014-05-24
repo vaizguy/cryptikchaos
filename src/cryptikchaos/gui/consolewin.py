@@ -202,7 +202,6 @@ class ConsoleWindow(GridLayout):
         
         # Create label for console output
         self.label = Label(
-            text=greeting,
             size_hint=(1, None),
             markup=True,
             font_name=font_type,
@@ -214,7 +213,7 @@ class ConsoleWindow(GridLayout):
         if not constants.ENABLE_ANDROID_MODE:
             self.label.text_size=(self.width-50, None)
             self.label.shorten=True,
-        
+
         # bind label to scrollable size
         self.label.bind(texture_size=self.label.setter('size'))
                 
@@ -252,12 +251,21 @@ class ConsoleWindow(GridLayout):
             getcommands_cmd_hook=getcommands_cmd_hook
         )
         
+        # Internal function-hook alias
+        self.display_text = self.inputtext_gui_hook
+        
         self.add_widget(self.console_input)
+        
+        # Display welcome message
+        self.display_text(text=greeting)
         
     ## GUI Hooks-----------------------
     def inputtext_gui_hook(self, text):
         
-        self.label.text += text
+        self.label.text += "[color={}]{}[/color]".format(
+            constants.GUI_FONT_COLOR,
+            text
+        )
         
     def getmaxwidth_gui_hook(self):
         

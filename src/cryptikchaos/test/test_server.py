@@ -33,19 +33,26 @@ class TestServerApp(App):
     def build(self):
         
         self.label = Label(
-            text="""
-            \n+Test Server started+\
-            \n[ID {}]
-            \n[{}]""".format(
-                get_time(), 
-                constants.LOCAL_TEST_PEER_ID
-            ),
             markup=True,
             font_name=constants.GUI_FONT_TYPE,
             font_size=constants.GUI_FONT_SIZE,
             text_size=(750, None),
             shorten=True,
             valign='top'
+        )
+        
+        # Display initial text
+        self.display_text(
+            """
+            \n>> Test Server started <<\
+            \n>> Peer {}--{} <<\
+            \n[{}]\
+            \n\
+            \n""".format(
+                constants.LOCAL_TEST_PEER_ID,
+                constants.LOCAL_TEST_HOST,
+                get_time()
+            )
         )
 
         return self.label
@@ -113,8 +120,16 @@ class TestServerApp(App):
         # Factor line
         text = wrap_line(text)
         
+        # Add text
+        self.display_text(text)
+        
+    def display_text(self, text):
+        
         # Append line to label
-        self.label.text += text
+        self.label.text += "[color={}]{}[/color]".format(
+            constants.GUI_FONT_COLOR,           
+            text
+        )
 
 if __name__ == '__main__':
     try:

@@ -351,7 +351,7 @@ class CryptikChaosApp(
             # command log
             Logger.debug("Message sent to peer {}.".format(pid))
             # Display send message
-            self.print_message("[{}] : {}".format(pid, msg))
+            self.print_message("[>> {}] : {}".format(pid, msg))
         else:
             # command output
             self.print_message(
