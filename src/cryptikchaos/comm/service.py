@@ -263,6 +263,16 @@ class CommService:
             dip=constants.LOCAL_TEST_HOST,
             port=constants.LOCAL_TEST_PORT
         )
+        
+    def display_peer_host(self, peer_id):
+        "Gets the peer IP address."
+        
+        peer_ip = self.swarm_manager.peer_host(peer_id)
+        
+        if peer_ip:
+            self._print("Peer {}--{}".format(peer_id, peer_ip))
+        else:
+            self._print("Peer not present in swarm.")
 
     def start_connection(self, pid, host='localhost', 
         port=constants.PEER_PORT):
