@@ -384,6 +384,16 @@ class CryptikChaosApp(
         self.print_table(
             self.comm_service.swarm_manager.peer_table()
         )
+        
+    def cmd_peerip(self, cmdline=[]):
+        """
+        Command: getip
+        Display peer's IP address.
+        Usage: peerip <peer ID 1> <peer ID 2> ... <peer ID n>      
+        """        
+        
+        for peer_id in cmdline:
+            self.comm_service.display_peer_host(peer_id)
             
     def cmd_env(self, _):
         """
