@@ -25,7 +25,7 @@ from cryptikchaos.comm.stream.manager import STREAM_TYPES
 if constants.ENABLE_TLS:
     from cryptikchaos.comm.sslcontext import TLSCtxFactory
 
-from cryptikchaos.libs.utilities import generate_uuid
+from cryptikchaos.libs.utilities import generate_auth_token
 
 from twisted.internet import reactor
 
@@ -53,6 +53,7 @@ class CommService:
         self.port = port
         self.peerkey = peerkey
         
+        # TLS variables
         if constants.ENABLE_TLS:
             ## SSL cert, key path
             self.sslcrt = "{}/certs/{}.crt".format(
@@ -297,16 +298,16 @@ class CommService:
 
     def start_authentication(self, pid, host='localhost', 
             port=constants.LOCAL_TEST_PORT):
-        "Start connection with server."
+        "Start connection with specified host server."
 
         Logger.debug(
-            "Attempting connection to pid: {} for authentication.".format(
+            "Initiating authenticated connection with pid: {}.".format(
                 pid
             )
         )
         
-        # Save request
-        self.valid_auth_req_tokens[host] = generate_uuid()
+        # Save authentication request to map with authentication ack
+        self.valid_auth_req_tokens[host] = generate_auth_token()
 
         # Check if TLS is enabled
         if constants.ENABLE_TLS and reactor.connectSSL(
@@ -391,7 +392,7 @@ class CommService:
             # Delete peer from swarm store
             self.swarm_manager.delete_peer(peer_id)
         
-    def on_server_authentication(self, connection):
+    def on_server_auth_open(self, connection):
         "Used to handle server auth requests."
 
         peer_ip = connection.getPeer().host
@@ -409,10 +410,10 @@ class CommService:
         # Get request ID
         request_id = self.valid_auth_req_tokens[peer_ip]
         
-        # Pack data into stream
+        # Pack authentication data into stream
         stream = self.stream_manager.pack_stream(
             stream_type=constants.PROTO_AUTH_TYPE,
-            stream_content=self.peerid + request_id,
+            stream_content=self.peerid+request_id,
             stream_flag=STREAM_TYPES.UNAUTH,
             stream_host=peer_ip
         )
@@ -461,7 +462,7 @@ class CommService:
             # Add post TLS verification func here
             Logger.info("TLS Verification is SUCCESSFUL!")
 
-    def handle_response(self, response, connection):
+    def handle_response_stream(self, response, connection):
         "Handle response from server."
         
         # Default value of response at server side is None
@@ -471,12 +472,7 @@ class CommService:
             return None
         
         ## Get the sender peer's information from connection
-        (
-             _, 
-             src_key, 
-             src_ip,
-             _
-        ) = self._get_source_from_connection(
+        (_, src_key, src_ip, _) = self._get_source_from_connection(
             connection
         )
 
@@ -529,28 +525,22 @@ class CommService:
         elif c_rsp_type == constants.PROTO_MACK_TYPE:
             Logger.debug("Message ACK received from {}".format(src_ip))
 
-    def handle_auth_response(self, response, connection):
+    def handle_auth_response_stream(self, response, connection):
         "Handle authentication response to add peer."
         
         ## Get the sender peer's information from connection
-        (
-             _, 
-             _, 
-             src_ip, 
-             src_port
+        (_, _, 
+         src_ip, 
+         src_port
         ) = self._get_source_from_connection(connection)
 
         # Response handling architecture should be placed here.
-        (
-            c_rsp_auth_type, 
-            content, 
-            pkey
-        ) = self.stream_manager.unpack_stream(
+        (header, content, pkey)= self.stream_manager.unpack_stream(
             stream=response
         )
 
-        if c_rsp_auth_type == constants.PROTO_AACK_TYPE:
-            ## Extract peer id
+        if (header == constants.PROTO_AACK_TYPE):
+            ## Extract peer ID, request ID
             (pid, request_id) = self._get_auth_content(content)
             
             # Check if request ACK ID is valid
@@ -638,46 +628,38 @@ class CommService:
     # ------------------------------------------------
     # Server Protocol Method defined here
     # ------------------------------------------------
-    def handle_received_stream(self, stream, connection):
+    def handle_request_stream(self, stream, connection):
 
         Logger.debug("Handling Stream : {}".format(b64encode(stream)))
         
         ## Get the sender peer's information from connection
-        (
-             src_pid, 
-             src_key, 
-             src_ip, 
-             src_port
+        (src_pid, src_key, src_ip, src_port
         ) = self._get_source_from_connection(connection)
         
         # Response (default = None)
         rsp = None
         
         # Unpack stream
-        (
-            c_rx_type, 
-            content, 
-            pkey
-        ) = self.stream_manager.unpack_stream(
+        (header, content, pkey) = self.stream_manager.unpack_stream(
             stream=stream,
             peer_key=src_key
         )
         
         # Check if stream type is valid 
-        if not c_rx_type:
+        if not header:
             Logger.error("Invalid Stream checksum received.")
             return rsp
         
         # Print test message if test server
         if self.peerid == constants.LOCAL_TEST_PEER_ID and \
-           c_rx_type in (constants.LOCAL_TEST_STREAM_TYPE):
-            self._print_test(c_rx_type, content)
-          
+           header in (constants.LOCAL_TEST_STREAM_TYPE):
+            self._print_test(header, content)
+
         ## ------------------------------------------------------------      
         ## Check if the request is an AUTH request and 
         ## handle it accordingly, this requires no stream challenge
         ## ------------------------------------------------------------          
-        if c_rx_type == constants.PROTO_AUTH_TYPE:
+        if header == constants.PROTO_AUTH_TYPE:
             ## Extract peer id
             (pid, request_id) = self._get_auth_content(content)
             
@@ -702,7 +684,7 @@ class CommService:
             ## Send current peer info
             rsp = self.stream_manager.pack_stream(
                 stream_type=constants.PROTO_AACK_TYPE,
-                stream_content=self.peerid + request_id,
+                stream_content=self.peerid+request_id,
                 stream_flag=STREAM_TYPES.UNAUTH,
                 stream_host=src_ip
             )
@@ -713,7 +695,7 @@ class CommService:
             return rsp
     
         # Check if stream type is valid 
-        if not c_rx_type:
+        if not header:
             Logger.error(
                 "Invalid stream ID received from unpacking stream."
             )
@@ -727,20 +709,17 @@ class CommService:
 
         Logger.debug("Received: {}".format(b64encode(stream)))
 
-        if c_rx_type == "PING":
-            rsp = "PONG"  # Legacy
-
-        elif c_rx_type == constants.LOCAL_TEST_STREAM_TYPE:
+        if header == constants.LOCAL_TEST_STREAM_TYPE:
                         
             ## Repack stream maintaining the same content
             rsp = self.stream_manager.pack_stream(
-                stream_type=c_rx_type,
+                stream_type=header,
                 stream_content=content,
                 stream_host=src_ip,
                 peer_key=src_key
             )
 
-        elif c_rx_type == constants.PROTO_BULK_TYPE:
+        elif header == constants.PROTO_BULK_TYPE:
 
             # Message receipt successful
             self._print(content, src_ip)

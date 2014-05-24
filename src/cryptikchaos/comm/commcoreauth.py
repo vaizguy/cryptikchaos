@@ -44,7 +44,7 @@ class CommCoreAuthProtocol(LineReceiver):
             "Attempting handshake with {}".format(self._peer_repr)
         )
                 
-        self.factory.app.on_server_authentication(self.transport)
+        self.factory.app.on_server_auth_open(self.transport)
 
     def connectionLost(self, reason):
         "Run when connection is lost with server."
@@ -60,7 +60,7 @@ class CommCoreAuthProtocol(LineReceiver):
 
         Logger.debug("AUTH: Recieved : {}".format(base64.b64encode(line)))
         
-        if self.factory.app.handle_auth_response(line, self.transport):
+        if self.factory.app.handle_auth_response_stream(line, self.transport):
             self.transport.abortConnection()
                 
     def lineLengthExceeded(self, line):

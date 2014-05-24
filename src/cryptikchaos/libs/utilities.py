@@ -46,15 +46,16 @@ def uint32_to_ip(ipn):
 
 def generate_uuid(host=None):
     """
-    Generate capsule UID for particular destination host.
+    Generate capsule UID for particular host.
     """
     
-    if host:
-        return str(
-            uuid5(NAMESPACE_URL, host)
-        )[0:8]
-    else:
-        return uuid4().hex
+    return str(
+        uuid5(NAMESPACE_URL, host)
+    )[0:8]
+    
+def generate_auth_token():
+    
+    return uuid4().hex
 
 def generate_token(uid, src_pkey, dest_pkey):
     """

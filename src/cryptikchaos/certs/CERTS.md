@@ -7,10 +7,12 @@ About:
 
 * Process to generate certificate will mostly be automated in future.
 * Current format for key and certificate names is peerid.key and peerid.crt.
-* Both certificate and key will be placed in directory, `${PROJECT_PATH}/certs/`
+* Both certificate, key and CA should be generated in directory, `${PROJECT_PATH}/certs/`
 
 Instructions:
 ------------
+
+* Go to the `${PROJECT_PATH}/certs/` directory.
 
 * To create a certificate authority, use the CA.pl script:
 ```/usr/lib/ssl/misc/CA.pl -newca```
