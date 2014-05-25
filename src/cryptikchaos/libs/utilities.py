@@ -11,7 +11,7 @@ from kivy import Logger
 
 from time    import gmtime, strftime
 from struct  import pack, unpack
-from socket  import inet_aton, inet_ntoa, socket, AF_INET, SOCK_STREAM
+from socket  import inet_aton, inet_ntoa, socket, AF_INET, SOCK_STREAM, error
 from uuid    import uuid4, uuid5, NAMESPACE_URL, getnode
 from hashlib import sha512, md5
 from zlib    import compress as zlib_compress, \
@@ -70,12 +70,22 @@ def generate_token(uid, src_pkey, dest_pkey):
             sha512(dest_pkey).digest()
         )
     ).digest()
+
+def ip_address_is_valid(address):
+    "Check for valid IP address format"
+    
+    try: 
+        inet_aton(address)
+    except error: 
+        return False
+    else: 
+        return True
     
 def get_nat_ip():
     "Get IP of NAT."
     
     s = socket( AF_INET, SOCK_STREAM )
-    host = 'localhost'
+    host = '127.0.0.1'
     try:
         s.connect( ( "www.google.com", 80 ) )
     except:
@@ -93,13 +103,17 @@ def get_my_ip():
         # Get IP from curlmyip.com which gives the raw ip address
         my_ip = urlopen('http://curlmyip.com').read().strip()
         
+        # Check for portal redirects if offline
+        if not ip_address_is_valid(my_ip):
+            my_ip = "127.0.0.1"
+        
     except URLError:
         Logger.debug('No active internet connection.')
         # If offline return host
-        my_ip = 'localhost'
-    
-    return my_ip
-    
+        my_ip = '127.0.0.1'
+        
+    return my_ip      
+            
 def compress(stream):
     """
     Compress stream using zlib lib.
