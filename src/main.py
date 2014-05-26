@@ -159,7 +159,7 @@ class CryptikChaosApp(
         "If command not found."
 
         # Command output
-        self.print_message('Invalid Command "{}"'.format(cmd))
+        self.print_message('Invalid Command "{}", enter "help" for command listing.'.format(cmd))
         # Command log
         Logger.error('Command "%s" not found', cmd)
 

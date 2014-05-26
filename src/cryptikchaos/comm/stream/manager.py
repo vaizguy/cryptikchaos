@@ -203,13 +203,7 @@ class StreamManager(StoreManager):
                 )
         
         # Verify stream integrity
-        if not stream_obj.check_hmac(
-                uid=stream_uid, 
-                flag=stream_flag, 
-                stype=stream_type, 
-                content=stream_content, 
-                skey=stream_key
-        ):
+        if not stream_obj.check_hmac(stream_hmac):
             Logger.error("Stream Checksum mismatch.")
             return [None]*3
         

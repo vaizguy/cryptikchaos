@@ -32,8 +32,8 @@ class Stream:
         
         return hmac.new(str(self._flag)+self._stype+self._content+self._uid+self._skey).hexdigest()
     
-    def check_hmac(self, uid, flag, stype, content, skey):
+    def check_hmac(self, stream_hmac):
         "Check for HMAC integrity"
         
-        return hmac.new(str(flag)+stype+content+uid+skey).hexdigest() == self.dict["STREAM_CHKSUM"]
+        return stream_hmac == self.dict["STREAM_CHKSUM"]
     

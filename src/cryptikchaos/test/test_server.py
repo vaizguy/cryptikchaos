@@ -94,8 +94,6 @@ class TestServerApp(App):
         # Convert to string
         msg = str(msg).rstrip()
         
-        text = ''
-
         if not peerid:
             peerid = constants.LOCAL_TEST_PEER_ID
             
