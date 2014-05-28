@@ -176,20 +176,10 @@ class StreamManager(StoreManager):
                 constants.STREAM_CHKSUM_LEN
             ), stream
         )
-        
+               
         # Remove all null characters if present in content
         stream_content = stream_content.rstrip('\0')
-        
-        # Unshuffle content
-        if constants.ENABLE_SHUFFLE:
-            
-            Logger.info("Unscrambling content.")
-            
-            stream_content = unshuffler(
-                shuffled_string=stream_content,
-                iterations=constants.STREAM_CONT_SHUFF_ITER
-            )
-            
+                  
         # Get  uid
         stream_uid = generate_uuid(self.peer_host)
         
@@ -201,7 +191,7 @@ class StreamManager(StoreManager):
                      stream_content,
                      stream_key,
                 )
-        
+
         # Verify stream integrity
         if not stream_obj.check_hmac(stream_hmac):
             Logger.error("Stream Checksum mismatch.")
@@ -226,7 +216,17 @@ class StreamManager(StoreManager):
                 return [None]*3
             else:
                 Logger.info("Token challenge Pass")
-                        
+        
+        # Unshuffle content
+        if constants.ENABLE_SHUFFLE:
+            
+            Logger.info("Unscrambling content.")
+            
+            stream_content = unshuffler(
+                shuffled_string=stream_content,
+                iterations=constants.STREAM_CONT_SHUFF_ITER
+            )
+                
         # Add stream to store
         self.add_store(
                 stream_uid, Stream(

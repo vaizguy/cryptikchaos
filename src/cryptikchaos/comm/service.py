@@ -676,6 +676,8 @@ class CommService:
             Logger.debug("Received auth request from Peer: {}".format(pid))
 
             ## Add peer
+            # A GUI hook could be placed here to check for
+            # user approval before addition of the peer.
             self.swarm_manager.add_peer(
                 pid=pid,
                 key=pkey,
