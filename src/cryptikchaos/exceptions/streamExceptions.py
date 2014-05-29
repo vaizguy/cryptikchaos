@@ -26,13 +26,16 @@ class StreamOverflowError(StreamError):
             self.limit = limit
             
         # Error message
-        self.msg = "Exceeded limit of {} Bytes".format(
+        self.stream_msg = "Exceeded limit of {} Bytes".format(
             self.limit
         )
+        
+        # Content information
+        self.info = "Message limit is capped at {}.".format(constants.STREAM_CONTENT_LEN)
 
     def __str__(self):
 
-        return self.msg
+        return self.stream_msg
     
 class StreamEmptyError(StreamError):
     """

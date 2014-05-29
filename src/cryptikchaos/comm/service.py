@@ -24,7 +24,10 @@ from cryptikchaos.comm.stream.manager import StreamManager
 from cryptikchaos.comm.stream.manager import STREAM_TYPES
 if constants.ENABLE_TLS:
     from cryptikchaos.comm.sslcontext import TLSCtxFactory
-
+    
+from cryptikchaos.exceptions.streamExceptions import \
+    StreamOverflowError
+    
 from cryptikchaos.libs.utilities import generate_auth_token
 
 from twisted.internet import reactor
@@ -199,16 +202,24 @@ class CommService:
         if not peer_key:
             raise Exception("No valid peer key could be found.")
 
-        # Pack data into stream
-        stream = self.stream_manager.pack_stream(
-            stream_type=data_class,
-            stream_content=data_content,
-            stream_host=desthost,
-            peer_key=peer_key
-        )
+        # Content length enforcement.
+        try:
+            # Pack data into stream
+            stream = self.stream_manager.pack_stream(
+                stream_type=data_class,
+                stream_content=data_content,
+                stream_host=desthost,
+                peer_key=peer_key
+            )
+            
+        except StreamOverflowError as SOError:
+            self._printer(SOError.info, self.peerid)
+            Logger.warn(SOError.info)
+            return False
         
-        # Send data over connection
-        return self._write_into_connection(conn, stream)
+        else:
+            # Send data over connection
+            return self._write_into_connection(conn, stream)
     
     def _get_source_from_connection(self, connection):
         "Return the sender peer's key"
