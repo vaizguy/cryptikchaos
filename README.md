@@ -15,6 +15,8 @@ CryptikChaos
 
 Basic P2P chat client built on kivy and twisted python frameworks.
 
+#####_THIS PROJECT IS PURELY FOR EDUCATIONAL PURPOSES AND IS UNDER DEVELOPMENT._
+
 Dependencies:
 -------------
 
