@@ -61,8 +61,8 @@ class StreamManager(StoreManager):
     def __del__(self):
         
         # Clear stored streams
-        if StoreManager:
-            StoreManager.__del__(self)
+        if super(StreamManager, self):
+            super(StreamManager, self).__del__()
                    
     def _prepare_stream(self, stream_type, stream_content, stream_flag, stream_host, shared_key):
         "Create new stream store."

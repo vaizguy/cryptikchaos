@@ -42,7 +42,7 @@ class StoreManager(object):
     def __del__(self):
         "Delete store contents"
         
-        if not self._name: #TODO
+        if self._name:
             Logger.info("Closing [{}] store manager.".format(
                 self._name
                 )

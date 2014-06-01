@@ -100,12 +100,12 @@ class CommService:
     def __del__(self):
 
         Logger.info("Closing managers.")
-        
         # Close swarm handler
         self.swarm_manager.__del__()
         # Close stream manager
         self.stream_manager.__del__()
-        
+        Logger.info("Succesfully Closed managers.")
+
     def _start_server(self):
         "Start twisted server listener."
 

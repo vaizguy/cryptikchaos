@@ -64,7 +64,8 @@ class SwarmManager(StoreManager):
                 self.delete_peer(pid)
            
         # Close store 
-        StoreManager.__del__(self)
+        if super(SwarmManager, self):
+            super(SwarmManager, self).__del__()
 
     def add_peer(self, pid, key, host, port):
         "Add peer to database."
