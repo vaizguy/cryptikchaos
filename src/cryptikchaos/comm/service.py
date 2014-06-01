@@ -696,6 +696,13 @@ class CommService:
             (pid, request_id) = self._get_auth_content(content)
             
             Logger.debug("Received auth request from Peer: {}".format(pid))
+            
+            # Add check for repeat additions
+            if self.swarm_manager.is_peer(pid):
+                Logger.debug("Received REPEAT auth request from Peer: {}, Ignoring Request.".format(pid))
+                # Close twisted connection
+                connection.loseConnection()
+                return None
 
             ## Add peer
             ## Generate shared key 
