@@ -21,7 +21,6 @@ from cryptikchaos.env import constants
 from cryptikchaos.libs.utilities import get_time
 from cryptikchaos.libs.utilities import criptiklogo
 from cryptikchaos.libs.utilities import get_my_ip
-from cryptikchaos.libs.utilities import generate_key
 from cryptikchaos.libs.utilities import md5hash
 
 try:
@@ -42,9 +41,9 @@ else:
 # ---Application switches-------------------------------------------------####
 
 constants.ENABLE_TEST_MODE    = True
-constants.ENABLE_COMPRESSION  = True
-constants.ENABLE_SHUFFLE      = True
-constants.ENABLE_TLS          = True
+constants.ENABLE_COMPRESSION  = False
+constants.ENABLE_SHUFFLE      = False
+constants.ENABLE_TLS          = False
 constants.ENABLE_ANDROID_MODE = False
 # ------------------------------------------------------------------------####
 
@@ -135,15 +134,24 @@ constants.STREAM_FLAG_LEN = 4
 constants.STREAM_ID_LEN = 8
 # Stream chksum length
 constants.STREAM_CHKSUM_LEN = 32
-# Stream peer key hash length
-constants.STREAM_PKEY_HASH_LEN = 64
+# Stream peer key hash length (msg block packet)
+constants.STREAM_TOKEN_LEN = 32
+# Stream peer key length (Auth packet)
+constants.STREAM_PEER_KEY_LEN = 769
 
-# Stream size
-constants.STREAM_SIZE = constants.STREAM_CONTENT_LEN + \
+# Stream size (Auth block)
+constants.STREAM_SIZE_AUTH_BLOCK = constants.STREAM_CONTENT_LEN + \
     constants.STREAM_TYPE_LEN + \
     constants.STREAM_FLAG_LEN + \
     constants.STREAM_CHKSUM_LEN + \
-    constants.STREAM_PKEY_HASH_LEN
+    constants.STREAM_PEER_KEY_LEN
+
+# Stream size (Msg block)
+constants.STREAM_SIZE_MSG_BLOCK = constants.STREAM_CONTENT_LEN + \
+    constants.STREAM_TYPE_LEN + \
+    constants.STREAM_FLAG_LEN + \
+    constants.STREAM_CHKSUM_LEN + \
+    constants.STREAM_TOKEN_LEN
 
 # Stream shuffle iterations
 constants.STREAM_CONT_SHUFF_ITER = 1000
@@ -178,9 +186,7 @@ constants.LOCAL_TEST_STREAM_ID = str(
         constants.LOCAL_TEST_HOST
     )
 )[0:constants.STREAM_ID_LEN]
-# Local Test keys
-constants.LOCAL_TEST_CLIENT_KEY = generate_key(constants.LOCAL_TEST_STREAM_ID)
-constants.LOCAL_TEST_SERVER_KEY = generate_key(constants.LOCAL_TEST_PEER_ID)
+
 # Test chksum
 constants.LOCAL_TEST_STREAM_CHKSUM = hmac.new(
     constants.LOCAL_TEST_STR

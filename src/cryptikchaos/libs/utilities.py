@@ -13,12 +13,12 @@ from time    import gmtime, strftime
 from struct  import pack, unpack
 from socket  import inet_aton, inet_ntoa, socket, AF_INET, SOCK_STREAM, error
 from uuid    import uuid4, uuid5, NAMESPACE_URL, getnode
-from hashlib import sha512, md5
+from hashlib import sha512, sha256, md5
 from zlib    import compress as zlib_compress, \
                     decompress as zlib_decompress
 from json    import dumps, loads
 from base64  import b64encode, b64decode
-from random  import choice, getrandbits
+from random  import choice
 from re      import sub
 from urllib2 import urlopen, URLError
 from os.path import dirname, realpath
@@ -57,17 +57,16 @@ def generate_auth_token():
     
     return uuid4().hex
 
-def generate_token(uid, src_pkey, dest_pkey):
+def generate_token(uid, pkey):
     """
     Generate capsule signature from capsule destination uid and
     peer public key.
     """
 
-    return sha512(
-        "{}{}{}".format(
-            sha512(uid      ).digest(),
-            sha512(src_pkey ).digest(),
-            sha512(dest_pkey).digest()
+    return sha256(
+        "{}{}".format(
+            sha512(uid ).digest(),
+            sha512(pkey).digest()
         )
     ).digest()
 
@@ -209,34 +208,21 @@ def criptiklogo():
             __version__
        )
 
-def generate_key(username, private_key=None):
-    "Generate keys."
-    
-    if not private_key: 
-        # Generate private key   
-        Logger.info("Generating Private Key.")
-        private_key = sha512(
-                "{}{}{}{}".format(
-                sha512(username).hexdigest(),
-                str(getrandbits(512)),
-                str(getrandbits(512)),
-                sha512(str(getrandbits(512))).hexdigest()
-            )
-        ).digest()
-    
-    Logger.info("Generating Public Key.")
-    return sha512(
-        "{}{}{}{}".format(
-            sha512(private_key).hexdigest(),
-            str(getrandbits(512)),
-            sha512(str(getrandbits(512))).hexdigest(),
-            str(getrandbits(512))
-        )
-    ).digest()
-
 def enum(**enums):
     
     return type('Enum', (), enums)
+
+def num_to_bytes(num):
+    
+    num = hex(num)[2:].rstrip('L')
+    if len(num) % 2:
+        return ('0%s' % num).decode('hex')
+    return num.decode('hex')
+
+def bytes_to_num(bytes_repr):
+    
+    return int(bytes_repr.encode('hex'), 16)
+
 
 if __name__ == "__main__":
     ## Test for factor_line

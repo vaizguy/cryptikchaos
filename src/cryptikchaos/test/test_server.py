@@ -68,7 +68,6 @@ class TestServerApp(App):
         # Initiate Twisted Server
         self.comm_service = CommService(
             peerid=constants.LOCAL_TEST_PEER_ID,
-            peerkey=constants.LOCAL_TEST_SERVER_KEY,
             host=constants.LOCAL_TEST_HOST,
             port=constants.LOCAL_TEST_PORT,
             clientinit=False,

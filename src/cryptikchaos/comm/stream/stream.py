@@ -30,7 +30,12 @@ class Stream:
     def _gen_hmac(self):
         "Generate stream hmac."
         
-        return hmac.new(str(self._flag)+self._stype+self._content+self._uid+self._skey).hexdigest()
+        return hmac.new(
+            str(self._flag)+\
+            self._stype+\
+            self._content+\
+            self._uid
+        ).hexdigest()
     
     def check_hmac(self, stream_hmac):
         "Check for HMAC integrity"

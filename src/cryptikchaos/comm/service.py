@@ -22,6 +22,7 @@ from cryptikchaos.comm.commcoreauth   import CommCoreAuthFactory
 from cryptikchaos.comm.swarm.manager  import SwarmManager
 from cryptikchaos.comm.stream.manager import StreamManager
 from cryptikchaos.comm.stream.manager import STREAM_TYPES
+from cryptikchaos.comm.comsec import ComSecCore
 if constants.ENABLE_TLS:
     from cryptikchaos.comm.sslcontext import TLSCtxFactory
     
@@ -46,15 +47,20 @@ class CommService:
     Contains both server and client code.
     """
 
-    def __init__(self, peerid, peerkey, host, port,
+    def __init__(self, peerid, host, port,
                  serverinit=True, clientinit=True, printer=None):
         "Initialize communication layer."
 
+        # Initialize Communications security core
+        self.comsec_core = ComSecCore()
+        
         # peer client attributes 
         self.peerid = peerid
         self.host = host
         self.port = port
-        self.peerkey = peerkey
+                    
+        ## peer key
+        self.peerkey = self.comsec_core.get_public_key()
         
         # TLS variables
         if constants.ENABLE_TLS:
@@ -70,12 +76,13 @@ class CommService:
             self.ssca = "{}/certs/cryptikchaosCA/cacert.pem".format(
                 constants.PROJECT_PATH
             )
-
+        
         # Initialize peer manager
-        self.swarm_manager = SwarmManager(peerid, peerkey)
+        self.swarm_manager = SwarmManager(peerid, self.peerkey)
         # Initialize stream manager
-        self.stream_manager = StreamManager(peerid, peerkey, host)
-
+        self.stream_manager = StreamManager(peerid, self.peerkey, host)
+        
+        # Alias print method
         self._printer = printer
         
         # Auth request token dictionary, stores all auth request tokens
@@ -197,9 +204,9 @@ class CommService:
             desthost = self.swarm_manager.peer_host(pid)
             
         # Get peer key
-        peer_key = self.swarm_manager.get_peer_key(pid)
+        shared_key = self.swarm_manager.get_peer_key(pid)
         
-        if not peer_key:
+        if not shared_key:
             raise Exception("No valid peer key could be found.")
 
         # Content length enforcement.
@@ -209,7 +216,7 @@ class CommService:
                 stream_type=data_class,
                 stream_content=data_content,
                 stream_host=desthost,
-                peer_key=peer_key
+                shared_key=shared_key
             )
             
         except StreamOverflowError as SOError:
@@ -244,11 +251,11 @@ class CommService:
         )
         
         # Get the stream source's key
-        key = None
+        shared_key = None
         if pid:
-            key  = self.swarm_manager.get_peer_key(pid)
+            shared_key = self.swarm_manager.get_peer_key(pid)
             
-        return (pid, key, host, port)
+        return (pid, shared_key, host, port)
 
     def _print(self, msg, dip=constants.PEER_HOST, 
             port=constants.PEER_PORT):
@@ -493,7 +500,7 @@ class CommService:
             return None
         
         ## Get the sender peer's information from connection
-        (_, src_key, src_ip, _) = self._get_source_from_connection(
+        (_, shared_key, src_ip, _) = self._get_source_from_connection(
             connection
         )
 
@@ -506,7 +513,7 @@ class CommService:
                 _
             ) = self.stream_manager.unpack_stream(
                 stream=response,
-                peer_key=src_key
+                shared_key=shared_key
             )
         except:
             raise
@@ -585,8 +592,12 @@ class CommService:
             else:
                 Logger.debug("Received valid request ACK.")
             
+            ## Generate shared key 
+            shared_key = self.comsec_core.generate_shared_key(pkey)
+            Logger.debug("Shared Key: {}".format(b64encode(shared_key)))
+
             ## Add peer
-            self.swarm_manager.add_peer(pid, pkey, src_ip, src_port)
+            self.swarm_manager.add_peer(pid, shared_key, src_ip, src_port)
             
             ## Add peer connection
             self._update_peer_connection_status(
@@ -651,10 +662,10 @@ class CommService:
     # ------------------------------------------------
     def handle_request_stream(self, stream, connection):
 
-        Logger.debug("Handling Stream : {}".format(b64encode(stream)))
+        Logger.debug("Handling Stream : {} Stream Length: {}".format(b64encode(stream), len(stream)))
         
         ## Get the sender peer's information from connection
-        (src_pid, src_key, src_ip, src_port
+        (src_pid, shared_key, src_ip, src_port
         ) = self._get_source_from_connection(connection)
         
         # Response (default = None)
@@ -663,7 +674,7 @@ class CommService:
         # Unpack stream
         (header, content, pkey) = self.stream_manager.unpack_stream(
             stream=stream,
-            peer_key=src_key
+            shared_key=shared_key
         )
         
         # Check if stream type is valid 
@@ -687,11 +698,15 @@ class CommService:
             Logger.debug("Received auth request from Peer: {}".format(pid))
 
             ## Add peer
+            ## Generate shared key 
+            shared_key = self.comsec_core.generate_shared_key(pkey)
+            Logger.debug("Shared Key: {}".format(b64encode(shared_key)))
+            
             # A GUI hook could be placed here to check for
             # user approval before addition of the peer.
             self.swarm_manager.add_peer(
                 pid=pid,
-                key=pkey,
+                key=shared_key,
                 host=src_ip,
                 port=constants.PEER_PORT
             )
@@ -712,7 +727,7 @@ class CommService:
                 stream_host=src_ip
             )
         
-            Logger.debug("Auth Response: {}".format(b64encode(rsp)))
+            Logger.debug("Auth Response: {} Stream Length: {}".format(b64encode(rsp), len(rsp)))
 
             # Send Auth response
             return rsp
@@ -739,7 +754,7 @@ class CommService:
                 stream_type=header,
                 stream_content=content,
                 stream_host=src_ip,
-                peer_key=src_key
+                shared_key=shared_key
             )
 
         elif header == constants.PROTO_BULK_TYPE:
@@ -751,9 +766,9 @@ class CommService:
                 stream_type=constants.PROTO_MACK_TYPE,
                 stream_content='',
                 stream_host=src_ip,
-                peer_key=src_key
-            )
-        
+                shared_key=shared_key
+            )                
+
         if rsp:
             Logger.debug("Responded: {}".format(b64encode(rsp)))
 

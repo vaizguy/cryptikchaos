@@ -100,7 +100,6 @@ class GUIService(App):
         # Initiate Twisted Server & Client services
         self.comm_service = CommService(
             peerid=constants.PEER_ID,
-            peerkey=constants.LOCAL_TEST_CLIENT_KEY,
             host=self.my_host,
             port=constants.PEER_PORT,
             printer=self.print_message
