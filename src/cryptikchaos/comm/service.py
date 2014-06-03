@@ -250,6 +250,8 @@ class CommService:
             port
         )
         
+        Logger.debug("IP: {} Port: {} ".format(host, port))
+        
         # Get the stream source's key
         shared_key = None
         if pid:
@@ -725,7 +727,7 @@ class CommService:
                 status=True, 
                 conn=connection
             )
-
+            
             ## Send current peer info
             rsp = self.stream_manager.pack_stream(
                 stream_type=constants.PROTO_AACK_TYPE,

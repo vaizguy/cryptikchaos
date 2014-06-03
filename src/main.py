@@ -45,7 +45,10 @@ class CryptikChaosApp(
     gui_service = None
     
     # Peer host (by default is localhost)
-    my_host = constants.LOCAL_TEST_HOST
+    if constants.ENABLE_TEST_MODE:
+        my_host = constants.LOCAL_TEST_HOST
+    else:
+        my_host = constants.PEER_HOST
     
     # Lexical parser service
     parser_service = ParserService(
