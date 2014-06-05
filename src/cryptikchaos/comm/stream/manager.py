@@ -23,6 +23,7 @@ from cryptikchaos.libs.utilities import decompress
 from cryptikchaos.libs.utilities import enum
 from cryptikchaos.libs.utilities import num_to_bytes
 from cryptikchaos.libs.utilities import bytes_to_num
+from cryptikchaos.libs.utilities import md5hash
 
 from cryptikchaos.libs.obscure import shuffler
 from cryptikchaos.libs.obscure import unshuffler
@@ -111,7 +112,8 @@ class StreamManager(StoreManager):
         # AES Encryption
         if constants.AES_AVAILABLE and stream_flag == STREAM_TYPES.AUTH:
             # AES Encrypt content in stream
-            AES_obj = AES.new(shared_key, AES.MODE_CBC, constants.AES_SALT)
+            iv = md5hash(stream_token, hexdigest=False)
+            AES_obj = AES.new(shared_key, AES.MODE_CBC, iv)
             stream_content = AES_obj.encrypt(stream_content)
             
         # Create stream object
@@ -272,7 +274,8 @@ class StreamManager(StoreManager):
         # AES Decryption
         if constants.AES_AVAILABLE and stream_flag == STREAM_TYPES.AUTH:            
             # Decrypt stream content
-            AES_obj = AES.new(shared_key, AES.MODE_CBC, constants.AES_SALT)
+            iv = md5hash(stream_token, hexdigest=False)
+            AES_obj = AES.new(shared_key, AES.MODE_CBC, iv)
             stream_content = AES_obj.decrypt(stream_content)
         
         # Unshuffle content

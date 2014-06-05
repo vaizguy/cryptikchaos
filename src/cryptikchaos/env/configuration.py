@@ -44,7 +44,6 @@ except ImportError:
     constants.AES_AVAILABLE = False
 else:
     constants.AES_AVAILABLE = True
-    constants.AES_SALT = md5hash(criptiklogo(), hexdigest=False)
      
 # ---Application switches-------------------------------------------------####
 
