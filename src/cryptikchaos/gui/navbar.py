@@ -23,6 +23,9 @@ class AboutPopUp(Popup):
         # Set title
         self.title='About'
         
+        # Size
+        self.size_hint=(0.9, 0.9)
+        
         # Pop up dismiss action
         self.bind(on_dismiss=dismiss_cb)
 
@@ -68,13 +71,13 @@ class NavBar(BoxLayout):
         
         # Init super
         super(NavBar, self).__init__()
-        
+                       
         # Set vertical orientation
         self.orientation='vertical'
         
         # Set up label
         title_label = Label(
-            text="\n\n[b]CryptikChaos[sup]TM[/sup][/b]\n", 
+            text="\n\n[color=999999][b]CryptikChaos[sup]TM[/sup][/b][/color]\n", 
             markup=True, 
             valign='top',
             halign='center'

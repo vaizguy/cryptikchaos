@@ -83,7 +83,8 @@ constants.GUI_FONT_SIZE = 14
 constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_LOGO = criptiklogo()
 if not constants.ENABLE_ANDROID_MODE:
-    constants.GUI_FONT_COLOR = "#00E217"
+    #constants.GUI_FONT_COLOR = "#00E217"
+    constants.GUI_FONT_COLOR = "#999999"
 else:
     constants.GUI_FONT_COLOR = "#FFFFFF"
 constants.GUI_WELCOME_MSG = """

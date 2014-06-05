@@ -40,9 +40,9 @@ class ConsoleInput(TextInput):
         # Sets focus active
         self.focus = True
         # Set background color
-        self.background_color = [0, 0, 0, 0]
+        self.background_color = [0, 0, 0, 1]
         # Set text color
-        self.foreground_color = [1, 1, 1, 1]
+        self.foreground_color = [0.5, 0.5, 0.5, 1]
         # Set padding for text input
         if not constants.ENABLE_ANDROID_MODE:            
             self.padding = [25, 20, 10, 0]
