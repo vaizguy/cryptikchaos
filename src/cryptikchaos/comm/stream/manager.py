@@ -115,7 +115,6 @@ class StreamManager(StoreManager):
             iv = md5hash(stream_token, hexdigest=False)
             AES_obj = AES.new(shared_key, AES.MODE_CBC, iv)
             stream_content = self.pad(stream_content)
-            print stream_content, len(stream_content)
             stream_content = AES_obj.encrypt(stream_content)
             
         # Create stream object
@@ -280,7 +279,6 @@ class StreamManager(StoreManager):
             AES_obj = AES.new(shared_key, AES.MODE_CBC, iv)
             stream_content = AES_obj.decrypt(stream_content)
             stream_content = self.unpad(stream_content)
-            print stream_content, len(stream_content)
         
         # Unshuffle content
         if constants.ENABLE_SHUFFLE:
