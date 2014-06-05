@@ -32,6 +32,12 @@ from cryptikchaos.exceptions.streamExceptions import \
 
 from cryptikchaos.comm.stream.stream import Stream
 
+if constants.AES_AVAILABLE:
+    Logger.info("AES Crypto available.")
+    from Crypto.Cipher import AES
+else:
+    Logger.warn("AES Crypto unavailable.")
+
 import struct
 
 STREAM_TYPES = enum(UNAUTH=0, AUTH=1)
@@ -92,7 +98,7 @@ class StreamManager(StoreManager):
         elif stream_flag == STREAM_TYPES.AUTH:
             # Generate token at source side
             stream_token = generate_token(stream_uid, shared_key)
-                                         
+                                 
         # Shuffle content
         if constants.ENABLE_SHUFFLE:
             Logger.info("Scrambling content.")
@@ -101,14 +107,20 @@ class StreamManager(StoreManager):
                 string=stream_content,
                 iterations=constants.STREAM_CONT_SHUFF_ITER
             )
+        
+        # AES Encryption
+        if constants.AES_AVAILABLE and stream_flag == STREAM_TYPES.AUTH:
+            # AES Encrypt content in stream
+            AES_obj = AES.new(shared_key, AES.MODE_CBC, constants.AES_SALT)
+            stream_content = AES_obj.encrypt(stream_content)
             
         # Create stream object
         stream_obj = Stream(
-                    stream_uid, 
-                    stream_flag,
-                    stream_type,
-                    stream_content,
-                    stream_token,
+            stream_uid, 
+            stream_flag,
+            stream_type,
+            stream_content,
+            stream_token,
         )
                 
         # Add stream to store
@@ -256,6 +268,12 @@ class StreamManager(StoreManager):
                 return [None]*3
             else:
                 Logger.info("Token challenge Pass")
+            
+        # AES Decryption
+        if constants.AES_AVAILABLE and stream_flag == STREAM_TYPES.AUTH:            
+            # Decrypt stream content
+            AES_obj = AES.new(shared_key, AES.MODE_CBC, constants.AES_SALT)
+            stream_content = AES_obj.decrypt(stream_content)
         
         # Unshuffle content
         if constants.ENABLE_SHUFFLE:

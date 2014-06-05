@@ -37,7 +37,15 @@ except ImportError:
     constants.NETWORKX_AVAILABLE = False
 else:
     constants.NETWORKX_AVAILABLE = True
-    
+   
+try:
+    from Crypto.Cipher import AES
+except ImportError:
+    constants.AES_AVAILABLE = False
+else:
+    constants.AES_AVAILABLE = True
+    constants.AES_SALT = md5hash(criptiklogo(), hexdigest=False)
+     
 # ---Application switches-------------------------------------------------####
 
 constants.ENABLE_TEST_MODE    = True

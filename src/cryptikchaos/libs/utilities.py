@@ -23,10 +23,13 @@ from re      import sub
 from urllib2 import urlopen, URLError
 from os.path import dirname, realpath
 
-def md5hash(string):
+def md5hash(string, hexdigest=True):
     "Generate md5 hash from string."
     
-    return md5(string).hexdigest()
+    if hexdigest:
+        return md5(string).hexdigest()
+    else:
+        return md5(string).digest()
 
 def ip_to_uint32(ip):
     """
