@@ -1,1 +1,4 @@
 
+[submodule "src/cryptikchaos/libs/garden/navigationdrawer"]
+	path = src/cryptikchaos/libs/garden/navigationdrawer
+	url = https://github.com/vaizguy/garden.navigationdrawer.git
