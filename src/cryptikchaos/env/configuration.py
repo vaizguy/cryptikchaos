@@ -138,7 +138,7 @@ constants.STREAM_CHKSUM_LEN = 32
 # Stream peer key hash length (msg block packet)
 constants.STREAM_TOKEN_LEN = 32
 # Stream peer key length (Auth packet)
-constants.STREAM_PEER_KEY_LEN = 769
+constants.STREAM_PEER_KEY_LEN = 770
 
 # Stream size (Auth block)
 constants.STREAM_SIZE_AUTH_BLOCK = constants.STREAM_CONTENT_LEN + \
