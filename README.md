@@ -36,7 +36,7 @@ Optional Packages;
 |----------|---------|-------------------|
 | Pympler  | 0.2.1   | Memory Profiler   |
 | Networkx | 1.8.1   | Network Graph PKG |
-
+| PyCrypto | 2.6     | AES Crypto PKG    |
 
 Run Main application:
 ---------------------
