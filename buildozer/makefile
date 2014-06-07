@@ -4,11 +4,21 @@ uninstall_apk:
 purge_logs:
 	rm -rf *.log
 
-apk: purge_logs
-	buildozer android debug | tee -i build_apk.log
+pre_build:
+	sed -i 's/\(constants.ENABLE_ANDROID_MODE =\) False/\1 True/' ../src/cryptikchaos/env/configuration.py
+	sed -i 's/\(constants.ENABLE_TLS\s\+=\) True/\1 False/' ../src/cryptikchaos/env/configuration.py
 
-deploy: purge_logs uninstall_apk
-	buildozer --verbose android debug deploy | tee -i deploy_apk.log
+post_build:
+	sed -i 's/\(constants.ENABLE_ANDROID_MODE =\) True/\1 False/' ../src/cryptikchaos/env/configuration.py
+	sed -i 's/\(constants.ENABLE_TLS\s\+=\) False/\1 True/' ../src/cryptikchaos/env/configuration.py
 
-run: purge_logs uninstall_apk
-	buildozer android debug deploy run | tee -i run_apk.log
+build_apk: purge_logs pre_build
+	buildozer --verbose android debug | tee -i build_apk.log
+
+deploy_apk: uninstall_apk build_apk
+	buildozer --verbose android deploy | tee -i deploy_apk.log
+
+deploy: deploy_apk post_build
+
+run: deploy
+	buildozer --verbose android run | tee -i run_apk.log
