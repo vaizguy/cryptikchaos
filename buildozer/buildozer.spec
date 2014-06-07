@@ -1,7 +1,7 @@
 [app]
 
 # (list) Garden requirements
-garden_requirements = garden.navigationdrawer,
+garden_requirements = garden.navigationdrawer
 
 # (str) Title of your application
 title = CryptikChaos
@@ -67,13 +67,21 @@ android.permissions = INTERNET
 android.sdk = 21
 
 # (str) Android NDK version to use
-android.ndk = 9
+android.ndk = 9c
+
+# (bool) Use --private data storage (True) or --dir public storage (False)
+#android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
-android.ndk_path = ./android-ndk-r9b
-
+android.ndk_path = 
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
-android.sdk_path = ./adt-bundle-linux-x86_64-20131030/sdk
+android.sdk_path = 
+
+# (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
+#android.p4a_dir =
+
+# (list) python-for-android whitelist
+#android.p4a_whitelist =
 
 # (str) Android entry point, default is ok for Kivy-based app
 #android.entrypoint = org.renpy.android.PythonActivity
@@ -83,6 +91,10 @@ android.sdk_path = ./adt-bundle-linux-x86_64-20131030/sdk
 # down the build process. Allows wildcards matching, for example:
 # OUYA-ODK/libs/*.jar
 #android.add_jars = foo.jar,bar.jar,path/to/more/*.jar
+
+# (list) List of Java files to add to the android project (can be java or a
+# directory containing the files)
+#android.add_src =
 
 # (str) python-for-android branch to use, if not master, useful to try
 # not yet merged features.
@@ -100,10 +112,20 @@ android.branch = master
 
 # (list) Android additionnal libraries to copy into libs/armeabi
 #android.add_libs_armeabi = libs/android/*.so
+#android.add_libs_armeabi_v7a = libs/android-v7/*.so
+#android.add_libs_x86 = libs/android-x86/*.so
+#android.add_libs_mips = libs/android-mips/*.so
 
 # (bool) Indicate whether the screen should stay on
 # Don't forget to add the WAKE_LOCK permission if you set this to True
 #android.wakelock = False
+
+# (list) Android application meta-data to set (key=value format)
+#android.meta_data =
+
+# (list) Android library project to add (will be added in the
+# project.properties automatically.)
+#android.library_references =
 
 #
 # iOS specific
