@@ -97,6 +97,8 @@ class NavBar(BoxLayout):
         ## Minimize
         # Set up button
         console_button = Button(text='Console')
+        # BG color
+        console_button.background_color = [1, 1, 1, 1]
         # Set height
         console_button.size_hint_y = 0.05
         # Set action
@@ -107,6 +109,8 @@ class NavBar(BoxLayout):
         ## ABOUT
         # Set up button
         about_button = Button(text='About')
+        # BG color
+        about_button.background_color = [0, 0, 0, 1]
         # Set height
         about_button.size_hint_y = 0.05
         # Set action
@@ -117,6 +121,8 @@ class NavBar(BoxLayout):
         ## EXIT 
         # Set up button
         exit_button = Button(text='Exit')
+        # BG color
+        exit_button.background_color = [0, 0, 0, 1]   
         # Set height
         exit_button.size_hint_y = 0.05
         # Set action
