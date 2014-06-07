@@ -23,6 +23,7 @@ from cryptikchaos.libs.utilities import criptiklogo
 from cryptikchaos.libs.utilities import get_my_ip
 from cryptikchaos.libs.utilities import md5hash
 
+# ---Module switches------------------------------------------------------####
 try:
     import pympler
 except ImportError:

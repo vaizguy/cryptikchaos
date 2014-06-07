@@ -23,7 +23,6 @@ class Stream:
         self.rebuild_dict = self.build_dict
 
         self.build_dict()
-        
        
     def gen_hmac(self):
         "Generate stream hmac."
@@ -44,11 +43,6 @@ class Stream:
     def update_content(self, content):
         
         self._content = content
-        self.rebuild_dict()
-        
-    def update_token(self, token):
-        
-        self._token = token
         self.rebuild_dict()
 
     def build_dict(self):
