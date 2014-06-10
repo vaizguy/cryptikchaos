@@ -84,43 +84,7 @@ constants.PEER_HOST = get_my_ip()
 constants.PEER_NAME = "MYPOD"
 # ------------------------------------------------------------------------####
 
-# ------------------GUI Attribute CONSTANTS-------------------------------####
 
-constants.GUI_FONT_TYPE = "DroidSansMono.ttf"
-constants.GUI_FONT_SIZE = 14
-constants.GUI_LABEL_LEFT_PADDING = ""
-constants.GUI_LOGO = criptiklogo()
-if not constants.ENABLE_ANDROID_MODE:
-    #constants.GUI_FONT_COLOR = "#00E217"
-    constants.GUI_FONT_COLOR = "#999999"
-else:
-    constants.GUI_FONT_COLOR = "#FFFFFF"
-constants.GUI_WELCOME_MSG = """
-
-{}>> Welcome to CryptikChaos P2P Net <<
-{}>> Drag left edge for navigation <<
-{}>> Enter "help" (or) [TAB] for command listing <<
-{}>> Peer {}--{} <<
-{}[{}]
-
-""".format(
-    constants.GUI_LABEL_LEFT_PADDING,
-    constants.GUI_LABEL_LEFT_PADDING,
-    constants.GUI_LABEL_LEFT_PADDING,
-    constants.GUI_LABEL_LEFT_PADDING,
-    constants.PEER_ID,
-    constants.PEER_HOST,    
-    constants.GUI_LABEL_LEFT_PADDING,
-    get_time(),
-)
-
-constants.GUI_LABEL_PROMPT_SYM = ">> "
-constants.GUI_LABEL_PROMPT = "{}{}".format(
-    constants.GUI_LABEL_LEFT_PADDING,
-    constants.GUI_LABEL_PROMPT_SYM
-)
-constants.GUI_PEER_REPR = "Peer {}--{}:{}"
-# ------------------------------------------------------------------------####
 
 # ------------------Protocol Stream type CONSTANTS-----------------------####
 
@@ -220,3 +184,45 @@ constants.SSL_POST_VERIF_VALUES = {
 }
 # ------------------------------------------------------------------------####
 
+# ------------------GUI Attribute CONSTANTS-------------------------------####
+
+constants.GUI_FONT_TYPE = "DroidSansMono.ttf"
+constants.GUI_FONT_SIZE = 14
+constants.GUI_LABEL_LEFT_PADDING = ""
+constants.GUI_LOGO = criptiklogo()
+if not constants.ENABLE_ANDROID_MODE:
+    #constants.GUI_FONT_COLOR = "#00E217"
+    constants.GUI_FONT_COLOR = "#999999"
+else:
+    constants.GUI_FONT_COLOR = "#FFFFFF"
+    
+if constants.ENABLE_TEST_MODE:
+    my_host = constants.LOCAL_TEST_HOST
+else:
+    my_host = constants.PEER_HOST
+constants.GUI_WELCOME_MSG = """
+
+{}>> Welcome to CryptikChaos P2P Net <<
+{}>> Drag left edge for navigation <<
+{}>> Enter "help" (or) [TAB] for command listing <<
+{}>> Peer {}--{} <<
+{}[{}]
+
+""".format(
+    constants.GUI_LABEL_LEFT_PADDING,
+    constants.GUI_LABEL_LEFT_PADDING,
+    constants.GUI_LABEL_LEFT_PADDING,
+    constants.GUI_LABEL_LEFT_PADDING,
+    constants.PEER_ID,
+    my_host,    
+    constants.GUI_LABEL_LEFT_PADDING,
+    get_time(),
+)
+
+constants.GUI_LABEL_PROMPT_SYM = ">> "
+constants.GUI_LABEL_PROMPT = "{}{}".format(
+    constants.GUI_LABEL_LEFT_PADDING,
+    constants.GUI_LABEL_PROMPT_SYM
+)
+constants.GUI_PEER_REPR = "Peer {}--{}:{}"
+# ------------------------------------------------------------------------####
