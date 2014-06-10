@@ -5,10 +5,12 @@ purge_logs:
 	rm -rf *.log
 
 pre_build:
+	sed -i 's/\(constants.ENABLE_TEST_MODE\s\+=\) True/\1 False/' ../src/cryptikchaos/env/configuration.py
 	sed -i 's/\(constants.ENABLE_ANDROID_MODE =\) False/\1 True/' ../src/cryptikchaos/env/configuration.py
 	sed -i 's/\(constants.ENABLE_TLS\s\+=\) True/\1 False/' ../src/cryptikchaos/env/configuration.py
 
 post_build:
+	sed -i 's/\(constants.ENABLE_TEST_MODE\s\+=\) False/\1 True/' ../src/cryptikchaos/env/configuration.py
 	sed -i 's/\(constants.ENABLE_ANDROID_MODE =\) True/\1 False/' ../src/cryptikchaos/env/configuration.py
 	sed -i 's/\(constants.ENABLE_TLS\s\+=\) False/\1 True/' ../src/cryptikchaos/env/configuration.py
 
