@@ -150,7 +150,7 @@ class StreamManager(StoreManager):
                 self.get_store_item(stream_uid, 'STREAM_TYPE'   ),
                 self.get_store_item(stream_uid, 'STREAM_CONTENT'),
                 self.get_store_item(stream_uid, 'STREAM_PKEY'   ),
-                stream_obj.gen_hmac()
+                self.get_store_hmac(stream_uid)
             )
             
         elif stream_flag == STREAM_TYPES.AUTH:
@@ -168,7 +168,7 @@ class StreamManager(StoreManager):
                 self.get_store_item(stream_uid, 'STREAM_TYPE'   ),
                 self.get_store_item(stream_uid, 'STREAM_CONTENT'),
                 self.get_store_item(stream_uid, 'STREAM_PKEY'   ),
-                stream_obj.gen_hmac()
+                self.get_store_hmac(stream_uid)
             )
             
         else:
@@ -253,9 +253,12 @@ class StreamManager(StoreManager):
                      stream_content,
                      stream_token,
                 )
+        
+        # Add stream to store
+        self.add_store(stream_uid, stream_obj.dict)
 
         # Verify stream integrity
-        if not stream_obj.check_hmac(stream_hmac):
+        if not self.check_hmac(stream_uid, stream_hmac):
             Logger.error("Stream Checksum mismatch.")
             return [None]*3
         
@@ -285,7 +288,7 @@ class StreamManager(StoreManager):
                 # Upad decrypted content
                 stream_content = self.unpad(stream_content)
 
-        # Unshuffle content
+        # Unshuffle contentself._storage[sid].hmac()
         if constants.ENABLE_SHUFFLE:
             Logger.info("Unscrambling content...")
             
@@ -293,13 +296,7 @@ class StreamManager(StoreManager):
                 shuffled_string=stream_content,
                 iterations=constants.STREAM_CONT_SHUFF_ITER
             )
-            
-        # Update content
-        stream_obj.update_content(stream_content)
-        
-        # Add stream to store
-        self.add_store(stream_uid, stream_obj.dict)
-        
+       
         if stream_flag == STREAM_TYPES.UNAUTH: 
             Logger.info("Successfully unpacked AUTH Stream.")
             return (    self.get_store_item(stream_uid, "STREAM_TYPE"   ),
@@ -311,7 +308,7 @@ class StreamManager(StoreManager):
         elif stream_flag == STREAM_TYPES.AUTH:
             Logger.info("Successfully unpacked MSG Stream.")
             return (self.get_store_item(stream_uid, "STREAM_TYPE"   ),
-                    self.get_store_item(stream_uid, "STREAM_CONTENT"),
+                    stream_content,
                     self.get_store_item(stream_uid, "STREAM_PKEY"   ))
             
         else:

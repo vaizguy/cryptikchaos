@@ -134,7 +134,17 @@ class StoreManager(object):
             table.add_row(row)
                 
         return table
-            
+    
+    def get_store_hmac(self, sid):
+        "Get stores checksum"
+        
+        return self._storage[sid].hmac()
+    
+    def check_hmac(self, sid, hmac):
+        "Validate store checksum"
+
+        return self._storage[sid].check_hmac(hmac)
+           
             
 if __name__ == "__main__":
     

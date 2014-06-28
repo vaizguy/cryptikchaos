@@ -6,6 +6,8 @@ Created on Nov 3, 2013
 
 from cryptikchaos.libs.customtypes import TransformedDict
 from hashlib import md5
+import hmac
+import exceptions
 
 
 class Store(TransformedDict):
@@ -93,6 +95,27 @@ class Store(TransformedDict):
         "iteritem alias"
         
         return [(k, v) for (k, v) in self.iteritems()]
+
+    def hmac(self):
+        "Get Store checksum"
+        
+        _hmac = hmac.new(self.__repr__())
+        
+        for key in self._valid_keys:        
+            _hmac.update(str(self.__getitem__(key)))
+            
+        return _hmac.hexdigest()
+    
+    def check_hmac(self, _hmac):
+        "HMAC challenge"
+        
+        try:
+            return hmac.compare_digest(self.hmac(), _hmac)
+        except exceptions.AttributeError:
+            return self.hmac() == _hmac
+        else:
+            pass            
+
     
 if __name__ == "__main__":
     store = Store(keys=["key1", "key2"], dictionary={"key1": 1, "key2":2})
