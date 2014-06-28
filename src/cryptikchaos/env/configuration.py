@@ -102,7 +102,7 @@ constants.STREAM_CONTENT_LEN = 128
 # Stream Type length
 constants.STREAM_TYPE_LEN = 4
 # Stream flag Length
-constants.STREAM_FLAG_LEN = 4
+constants.STREAM_FLAG_LEN = 1
 # Stream id length
 constants.STREAM_ID_LEN = 8
 # Stream chksum length

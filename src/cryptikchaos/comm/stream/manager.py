@@ -41,7 +41,7 @@ else:
 
 import struct
 
-STREAM_TYPES = enum(UNAUTH=0, AUTH=1)
+STREAM_TYPES = enum(UNAUTH=False, AUTH=True)
 
 
 class StreamManager(StoreManager):
@@ -140,7 +140,7 @@ class StreamManager(StoreManager):
 
             # Pack store into authentication stream
             stream = struct.pack(
-                "!I{}s{}s{}s{}s".format(
+                "!?{}s{}s{}s{}s".format(
                     constants.STREAM_TYPE_LEN,
                     constants.STREAM_CONTENT_LEN,
                     constants.STREAM_PEER_KEY_LEN,
@@ -158,7 +158,7 @@ class StreamManager(StoreManager):
 
             # Pack store into message block stream
             stream = struct.pack(
-                "!I{}s{}s{}s{}s".format(
+                "!?{}s{}s{}s{}s".format(
                     constants.STREAM_TYPE_LEN,
                     constants.STREAM_CONTENT_LEN,
                     constants.STREAM_TOKEN_LEN,
@@ -207,7 +207,7 @@ class StreamManager(StoreManager):
                 stream_token,
                 stream_hmac
             ) = struct.unpack(
-                "!I{}s{}s{}s{}s".format(
+                "!?{}s{}s{}s{}s".format(
                     constants.STREAM_TYPE_LEN,
                     constants.STREAM_CONTENT_LEN,
                     constants.STREAM_PEER_KEY_LEN,
@@ -226,7 +226,7 @@ class StreamManager(StoreManager):
                 stream_token,
                 stream_hmac
             ) = struct.unpack(
-                "!I{}s{}s{}s{}s".format(
+                "!?{}s{}s{}s{}s".format(
                     constants.STREAM_TYPE_LEN,
                     constants.STREAM_CONTENT_LEN,
                     constants.STREAM_TOKEN_LEN,
