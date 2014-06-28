@@ -17,11 +17,6 @@ class Stream:
         self._stype = stype
         self._content = content
         self._token = token
-        
-        self.build_dict()
-
-    def build_dict(self):
-        
         self.dict = {
             'STREAM_FLAG'   : self._flag,
             'STREAM_TYPE'   : self._stype,
