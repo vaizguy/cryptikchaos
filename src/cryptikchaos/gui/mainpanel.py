@@ -6,8 +6,8 @@ Created on Jun 29, 2014
 
 from kivy.uix.screenmanager import ScreenManager
 
-from cryptikchaos.gui.consolescreen import ConsoleScreen
-from cryptikchaos.gui.aboutscreen import AboutScreen
+from cryptikchaos.gui.screens.consolescreen import ConsoleScreen
+from cryptikchaos.gui.screens.aboutscreen import AboutScreen
 
 
 class MainPanel(ScreenManager):
