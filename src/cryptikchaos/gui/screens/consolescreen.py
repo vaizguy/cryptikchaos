@@ -4,6 +4,9 @@ Created on Jun 29, 2014
 @author: vaizguy
 '''
 
+__author__ = "Arun Vaidya"
+__version__ = "0.6"
+
 from kivy.uix.screenmanager import Screen
 
 from cryptikchaos.gui.consolewin import ConsoleWindow
