@@ -79,7 +79,7 @@ class GUIService(App):
         drawer.add_widget(main_panel)
         
         # Set animation type
-        drawer.anim_type ='reveal_below_anim'
+        drawer.anim_type ='slide_above_anim'
 
         # Apeend text to console hook
         self.inputtext_gui_hook = main_panel.inputtext_gui_hook
