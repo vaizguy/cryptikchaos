@@ -41,16 +41,14 @@ class StoreManager(object):
         
     def __del__(self):
         "Delete store contents"
-        
-        if self._name:
-            Logger.info("Closing [{}] store manager.".format(
-                self._name
-                )
-            )    
             
+        try:
+            del self._name            
             del self._storage
             del self._name
             del self._store_keys
+        except:
+            pass
     
     def keys(self):
         "Return the storage index keys."

@@ -10,64 +10,18 @@ __version__ = "0.6"
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label     import Label
 from kivy.uix.button    import Button
-from kivy.uix.popup     import Popup
 
-
-class AboutPopUp(Popup):
-    
-    def __init__(self, dismiss_cb):
-        
-        # Init super
-        super(AboutPopUp, self).__init__()
-
-        # Set title
-        self.title='About'
-        
-        # Size
-        self.size_hint=(0.9, 0.9)
-        
-        # Pop up dismiss action
-        self.bind(on_dismiss=dismiss_cb)
-
-        # information about app label
-        about_label = Label(
-            text="""
-
-[b]CryptikChaos[sup]TM[/sup][/b] is a P2P messenger.
-
-[b]This application is[/b] [i]STILL[/i] [b]experimental[/b].
-
-[i]Developed by vaizlabs.[i]
-
-Get the code:
-[i]www.github.com/vaizguy/cryptikchaos[/i]
-
-Contact:
-[i]cryptikchaos@googlegroups.com[/i]
-
-""",
-            markup=True, 
-            valign='top',
-            halign='left',
-        )       
-        
-        # Bind text size to label
-        about_label.bind(size=about_label.setter('text_size')) 
-        # set content
-        self.content = about_label
-               
-        # Set pop up size
-        #self.size_hint=(0.7, 0.5)
 
 class NavBar(BoxLayout):
     
-    def __init__(self, drawer, handleinput_cmd_hook):
+    def __init__(self, drawer, main_panel, handleinput_cmd_hook):
         
         # Hooks
         self.handleinput_cmd_hook = handleinput_cmd_hook
         
         # Parent hooks
         self.drawer = drawer
+        self.main_panel = main_panel
         
         # Init super
         super(NavBar, self).__init__()
@@ -90,9 +44,9 @@ class NavBar(BoxLayout):
         self.add_widget(title_label)
         
         ## Create popup
-        self.about_popup = AboutPopUp(
-            dismiss_cb=lambda help_func: self.handleinput_cmd_hook("help")
-        )
+        #self.about_popup = AboutPopUp(
+        #    dismiss_cb=lambda help_func: self.handleinput_cmd_hook("help")
+        #)
  
         ## Minimize
         # Set up button
@@ -102,7 +56,7 @@ class NavBar(BoxLayout):
         # Set height
         console_button.size_hint_y = 0.05
         # Set action
-        console_button.bind(on_release=self.drawer.toggle_state)
+        console_button.bind(on_release=self.action_console)
         # Bind to parent
         self.add_widget(console_button) 
               
@@ -132,11 +86,19 @@ class NavBar(BoxLayout):
         
     def action_exit(self, instance):
         
+        self.drawer.toggle_state()
         # Exit app
         self.handleinput_cmd_hook("exit")
         
     def action_about(self, instance):
         
         # Open pop up
-        self.about_popup.open()       
+        #self.about_popup.open()    
+        self.drawer.toggle_state()
+        self.main_panel.goto_about_screen()   
+        
+    def action_console(self, instance):
+        
+        self.drawer.toggle_state()
+        self.main_panel.goto_console_screen() 
         

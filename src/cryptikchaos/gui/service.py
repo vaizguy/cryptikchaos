@@ -22,7 +22,7 @@ except ImportError:
 else:
     pass    
     
-from cryptikchaos.gui.consolewin import ConsoleWindow
+from cryptikchaos.gui.mainpanel import MainPanel
 from cryptikchaos.gui.navbar import NavBar
 from cryptikchaos.env.service import EnvService
 from cryptikchaos.comm.service import CommService
@@ -47,16 +47,7 @@ class GUIService(App):
         # Main drawer
         drawer = NavigationDrawer()
         
-        # Set up Side pane
-        side_pane = NavBar(
-            # Input handler hook
-            handleinput_cmd_hook=self.handleinput_cmd_hook,
-            # drawer obj
-            drawer=drawer                    
-        )
-               
-        # Build ConsoleWindow
-        main_pane = ConsoleWindow(
+        main_panel = MainPanel(
             # Input handler hook
             handleinput_cmd_hook=self.handleinput_cmd_hook,
             # Get command list hook
@@ -66,23 +57,34 @@ class GUIService(App):
             # Font type face
             font_type=constants.GUI_FONT_TYPE,
             # Font size
-            font_size=constants.GUI_FONT_SIZE
+            font_size=constants.GUI_FONT_SIZE,                        
         )
+        
+        # Set up Side pane
+        side_panel = NavBar(
+            # Input handler hook
+            handleinput_cmd_hook=self.handleinput_cmd_hook,
+            # drawer obj
+            drawer=drawer,
+            # screen manager obj
+            main_panel=main_panel                
+        )
+               
         ## TODO messy implementation, here if in the
         ## main application class we do not have self.handle_input_hook
         ## and self.get_commands_hook the app will crash.
         
         # Add main and side pane
-        drawer.add_widget(side_pane)
-        drawer.add_widget(main_pane)
+        drawer.add_widget(side_panel)
+        drawer.add_widget(main_panel)
         
         # Set animation type
         drawer.anim_type ='reveal_below_anim'
 
         # Apeend text to console hook
-        self.inputtext_gui_hook = main_pane.inputtext_gui_hook
+        self.inputtext_gui_hook = main_panel.inputtext_gui_hook
         # Get App GUI Width
-        self.getmaxwidth_gui_hook = main_pane.getmaxwidth_gui_hook
+        self.getmaxwidth_gui_hook = main_panel.getmaxwidth_gui_hook
                 
         return drawer
        
