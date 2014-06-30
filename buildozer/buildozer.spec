@@ -64,7 +64,7 @@ android.permissions = INTERNET
 #android.minapi = 8
 
 # (int) Android SDK version to use
-android.sdk = 21
+android.sdk = 20
 
 # (str) Android NDK version to use
 android.ndk = 9c
