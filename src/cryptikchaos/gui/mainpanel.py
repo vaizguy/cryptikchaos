@@ -8,6 +8,7 @@ __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
 from kivy.uix.screenmanager import ScreenManager
+from kivy.uix.screenmanager import SlideTransition
 
 from cryptikchaos.gui.screens.consolescreen import ConsoleScreen
 from cryptikchaos.gui.screens.aboutscreen import AboutScreen
@@ -19,6 +20,10 @@ class MainPanel(ScreenManager):
         handleinput_cmd_hook, getcommands_cmd_hook, **kwargs):
         
         super(ScreenManager, self).__init__(**kwargs)
+                
+        # Animation
+        self.transition_slide_up = SlideTransition(direction="up")
+        self.transition_slide_down = SlideTransition(direction="down")
                                
         self.console_screen = ConsoleScreen(
             greeting=greeting, 
@@ -45,10 +50,12 @@ class MainPanel(ScreenManager):
         
     def goto_console_screen(self):
         
+        self.transition = self.transition_slide_up
         self.current = "console"
         
     def goto_about_screen(self):
         
+        self.transition = self.transition_slide_down
         self.current = "about"
         
         
