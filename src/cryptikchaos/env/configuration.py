@@ -202,7 +202,7 @@ else:
     my_host = constants.PEER_HOST
 constants.GUI_WELCOME_MSG = """
 
-{}>> Welcome to CryptikChaos P2P Net <<
+{}>> CryptikChaos Network <<
 {}>> Drag left edge for navigation <<
 {}>> Enter "help" (or) [TAB] for command listing <<
 {}>> Peer {}--{} <<

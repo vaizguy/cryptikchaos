@@ -20,16 +20,16 @@ class AboutScreen(Screen):
         self.about_label = Label(
             text="""
 
-[b]CryptikChaos[sup]TM[/sup][/b] is a P2P messenger.
+[b]CryptikChaos[sup]TM[/sup][/b] is still experimental!!
 
-[b]This application is[/b] [i]STILL[/i] [b]experimental[/b].
+[b]This application [/b] [i]will be[/i] [b]AWESOME!![/b]
 
-[i]Developed by vaizlabs.[i]
+[i]Under development, vaizlabs.[i]
 
-Get the code:
+Get the code,
 [i]www.github.com/vaizguy/cryptikchaos[/i]
 
-Contact:
+Thoughts?
 [i]cryptikchaos@googlegroups.com[/i]
 
 """,
