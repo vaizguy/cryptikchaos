@@ -1,7 +1,7 @@
 [app]
 
 # (list) Garden requirements
-garden_requirements = garden.navigationdrawer
+garden_requirements = 
 
 # (str) Title of your application
 title = CryptikChaos
@@ -16,7 +16,8 @@ package.domain = org.vaizlabs.android
 source.dir = ../src
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,jpeg,png,jpg,crt,key,pem,ttf
+#source.include_exts = py,jpeg,png,jpg,ttf,crt,key,pem # w/o TLS
+source.include_exts = py,jpeg,png,jpg,ttf
 
 # (list) Source files to exclude (let empty to not exclude anything)
 source.exclude_exts = spec,csh,sh,md
