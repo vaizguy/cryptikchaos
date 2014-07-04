@@ -241,9 +241,6 @@ class CryptikChaosApp(
         """
         
         if arg:
-            ## quick fix. arg is now a list
-            arg = arg[0]
-            
             # XXX check arg syntax
             try:
                 func = getattr(self, 'help_' + arg)
@@ -301,7 +298,7 @@ class CryptikChaosApp(
         
         try:
             (pid, host) = (cmdline[0], cmdline[1])
-        except ValueError:
+        except IndexError:
             self.print_message("Incorrect use of command 'addpeer'.")
             self.cmd_help("addpeer")
             return None
@@ -341,7 +338,7 @@ class CryptikChaosApp(
         try:
             (pid, msg) = (
                 cmdline[0], ' '.join(cmdline[1:]))
-        except ValueError:
+        except IndexError:
             self.print_message("Incorrect use of command 'send'")
             self.cmd_help("send")
             return None
