@@ -50,12 +50,12 @@ class MainPanel(ScreenManager):
         
     def goto_console_screen(self):
         
-        self.transition = self.transition_slide_up
+        self.transition = self.transition_slide_down
         self.current = "console"
         
     def goto_about_screen(self):
         
-        self.transition = self.transition_slide_down
+        self.transition = self.transition_slide_up
         self.current = "about"
         
         
@@ -68,9 +68,7 @@ if __name__ == '__main__':
     from kivy.resources import resource_add_path
     resource_add_path(constants.KIVY_RESOURCE_PATH_1)
     resource_add_path(constants.KIVY_RESOURCE_PATH_2)
-    print constants.KIVY_RESOURCE_PATH_1
-    print constants.KIVY_RESOURCE_PATH_2
-    
+       
     
     class ScreenManagerApp(App):
     
