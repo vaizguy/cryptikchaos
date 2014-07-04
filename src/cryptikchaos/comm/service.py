@@ -612,9 +612,18 @@ class CommService:
             ## Connect to peer using normal connection this should refresh
             ## the connection in db to normal client conn from auth conn
             self.start_connection(pid, src_ip, src_port)
-            return True
 
-        return False
+            ## Send disconnect response for AUTH channel
+            dcon_rsp = self.stream_manager.pack_stream(
+                stream_type=constants.PROTO_DCON_TYPE,
+                stream_content=self.peerid+request_id,
+                stream_flag=STREAM_TYPES.UNAUTH,
+                stream_host=src_ip
+            )
+                       
+            return dcon_rsp
+
+        return None
 
     # ------------------------------------------------
     # Client Protocol Method defined here
@@ -755,8 +764,24 @@ class CommService:
             )
 
         Logger.debug("Received: {}".format(b64encode(stream)))
+        
+        if header == constants.PROTO_DCON_TYPE:
+            Logger.debug("Received Disconnect ACK, AUTH Success!")
+            
+            ## Extract peer id
+            (pid, _) = self._get_auth_content(content)
+            
+            if self.swarm_manager.is_peer(pid) and \
+              self.comsec_core.generate_shared_key(pkey) == \
+                self.swarm_manager.get_peer_key(pid):
+                
+                Logger.debug("Peer {} AUTH Done!".format(pid))
+                # Close connection
+                connection.loseConnection()
+                
+            rsp = None
 
-        if header == constants.LOCAL_TEST_STREAM_TYPE:
+        elif header == constants.LOCAL_TEST_STREAM_TYPE:
                         
             ## Repack stream maintaining the same content
             rsp = self.stream_manager.pack_stream(

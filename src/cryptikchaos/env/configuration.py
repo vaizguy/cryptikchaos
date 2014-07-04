@@ -93,6 +93,7 @@ constants.PROTO_MACK_TYPE = "MACK"
 
 constants.PROTO_AUTH_TYPE = "AUTH"
 constants.PROTO_AACK_TYPE = "AACK"
+constants.PROTO_DCON_TYPE = "DCON"
 # ------------------------------------------------------------------------####
 
 # ------------------STREAM CONSTANTS-------------------------------------####

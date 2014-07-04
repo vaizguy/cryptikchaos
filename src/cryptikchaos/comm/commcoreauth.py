@@ -60,8 +60,10 @@ class CommCoreAuthProtocol(LineReceiver):
 
         Logger.debug("AUTH: Recieved : {}".format(base64.b64encode(line)))
         
-        if self.factory.app.handle_auth_response_stream(line, self.transport):
-            self.transport.abortConnection()
+        dcon_rsp = self.factory.app.handle_auth_response_stream(line, self.transport)
+            
+        if dcon_rsp:
+            self.sendLine(dcon_rsp)
                 
     def lineLengthExceeded(self, line):
         "Run when line length is exceeded."
