@@ -53,6 +53,7 @@ constants.ENABLE_COMPRESSION  = True
 constants.ENABLE_SHUFFLE      = True
 constants.ENABLE_TLS          = True
 constants.ENABLE_ANDROID_MODE = False
+constants.ENABLE_INPUT_SCREEN = True
 # ------------------------------------------------------------------------####
 
 # ---Application Environment----------------------------------------------####

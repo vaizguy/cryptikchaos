@@ -57,7 +57,7 @@ class GUIService(App):
             # Font type face
             font_type=constants.GUI_FONT_TYPE,
             # Font size
-            font_size=constants.GUI_FONT_SIZE,                        
+            font_size=constants.GUI_FONT_SIZE,
         )
         
         # Set up Side pane

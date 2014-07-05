@@ -101,7 +101,7 @@ class CryptikChaosApp(
                 str(peerid),
                 msg
             )
-        print self.getmaxwidth_gui_hook()
+
         # TODO Horizontal scroll is not working
         # Setting maximum line length to 75 and 
         # adding a newline character after 75 chars
