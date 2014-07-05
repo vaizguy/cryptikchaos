@@ -11,7 +11,7 @@ from kivy import Logger
 
 from time    import gmtime, strftime
 from struct  import pack, unpack
-from socket  import inet_aton, inet_ntoa, socket, AF_INET, SOCK_STREAM, error
+from socket  import inet_aton, inet_ntoa, socket, AF_INET, SOCK_STREAM, SOCK_DGRAM, error
 from uuid    import uuid4, uuid5, NAMESPACE_URL, getnode
 from hashlib import sha512, sha256, md5
 from zlib    import compress as zlib_compress, \
@@ -108,14 +108,18 @@ def get_my_ip():
         
         # Check for portal redirects if offline
         if not ip_address_is_valid(my_ip):
-            my_ip = "127.0.0.1"
+            my_ip = get_local_ip()
         
     except URLError:
         Logger.debug('No active internet connection.')
         # If offline return host
-        my_ip = '127.0.0.1'
+        my_ip = get_local_ip()
         
-    return my_ip      
+    return my_ip   
+
+def get_local_ip():
+    
+    return [(s.connect(('8.8.8.8', 80)), s.getsockname()[0], s.close()) for s in [socket(AF_INET, SOCK_DGRAM)]][0][1]
             
 def compress(stream):
     """
