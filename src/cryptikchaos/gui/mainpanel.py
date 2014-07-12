@@ -9,6 +9,7 @@ __version__ = "0.6"
 
 from kivy.uix.screenmanager import ScreenManager
 from kivy.uix.screenmanager import SlideTransition
+from kivy.clock import Clock
 
 from cryptikchaos.gui.screens.consolescreen import ConsoleScreen
 from cryptikchaos.gui.screens.aboutscreen import AboutScreen
@@ -66,24 +67,34 @@ class MainPanel(ScreenManager):
         self.last_transition = None
         
     def goto_console_screen(self):          
-             
+          
+        self.delay_by_1()
         self.transition = self.transition_slide_down
         self.current = "console"
         self.last_transition = self.transition
         
     def goto_about_screen(self):
         
+        self.delay_by_1()
         self.transition = self.transition_slide_up
         self.current = "about"
         self.last_transition = self.transition
 
     def goto_input_screen(self):
         
-        self.focus_input_gui_hook()
+        self.delay_by_1()
         self.transition = self.transition_slide_left
         self.current = "input"
         self.last_transition = self.transition
-                
+        # Focus input 
+        Clock.schedule_once(lambda dt: self._pass(), 1)
+        
+    def _pass(self):
+        return None
+    
+    def delay_by_1(self):
+        Clock.schedule_once(lambda dt: self._pass, 1)
+        
         
 if __name__ == '__main__':
     
