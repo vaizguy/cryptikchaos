@@ -32,8 +32,6 @@ class MainPanel(ScreenManager):
             greeting=greeting,             
             font_type=font_type, 
             font_size=font_size, 
-            handleinput_cmd_hook=handleinput_cmd_hook, 
-            getcommands_cmd_hook=getcommands_cmd_hook, 
             goto_inputscreen=self.goto_input_screen,
             name="console"
         )
@@ -50,9 +48,10 @@ class MainPanel(ScreenManager):
         )
         
         # Add console - GUI hooks
-        self.inputtext_gui_hook=self.console_screen.inputtext_gui_hook
-        self.getmaxwidth_gui_hook=self.console_screen.getmaxwidth_gui_hook
-        
+        self.inputtext_gui_hook=self.console_screen.console_window.inputtext_gui_hook
+        self.getmaxwidth_gui_hook=self.console_screen.console_window.getmaxwidth_gui_hook
+        self.focus_input_gui_hook = self.input_screen.console_input.focus_input_box
+
         # Add console screen widget to main screen manager
         self.add_widget(self.console_screen)
         # Add about screen
@@ -80,7 +79,7 @@ class MainPanel(ScreenManager):
 
     def goto_input_screen(self):
         
-        self.input_screen.console_input.focus_input_box()
+        self.focus_input_gui_hook()
         self.transition = self.transition_slide_left
         self.current = "input"
         self.last_transition = self.transition

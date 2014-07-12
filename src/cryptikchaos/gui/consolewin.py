@@ -21,7 +21,7 @@ if not constants.ENABLE_ANDROID_MODE:
 class ConsoleWindow(GridLayout):
     "Console window class."
     
-    def __init__(self, handleinput_cmd_hook, getcommands_cmd_hook, goto_inputscreen,
+    def __init__(self, goto_inputscreen,
         greeting, font_type, font_size):
         
         # Init super
@@ -92,10 +92,6 @@ class ConsoleWindow(GridLayout):
                 font_type=font_type,
                 # Font size
                 font_size=font_size,
-                # Input handler hook
-                handleinput_cmd_hook=handleinput_cmd_hook, 
-                # CMD list hook
-                getcommands_cmd_hook=getcommands_cmd_hook,
                 # Goto console screen
                 goto_consolescreen=lambda *args, **kwargs:None,
                 # Size 
