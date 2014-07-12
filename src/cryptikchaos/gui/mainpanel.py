@@ -86,8 +86,9 @@ class MainPanel(ScreenManager):
         self.transition = self.transition_slide_left
         self.current = "input"
         self.last_transition = self.transition
-        # Focus input 
-        Clock.schedule_once(lambda dt: self._pass(), 1)
+        # Focus input after delay
+        self.delay_by_1()
+        self.focus_input_gui_hook()
         
     def _pass(self):
         return None
