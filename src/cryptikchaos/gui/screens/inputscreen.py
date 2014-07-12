@@ -24,6 +24,3 @@ class InputScreen(Screen):
         
         ## Add the console input 
         self.add_widget(self.console_input)
-        
-        ## Focus input box method
-        self.focus_inputbox = self.console_input.focus_input_box

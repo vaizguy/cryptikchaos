@@ -80,6 +80,7 @@ class MainPanel(ScreenManager):
 
     def goto_input_screen(self):
         
+        self.input_screen.console_input.focus_input_box()
         self.transition = self.transition_slide_left
         self.current = "input"
         self.last_transition = self.transition
