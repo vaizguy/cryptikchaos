@@ -29,7 +29,10 @@ class ConsoleInput(TextInput):
         # Set size
         self.size_hint_y=size_y
         # Sets focus active
-        self.focus = True
+        if constants.ENABLE_INPUT_SCREEN:
+            self.focus = True
+        else:
+            self.focus = False            
         # Set background color
         self.background_color = [1, 1, 1, 1]
         # Set text color
@@ -120,7 +123,8 @@ class ConsoleInput(TextInput):
             self.goto_consolescreen()
             
         # Set focus
-        #self.focus = True ## TODO not working.
+        if not constants.ENABLE_INPUT_SCREEN:
+            self.focus = True
         
     def on_tab(self, instance, pcmd):
         "Method hook for entry of [TAB]"
