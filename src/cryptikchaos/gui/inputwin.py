@@ -9,6 +9,7 @@ __version__ = "0.6"
 
 import re
 from kivy.uix.textinput import TextInput
+from kivy.clock import Clock
 
 from cryptikchaos.env.configuration import constants
 
@@ -103,6 +104,12 @@ class ConsoleInput(TextInput):
         
         self.focus = True
         
+    def unfocus_input_box(self):
+        
+        self.focus = False
+        
+    def _pass(self): pass
+        
     def on_enter(self, instance):
         "Called on text input entry."
         
@@ -115,6 +122,13 @@ class ConsoleInput(TextInput):
         # Get data input
         input_text = self._get_input_text(instance)
         
+        # Set focus
+        Clock.schedule_once(lambda dt: self._pass, 1)
+        if not constants.ENABLE_INPUT_SCREEN:
+            self.focus_input_box()
+        else:
+            self.unfocus_input_box()
+
         # Handle input
         if input_text:
             # Reset prompt
@@ -123,10 +137,6 @@ class ConsoleInput(TextInput):
             self.handleinput_cmd_hook(input_text)
             # Got to console screen
             self.goto_consolescreen()
-            
-        # Set focus
-        if not constants.ENABLE_INPUT_SCREEN:
-            self.focus = True
         
     def on_tab(self, instance, pcmd):
         "Method hook for entry of [TAB]"
