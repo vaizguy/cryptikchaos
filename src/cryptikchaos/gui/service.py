@@ -124,6 +124,14 @@ class GUIService(App):
         
         Logger.info("Successfully closed services.")
         Logger.info("Closing Cryptikchaos Client.")
+        
+    def on_pause(self):
+        
+        return True
+    
+    def on_resume(self):
+        
+        pass
 
     def print_logo(self, *args):
         "Print the criptikchaos logo."
