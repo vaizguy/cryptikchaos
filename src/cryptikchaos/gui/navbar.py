@@ -42,12 +42,7 @@ class NavBar(BoxLayout):
         title_label.size_hint_y = 0.85
         # Bind to parent       
         self.add_widget(title_label)
-        
-        ## Create popup
-        #self.about_popup = AboutPopUp(
-        #    dismiss_cb=lambda help_func: self.handleinput_cmd_hook("help")
-        #)
- 
+  
         ## Minimize
         # Set up button
         console_button = Button(text='Console')
@@ -92,8 +87,6 @@ class NavBar(BoxLayout):
         
     def action_about(self, instance):
         
-        # Open pop up
-        #self.about_popup.open()    
         self.drawer.toggle_state()
         self.main_panel.goto_about_screen()   
         

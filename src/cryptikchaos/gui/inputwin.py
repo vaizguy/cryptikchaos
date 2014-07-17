@@ -3,6 +3,10 @@ Created on Jul 5, 2014
 
 @author: vaizguy
 '''
+
+__author__ = "Arun Vaidya"
+__version__ = "0.6"
+
 import re
 from kivy.uix.textinput import TextInput
 
@@ -12,14 +16,15 @@ from cryptikchaos.env.configuration import constants
 class ConsoleInput(TextInput):
     "Console text input class."
     
-    def __init__(self, font_type, font_size, handleinput_cmd_hook, getcommands_cmd_hook, goto_consolescreen,size_y=1):
+    def __init__(self, font_type, font_size, handleinput_cmd_hook, 
+            getcommands_cmd_hook, goto_consolescreen,size_y=1):
 
         # Init super
         super(ConsoleInput, self).__init__()
         
         # Single line input, enter triggers
         # on_text_validate
-        self.multiline=False
+        self.multiline=True
         # Not password input
         self.password=False
         # Font type
@@ -29,10 +34,7 @@ class ConsoleInput(TextInput):
         # Set size
         self.size_hint_y=size_y
         # Sets focus active
-        if constants.ENABLE_INPUT_SCREEN:
-            self.focus = True
-        else:
-            self.focus = False            
+        self.focus = False            
         # Set background color
         self.background_color = [1, 1, 1, 1]
         # Set text color
@@ -181,3 +183,12 @@ class ConsoleInput(TextInput):
         # If TAB is entered
         if 9 in [ord(c) for c in value]:
             self.on_tab(instance, pcmd)
+            
+    def insert_text(self, substring, from_undo=False):
+        "Method hook called on character input."
+        
+        # On entry of command
+        if substring == "\n":
+            return self.on_enter(self)
+        
+        return super(ConsoleInput, self).insert_text(substring, from_undo=from_undo)

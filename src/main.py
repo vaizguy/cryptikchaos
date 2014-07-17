@@ -15,8 +15,7 @@ kivy.require('1.7.2')
 
 # Add cryptikchaos path
 import pythonpath
-pythonpath.AddSysPath('../')
-pythonpath.AddSysPath('../..')
+pythonpath.AddSysPath('.')
 
 from cryptikchaos.env.configuration import constants
 from cryptikchaos.gui.service import GUIService
@@ -107,7 +106,7 @@ class CryptikChaosApp(
         # adding a newline character after 75 chars
         if not constants.ENABLE_ANDROID_MODE and wrap:
             # Get window size
-            wsize = self.getmaxwidth_gui_hook()/3
+            wsize = self.getmaxwidth_gui_hook()/7
             # Wrap line
             text = wrap_line(line=text, cmax=wsize)
         

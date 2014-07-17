@@ -91,7 +91,7 @@ def get_nat_ip():
     host = '127.0.0.1'
     try:
         s.connect( ( "www.google.com", 80 ) )
-    except:
+    except error:
         Logger.debug('No active NAT connection.')
         return host
     else:
@@ -119,7 +119,13 @@ def get_my_ip():
 
 def get_local_ip():
     
-    return [(s.connect(('8.8.8.8', 80)), s.getsockname()[0], s.close()) for s in [socket(AF_INET, SOCK_DGRAM)]][0][1]
+    try:
+        my_ip = [(s.connect(('8.8.8.8', 80)), s.getsockname()[0], 
+            s.close()) for s in [socket(AF_INET, SOCK_DGRAM)]][0][1]
+    except error:
+        return "127.0.0.1"
+    else:
+        return my_ip
             
 def compress(stream):
     """

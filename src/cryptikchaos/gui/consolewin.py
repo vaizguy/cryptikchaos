@@ -14,7 +14,7 @@ from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
 
 from cryptikchaos.env.configuration import constants
-if not constants.ENABLE_ANDROID_MODE:  
+if not constants.ENABLE_ANDROID_MODE and not constants.ENABLE_INPUT_SCREEN:  
     from cryptikchaos.gui.inputwin import ConsoleInput
 
 

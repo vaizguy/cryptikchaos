@@ -20,11 +20,10 @@ class AboutScreen(Screen):
         self.about_label = Label(
             text="""
 
-[b]CryptikChaos[sup]TM[/sup][/b] is still experimental!!
+[b][i]"..and the G33K shall inherit the earth."[/i][/b]
 
-[b]This application [/b] [i]will be[/i] [b]AWESOME!![/b]
-
-[i]Under development, vaizlabs.[i]
+[b]CryptikChaos[sup]TM[/sup][/b]
+[i]work in progress![i]
 
 Get the code,
 [i]www.github.com/vaizguy/cryptikchaos[/i]
