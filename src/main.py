@@ -104,7 +104,7 @@ class CryptikChaosApp(
         # TODO Horizontal scroll is not working
         # Setting maximum line length to 75 and 
         # adding a newline character after 75 chars
-        if not constants.ENABLE_ANDROID_MODE and wrap:
+        if not constants.PLATFORM_ANDROID and wrap:
             # Get window size
             wsize = self.getmaxwidth_gui_hook()/7
             # Wrap line

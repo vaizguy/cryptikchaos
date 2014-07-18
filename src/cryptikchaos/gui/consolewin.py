@@ -14,7 +14,7 @@ from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
 
 from cryptikchaos.env.configuration import constants
-if not constants.ENABLE_ANDROID_MODE and not constants.ENABLE_INPUT_SCREEN:  
+if not constants.PLATFORM_ANDROID and not constants.ENABLE_INPUT_SCREEN:  
     from cryptikchaos.gui.inputwin import ConsoleInput
 
 
@@ -32,7 +32,7 @@ class ConsoleWindow(GridLayout):
         
         self.goto_input_screen = goto_inputscreen
         
-        if not constants.ENABLE_ANDROID_MODE:
+        if not constants.PLATFORM_ANDROID:
             # Height and width
             self.height = 400
             self.width = 800
@@ -50,7 +50,7 @@ class ConsoleWindow(GridLayout):
             halign='left',    
         )
         
-        if not constants.ENABLE_ANDROID_MODE:
+        if not constants.PLATFORM_ANDROID:
             self.label.text_size=(self.width-50, None)
             self.label.shorten=True,
 
@@ -65,7 +65,7 @@ class ConsoleWindow(GridLayout):
             size_hint_y=0.9,
         )
         
-        if not constants.ENABLE_ANDROID_MODE:
+        if not constants.PLATFORM_ANDROID:
             self.scroll_view.size=(self.height, self.width)
         
         # TODO X-axis scroll not working
@@ -86,7 +86,7 @@ class ConsoleWindow(GridLayout):
         self.display_text(text=greeting)
         
         # Input text box
-        if not constants.ENABLE_ANDROID_MODE and not constants.ENABLE_INPUT_SCREEN:
+        if not constants.PLATFORM_ANDROID and not constants.ENABLE_INPUT_SCREEN:
             self.console_input = ConsoleInput(
                 # Font type
                 font_type=font_type,

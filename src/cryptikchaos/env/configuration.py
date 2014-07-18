@@ -16,6 +16,8 @@ import os
 import random
 import string
 
+from kivy.utils import platform
+
 from cryptikchaos.env import constants
 
 from cryptikchaos.libs.utilities import get_time
@@ -51,9 +53,14 @@ else:
 constants.ENABLE_TEST_MODE    = True
 constants.ENABLE_COMPRESSION  = True
 constants.ENABLE_SHUFFLE      = True
-constants.ENABLE_TLS          = True
-constants.ENABLE_ANDROID_MODE = False
 constants.ENABLE_INPUT_SCREEN = True
+constants.ENABLE_TLS          = True
+
+# Platform flag
+if platform() == "android":
+    constants.PLATFORM_ANDROID = True
+else:
+    constants.PLATFORM_ANDROID = False
 # ------------------------------------------------------------------------####
 
 # ---Application Environment----------------------------------------------####
@@ -192,12 +199,12 @@ constants.GUI_FONT_TYPE = "DroidSansMono.ttf"
 constants.GUI_FONT_SIZE = 14
 constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_LOGO = criptiklogo()
-if not constants.ENABLE_ANDROID_MODE:
+if not constants.PLATFORM_ANDROID:
     #constants.GUI_FONT_COLOR = "#00E217"
     constants.GUI_FONT_COLOR = "#999999"
 else:
     constants.GUI_FONT_COLOR = "#FFFFFF"
-    
+
 if constants.ENABLE_TEST_MODE:
     my_host = constants.LOCAL_TEST_HOST
 else:
