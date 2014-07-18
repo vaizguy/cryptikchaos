@@ -52,6 +52,7 @@ class MainPanel(ScreenManager):
         self.inputtext_gui_hook=self.console_screen.console_window.inputtext_gui_hook
         self.getmaxwidth_gui_hook=self.console_screen.console_window.getmaxwidth_gui_hook
         self.focus_input_gui_hook = self.input_screen.console_input.focus_input_box
+        self.unfocus_input_gui_hook = self.input_screen.console_input.unfocus_input_box
 
         # Add console screen widget to main screen manager
         self.add_widget(self.console_screen)
@@ -67,7 +68,9 @@ class MainPanel(ScreenManager):
         self.last_transition = None
         
     def goto_console_screen(self):          
-          
+        
+        self.delay_by_1()
+        self.unfocus_input_gui_hook()
         self.delay_by_1()
         self.transition = self.transition_slide_down
         self.current = "console"
@@ -75,6 +78,8 @@ class MainPanel(ScreenManager):
         
     def goto_about_screen(self):
         
+        self.delay_by_1()
+        self.unfocus_input_gui_hook()       
         self.delay_by_1()
         self.transition = self.transition_slide_up
         self.current = "about"
@@ -89,6 +94,9 @@ class MainPanel(ScreenManager):
         # Focus input after delay
         self.delay_by_1()
         self.focus_input_gui_hook()
+        
+    def is_console_focused(self):
+        return self.current == "console"
         
     def _pass(self):
         return None

@@ -13,6 +13,7 @@ from kivy.app import App
 from kivy.resources import resource_add_path
 from kivy.clock import Clock
 from kivy.logger import Logger
+from kivy.core.window import Window
 
 try:
     from cryptikchaos.libs.garden.navigationdrawer \
@@ -47,7 +48,7 @@ class GUIService(App):
         # Main drawer
         drawer = NavigationDrawer()
         
-        main_panel = MainPanel(
+        self.main_panel = MainPanel(
             # Input handler hook
             handleinput_cmd_hook=self.handleinput_cmd_hook,
             # Get command list hook
@@ -61,13 +62,13 @@ class GUIService(App):
         )
         
         # Set up Side pane
-        side_panel = NavBar(
+        self.side_panel = NavBar(
             # Input handler hook
             handleinput_cmd_hook=self.handleinput_cmd_hook,
             # drawer obj
             drawer=drawer,
             # screen manager obj
-            main_panel=main_panel                
+            main_panel=self.main_panel                
         )
                
         ## TODO messy implementation, here if in the
@@ -75,16 +76,19 @@ class GUIService(App):
         ## and self.get_commands_hook the app will crash.
         
         # Add main and side pane
-        drawer.add_widget(side_panel)
-        drawer.add_widget(main_panel)
+        drawer.add_widget(self.side_panel)
+        drawer.add_widget(self.main_panel)
         
         # Set animation type
         drawer.anim_type ='slide_above_anim'
 
         # Apeend text to console hook
-        self.inputtext_gui_hook = main_panel.inputtext_gui_hook
+        self.inputtext_gui_hook = self.main_panel.inputtext_gui_hook
         # Get App GUI Width
-        self.getmaxwidth_gui_hook = main_panel.getmaxwidth_gui_hook
+        self.getmaxwidth_gui_hook = self.main_panel.getmaxwidth_gui_hook
+        
+        # Bind Keyboard hook
+        self.bind(on_start=self.post_build_init)
                 
         return drawer
        
@@ -141,3 +145,23 @@ class GUIService(App):
             Logger.info('\n{}'.format(constants.GUI_LOGO))
         
         return args
+    
+    def post_build_init(self, *args):
+        
+        if constants.PLATFORM_ANDROID:
+            import android
+            android.map_key(android.KEYCODE_BACK, 1001)
+
+        win = Window
+        win.bind(on_keyboard=self.my_key_handler)
+
+    def my_key_handler(self, window, keycode1, keycode2, text, modifiers):
+        
+        if keycode1 in [27, 1001]:
+            # Go to console screen or close app
+            if self.main_panel.is_console_focused():
+                self.stop()                
+            else:
+                self.main_panel.goto_console_screen()
+            return True
+        return False
