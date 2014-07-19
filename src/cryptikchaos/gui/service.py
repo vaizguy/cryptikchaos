@@ -25,8 +25,7 @@ else:
     
 from cryptikchaos.gui.mainpanel import MainPanel
 from cryptikchaos.gui.navbar import NavBar
-from cryptikchaos.env.service import EnvService
-from cryptikchaos.comm.service import CommService
+from cryptikchaos.core.services import CoreServices
 
 # Add kivy resource paths
 resource_add_path(constants.KIVY_RESOURCE_PATH_1)
@@ -39,8 +38,7 @@ class GUIService(App):
     # Init attributes
     inputtext_gui_hook = None
     getmaxwidth_gui_hook = None
-    comm_service = None
-    env_service = None
+    core_services = None
 
     def build(self):
         "Build the kivy App."
@@ -103,16 +101,8 @@ class GUIService(App):
         # Print criptikchaos banner
         Clock.schedule_once(self.print_logo, 1)
         
-        # Initiate Twisted Server & Client services
-        self.comm_service = CommService(
-            peerid=constants.PEER_ID,
-            host=self.my_host,
-            port=constants.PEER_PORT,
-            printer=self.print_message
-        )
-        
-        # Initiate environment service
-        self.env_service = EnvService()
+        # Start code services
+        self.core_services = CoreServices(self.my_host, self.print_message)        
         
     def on_stop(self):
         '''Event handler for the on_stop event, which is fired when the
@@ -122,9 +112,8 @@ class GUIService(App):
         
         Logger.info("Closing services.")  
         
-        # Close services
-        self.comm_service.__del__()
-        self.env_service.__del__()
+        ## Close services
+        self.core_services.__del__()
         
         Logger.info("Successfully closed services.")
         Logger.info("Closing Cryptikchaos Client.")

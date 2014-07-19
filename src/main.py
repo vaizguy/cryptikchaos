@@ -35,11 +35,9 @@ class CryptikChaosApp(
     Inherits from GUI service. (gui.service.GUIService)
 
     """
-           
-    # Communications service
-    comm_service = None
-    # Config Environment service
-    env_service = None
+        
+    # Core services   
+    core_services = None
     # GUI service
     gui_service = None
     
@@ -81,14 +79,14 @@ class CryptikChaosApp(
         else:
         # One line print
             if not peerid:
-                peerid = self.comm_service.peerid
+                peerid = self.core_services.comm_service.peerid
                 
             # If local pid, substitute with peer name
-            if peerid == self.comm_service.peerid:
+            if peerid == self.core_services.comm_service.peerid:
                 peerid = constants.PEER_NAME
                 
             # Get peer message color
-            rcc = self.comm_service.swarm_manager.get_peerid_color(
+            rcc = self.core_services.comm_service.swarm_manager.get_peerid_color(
                 peerid
             )
 
@@ -307,7 +305,7 @@ class CryptikChaosApp(
             return None
         else:
             self.print_message("Adding Peer {} @ {}.".format(pid, host))
-            self.comm_service.add_peer_to_swarm(pid, host)
+            self.core_services.comm_service.add_peer_to_swarm(pid, host)
 
     def cmd_addtest(self, _):
         """
@@ -350,7 +348,7 @@ class CryptikChaosApp(
                 Logger.warn("Please enter a message to send.")
                 return None
 
-        if self.comm_service.pass_message(pid, msg):
+        if self.core_services.comm_service.pass_message(pid, msg):
             # command log
             Logger.debug("Message sent to peer {}.".format(pid))
             # Display send message
@@ -385,7 +383,7 @@ class CryptikChaosApp(
         """
 
         self.print_table(
-            self.comm_service.swarm_manager.peer_table()
+            self.core_services.comm_service.swarm_manager.peer_table()
         )
         
     def cmd_peerip(self, cmdline=[]):
@@ -396,7 +394,7 @@ class CryptikChaosApp(
         """        
         
         for peer_id in cmdline:
-            self.comm_service.display_peer_host(peer_id)
+            self.core_services.comm_service.display_peer_host(peer_id)
             
     def cmd_env(self, _):
         """
@@ -407,7 +405,7 @@ class CryptikChaosApp(
         """
         
         self.print_table(
-            self.env_service.display_table()
+            self.core_services.env_service.display_table()
         )
                        
     def cmd_eko(self, cmdline=[]):
@@ -425,7 +423,7 @@ class CryptikChaosApp(
             cmdline = " ".join(cmdline)
         
         # Get constant
-        v = self.env_service.get_constant(cmdline)
+        v = self.core_services.env_service.get_constant(cmdline)
         
         # Print constant value or string
         if v:
@@ -452,7 +450,7 @@ class CryptikChaosApp(
             Usage: memprof
             """
             
-            self.env_service.memory_summary()
+            self.core_services.env_service.memory_summary()
             self.print_message("Dumped Memory profile to terminal.")
 
     # Swarm graph visualizer
@@ -465,7 +463,7 @@ class CryptikChaosApp(
             Usage: graphswarm
             """
     
-            if self.comm_service.swarm_manager.plot_swarm_graph():
+            if self.core_services.comm_service.swarm_manager.plot_swarm_graph():
                 self.print_message("Generated peer graph.")
             else:
                 self.print_message("No peers in swarm.")
