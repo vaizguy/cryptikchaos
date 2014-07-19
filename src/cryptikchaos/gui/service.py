@@ -44,7 +44,7 @@ class GUIService(App):
         super(GUIService, self).__init__()
                         
         # Start code services
-        self.core_services = CoreServices(self.my_host) 
+        self.core_services = CoreServices() 
         
         # Main drawer
         self.drawer = NavigationDrawer()

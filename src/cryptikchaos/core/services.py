@@ -20,7 +20,13 @@ from cryptikchaos.libs.utilities import wrap_line
 
 class CoreServices:
     
-    def __init__(self, my_host):
+    def __init__(self):
+        
+        # Peer host (by default is localhost)
+        if constants.ENABLE_TEST_MODE:
+            my_host = constants.LOCAL_TEST_HOST
+        else:
+            my_host = constants.PEER_HOST
         
         # Initiate communication service
         self.comm_service = CommService(

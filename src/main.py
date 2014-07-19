@@ -33,12 +33,6 @@ class CryptikChaosApp(
     Inherits from GUI service. (gui.service.GUIService)
 
     """
-   
-    # Peer host (by default is localhost)
-    if constants.ENABLE_TEST_MODE:
-        my_host = constants.LOCAL_TEST_HOST
-    else:
-        my_host = constants.PEER_HOST
         
     def __init__(self):
         
@@ -47,10 +41,6 @@ class CryptikChaosApp(
           
     def build(self):
         "Build the kivy App."
-                
-        # If not in test mode get LAN IP
-        if not constants.ENABLE_TEST_MODE:
-            self.my_host = constants.PEER_HOST
 
         return super(CryptikChaosApp, self).build()
            
