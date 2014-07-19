@@ -20,6 +20,10 @@ class ParserService:
         # Set the command aliases
         self.cmd_aliases = cmd_aliases
         
+    def __del__(self):
+        
+        Logger.info("Closing Parser service.")
+        
     def _replace_aliases(self, line):
         "Replace command aliases i.e '!, @, #' with command."
         

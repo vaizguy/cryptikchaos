@@ -98,7 +98,8 @@ class CommService:
             self._start_peer_connections()
 
     def __del__(self):
-
+        
+        Logger.info("Closing Communications service.")
         Logger.info("Closing managers.")
         # Close swarm handler
         self.swarm_manager.__del__()

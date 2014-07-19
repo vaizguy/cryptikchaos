@@ -123,7 +123,6 @@ class ConsoleInput(TextInput):
         input_text = self._get_input_text(instance)
         
         # Set focus
-        Clock.schedule_once(lambda dt: self._pass, 1)
         if not constants.ENABLE_INPUT_SCREEN:
             self.focus_input_box()
         else:
