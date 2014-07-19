@@ -14,17 +14,17 @@ __version__ = "0.6"
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 
-from cryptikchaos.env.configuration import constants
+from cryptikchaos.core.env.configuration import constants
 
-from cryptikchaos.comm.commcoreserver import CommCoreServerFactory
-from cryptikchaos.comm.commcoreclient import CommCoreClientFactory
-from cryptikchaos.comm.commcoreauth   import CommCoreAuthFactory
-from cryptikchaos.comm.swarm.manager  import SwarmManager
-from cryptikchaos.comm.stream.manager import StreamManager
-from cryptikchaos.comm.stream.manager import STREAM_TYPES
-from cryptikchaos.comm.comsec import ComSecCore
+from cryptikchaos.core.comm.commcoreserver import CommCoreServerFactory
+from cryptikchaos.core.comm.commcoreclient import CommCoreClientFactory
+from cryptikchaos.core.comm.commcoreauth   import CommCoreAuthFactory
+from cryptikchaos.core.comm.swarm.manager  import SwarmManager
+from cryptikchaos.core.comm.stream.manager import StreamManager
+from cryptikchaos.core.comm.stream.manager import STREAM_TYPES
+from cryptikchaos.core.comm.comsec import ComSecCore
 if constants.ENABLE_TLS:
-    from cryptikchaos.comm.sslcontext import TLSCtxFactory
+    from cryptikchaos.core.comm.sslcontext import TLSCtxFactory
     
 from cryptikchaos.exceptions.streamExceptions import \
     StreamOverflowError

@@ -11,9 +11,9 @@ __version__ = "0.6"
 
 from cryptikchaos.libs.Storage.manager import StoreManager
 
-from cryptikchaos.env.configuration import constants
+from cryptikchaos.core.env.configuration import constants
 
-from cryptikchaos.comm.swarm.peer import Peer
+from cryptikchaos.core.comm.swarm.peer import Peer
 
 from kivy.logger import Logger
 

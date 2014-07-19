@@ -13,7 +13,7 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
 
-from cryptikchaos.env.configuration import constants
+from cryptikchaos.core.env.configuration import constants
 if not constants.PLATFORM_ANDROID and not constants.ENABLE_INPUT_SCREEN:  
     from cryptikchaos.gui.inputwin import ConsoleInput
 

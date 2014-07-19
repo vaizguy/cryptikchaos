@@ -9,7 +9,7 @@ Twisted network server core.
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
-from cryptikchaos.env.configuration import constants
+from cryptikchaos.core.env.configuration import constants
 
 from kivy.logger import Logger
 import base64

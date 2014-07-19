@@ -4,10 +4,10 @@ Created on Jul 19, 2014
 @author: vaizguy
 '''
 
-from cryptikchaos.env.configuration import constants
+from cryptikchaos.core.env.configuration import constants
 
-from cryptikchaos.env.service import EnvService
-from cryptikchaos.comm.service import CommService
+from cryptikchaos.core.env.service import EnvService
+from cryptikchaos.core.comm.service import CommService
 
 class CoreServices:
     

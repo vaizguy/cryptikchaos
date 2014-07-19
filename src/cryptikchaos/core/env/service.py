@@ -9,8 +9,8 @@ View app environment constants through the App.
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
-from cryptikchaos.env.configuration import constants
-from cryptikchaos.env import constants as const
+from cryptikchaos.core.env.configuration import constants
+from cryptikchaos.core.env import constants as const
 from cryptikchaos.libs.utilities import serialize
 from cryptikchaos.libs.utilities import deserialize
 

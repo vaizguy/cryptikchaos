@@ -18,7 +18,7 @@ import string
 
 from kivy.utils import platform
 
-from cryptikchaos.env import constants
+from cryptikchaos.core.env import constants
 
 from cryptikchaos.libs.utilities import get_time
 from cryptikchaos.libs.utilities import criptiklogo
@@ -75,7 +75,7 @@ constants.CMD_ALIASES = {
 
 # ---Project Path CONSTANTS-----------------------------------------------####
 
-constants.PROJECT_PATH = "{}/..".format(
+constants.PROJECT_PATH = "{}/../..".format(
     os.path.dirname(os.path.realpath(__file__))
 )
 constants.KIVY_RESOURCE_PATH_1 = "{}/data".format(constants.PROJECT_PATH)

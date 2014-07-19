@@ -11,7 +11,7 @@ import re
 from kivy.uix.textinput import TextInput
 from kivy.clock import Clock
 
-from cryptikchaos.env.configuration import constants
+from cryptikchaos.core.env.configuration import constants
 
 
 class ConsoleInput(TextInput):

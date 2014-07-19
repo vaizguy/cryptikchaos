@@ -13,7 +13,7 @@ from kivy import Logger
 
 from cryptikchaos.exceptions.sslcontextExceptions import \
     SSLCertReadError, SSLKeyReadError
-from cryptikchaos.env.configuration import constants
+from cryptikchaos.core.env.configuration import constants
 
 
 class TLSCtxFactory(ssl.ClientContextFactory):

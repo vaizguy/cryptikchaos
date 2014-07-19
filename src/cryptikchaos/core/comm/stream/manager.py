@@ -12,7 +12,7 @@ __version__ = "0.6"
 
 from kivy import Logger
 
-from cryptikchaos.env.configuration import constants
+from cryptikchaos.core.env.configuration import constants
 
 from cryptikchaos.libs.Storage.manager import StoreManager
 
@@ -31,7 +31,7 @@ from cryptikchaos.libs.obscure import unshuffler
 from cryptikchaos.exceptions.streamExceptions import \
     StreamOverflowError
 
-from cryptikchaos.comm.stream.stream import Stream
+from cryptikchaos.core.comm.stream.stream import Stream
 
 if constants.AES_AVAILABLE:
     Logger.info("AES Crypto available.")

@@ -108,7 +108,7 @@ class MainPanel(ScreenManager):
 if __name__ == '__main__':
     
     from kivy.app import App
-    from cryptikchaos.env.configuration import constants
+    from cryptikchaos.core.env.configuration import constants
     
     # Add kivy resource paths
     from kivy.resources import resource_add_path
