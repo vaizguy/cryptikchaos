@@ -50,9 +50,7 @@ class EnvService:
     def __del__(self):
         
         Logger.info("Closing Environment service.")
-        # Delete env dict
-        if self.env_dict:
-            del self.env_dict
+
 
     def list_constants(self):
         "List all env constants."

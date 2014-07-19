@@ -17,8 +17,7 @@ from cryptikchaos.core.env.configuration import constants
 class ConsoleInput(TextInput):
     "Console text input class."
     
-    def __init__(self, font_type, font_size, handleinput_cmd_hook, 
-            getcommands_cmd_hook, goto_consolescreen,size_y=1):
+    def __init__(self, font_type, font_size, goto_consolescreen,size_y=1):
 
         # Init super
         super(ConsoleInput, self).__init__()
@@ -45,9 +44,9 @@ class ConsoleInput(TextInput):
             self.padding = [25, 20, 10, 0]
         
         # Input command handler
-        self.handleinput_cmd_hook = handleinput_cmd_hook
+        self.handleinput_cmd_hook = None
         # Get list of defined commands
-        self.getcommands_cmd_hook = getcommands_cmd_hook
+        self.getcommands_cmd_hook = None
         # Go to console screen
         self.goto_consolescreen = goto_consolescreen
         
@@ -99,7 +98,15 @@ class ConsoleInput(TextInput):
         
         # Reset cursor
         instance.do_cursor_movement("cursor_end")
+    
+    def register_handleinput_cmd_hook(self, hook):
         
+        self.handleinput_cmd_hook = hook
+                
+    def register_getcommands_cmd_hook(self, hook):
+        
+        self.getcommands_cmd_hook =hook
+         
     def focus_input_box(self):
         
         self.focus = True

@@ -18,8 +18,7 @@ from cryptikchaos.gui.screens.inputscreen import InputScreen
 
 class MainPanel(ScreenManager):
     
-    def __init__(self, greeting, font_type, font_size, 
-        handleinput_cmd_hook, getcommands_cmd_hook, **kwargs):
+    def __init__(self, greeting, font_type, font_size, **kwargs):
         
         super(ScreenManager, self).__init__(**kwargs)
                 
@@ -42,8 +41,6 @@ class MainPanel(ScreenManager):
         self.input_screen = InputScreen(
             font_type=font_type, 
             font_size=font_size, 
-            handleinput_cmd_hook=handleinput_cmd_hook, 
-            getcommands_cmd_hook=getcommands_cmd_hook, 
             goto_consolescreen=self.goto_console_screen,
             name="input"
         )
@@ -67,6 +64,14 @@ class MainPanel(ScreenManager):
         # Last transition
         self.last_transition = None
         
+    def register_handleinput_cmd_hook(self, hook):
+        
+        self.input_screen.register_handleinput_cmd_hook(hook)
+                
+    def register_getcommands_cmd_hook(self, hook):
+        
+        self.input_screen.register_getcommands_cmd_hook(hook)
+                
     def goto_console_screen(self):          
         
         self.delay_by_1()

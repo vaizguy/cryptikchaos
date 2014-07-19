@@ -14,10 +14,10 @@ from kivy.uix.button    import Button
 
 class NavBar(BoxLayout):
     
-    def __init__(self, drawer, main_panel, handleinput_cmd_hook):
+    def __init__(self, drawer, main_panel):
         
         # Hooks
-        self.handleinput_cmd_hook = handleinput_cmd_hook
+        self.handleinput_cmd_hook = None
         
         # Parent hooks
         self.drawer = drawer
@@ -78,7 +78,11 @@ class NavBar(BoxLayout):
         exit_button.bind(on_release=self.action_exit)
         # Bind to parent
         self.add_widget(exit_button) 
+    
+    def register_handleinput_cmd_hook(self, hook):
         
+        self.handleinput_cmd_hook = hook
+            
     def action_exit(self, instance):
         
         self.drawer.toggle_state()

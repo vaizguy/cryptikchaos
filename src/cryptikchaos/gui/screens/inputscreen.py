@@ -13,8 +13,7 @@ from cryptikchaos.gui.inputwin import ConsoleInput
 
 class InputScreen(Screen):
     
-    def __init__(self, font_type, font_size, handleinput_cmd_hook, 
-            getcommands_cmd_hook, goto_consolescreen, **kwargs):
+    def __init__(self, font_type, font_size, goto_consolescreen, **kwargs):
         
         ## Construct screen
         super(InputScreen, self).__init__(**kwargs)
@@ -23,10 +22,16 @@ class InputScreen(Screen):
         self.console_input = ConsoleInput( 
             font_type,
             font_size, 
-            handleinput_cmd_hook, 
-            getcommands_cmd_hook,
             goto_consolescreen
         )
         
         ## Add the console input 
         self.add_widget(self.console_input)
+        
+    def register_handleinput_cmd_hook(self, hook):
+        
+        self.console_input.register_handleinput_cmd_hook(hook)
+                
+    def register_getcommands_cmd_hook(self, hook):
+        
+        self.console_input.register_getcommands_cmd_hook(hook)

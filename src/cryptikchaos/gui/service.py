@@ -38,27 +38,19 @@ class GUIService(App):
     # Init attributes
     core_services = None
     
-    def __init__(self, handleinput_cmd_hook, getcommands_cmd_hook):
-        
-        # CMD hooks
-        self.handleinput_cmd_hook = handleinput_cmd_hook
-        self.getcommands_cmd_hook = getcommands_cmd_hook
+    def __init__(self):
         
         # Init App
         super(GUIService, self).__init__()
-
-    def build(self):
-        "Build the kivy App."
-                
+                        
+        # Start code services
+        self.core_services = CoreServices(self.my_host) 
+        
         # Main drawer
-        drawer = NavigationDrawer()
+        self.drawer = NavigationDrawer()
         
         # Set up Main panel
         self.main_panel = MainPanel(
-            # Input handler hook
-            handleinput_cmd_hook=self.handleinput_cmd_hook,
-            # Get command list hook
-            getcommands_cmd_hook=self.getcommands_cmd_hook,
             # Console splash greeting
             greeting=constants.GUI_WELCOME_MSG,
             # Font type face
@@ -69,30 +61,42 @@ class GUIService(App):
         
         # Set up Side pane
         self.side_panel = NavBar(
-            # Input handler hook
-            handleinput_cmd_hook=self.handleinput_cmd_hook,
             # drawer obj
-            drawer=drawer,
+            drawer=self.drawer,
             # screen manager obj
             main_panel=self.main_panel                
         )
         
-        # Add main and side pane
-        drawer.add_widget(self.side_panel)
-        drawer.add_widget(self.main_panel)
-        
-        # Set animation type
-        drawer.anim_type ='slide_above_anim'
-
         # Apeend text to console hook
         self.inputtext_gui_hook = self.main_panel.inputtext_gui_hook
         # Get App GUI Width
         self.getmaxwidth_gui_hook = self.main_panel.getmaxwidth_gui_hook
+        # cmd hooks
+        self.handleinput_cmd_hook = self.core_services.handleinput_cmd_hook
+        self.getcommands_cmd_hook = self.core_services.getcommands_cmd_hook
+        
+        # Register GUI hooks
+        self.core_services.register_inputtext_gui_hook(self.inputtext_gui_hook)
+        self.core_services.register_getmaxwidth_gui_hook(self.getmaxwidth_gui_hook)
+        # Register CMD hooks
+        self.main_panel.register_handleinput_cmd_hook(self.handleinput_cmd_hook)
+        self.main_panel.register_getcommands_cmd_hook(self.getcommands_cmd_hook)
+        self.side_panel.register_handleinput_cmd_hook(self.handleinput_cmd_hook)
+        
+    def build(self):
+        "Build the kivy App."
+
+        # Add main and side pane
+        self.drawer.add_widget(self.side_panel)
+        self.drawer.add_widget(self.main_panel)
+        
+        # Set animation type
+        self.drawer.anim_type ='slide_above_anim'
         
         # Bind Keyboard hook
         self.bind(on_start=self.post_build_init)
                 
-        return drawer
+        return self.drawer
        
     def on_start(self):
         '''Event handler for the on_start event, which is fired after
@@ -104,9 +108,7 @@ class GUIService(App):
         
         # Print criptikchaos banner
         Clock.schedule_once(self.print_logo, 1)
-        
-        # Start code services
-        self.core_services = CoreServices(self.my_host, self.print_message)        
+      
         
     def on_stop(self):
         '''Event handler for the on_stop event, which is fired when the
