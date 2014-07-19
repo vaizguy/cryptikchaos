@@ -36,9 +36,16 @@ class GUIService(App):
     "Graphival user interface service."
            
     # Init attributes
-    inputtext_gui_hook = None
-    getmaxwidth_gui_hook = None
     core_services = None
+    
+    def __init__(self, handleinput_cmd_hook, getcommands_cmd_hook):
+        
+        # CMD hooks
+        self.handleinput_cmd_hook = handleinput_cmd_hook
+        self.getcommands_cmd_hook = getcommands_cmd_hook
+        
+        # Init App
+        super(GUIService, self).__init__()
 
     def build(self):
         "Build the kivy App."
@@ -46,6 +53,7 @@ class GUIService(App):
         # Main drawer
         drawer = NavigationDrawer()
         
+        # Set up Main panel
         self.main_panel = MainPanel(
             # Input handler hook
             handleinput_cmd_hook=self.handleinput_cmd_hook,
@@ -68,10 +76,6 @@ class GUIService(App):
             # screen manager obj
             main_panel=self.main_panel                
         )
-               
-        ## TODO messy implementation, here if in the
-        ## main application class we do not have self.handle_input_hook
-        ## and self.get_commands_hook the app will crash.
         
         # Add main and side pane
         drawer.add_widget(self.side_panel)
@@ -109,14 +113,11 @@ class GUIService(App):
         application has finished running (e.g. the window is about to be
         closed).
         '''
-        
-        Logger.info("Closing services.")  
-        
+               
         ## Close services
         self.core_services.__del__()
         
-        Logger.info("Successfully closed services.")
-        Logger.info("Closing Cryptikchaos Client.")
+        Logger.info("Stopped Cryptikchaos Client.")
         
     def on_pause(self):
         

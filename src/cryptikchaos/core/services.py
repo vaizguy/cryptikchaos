@@ -7,6 +7,8 @@ Created on Jul 19, 2014
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
+from kivy.logger import Logger
+
 from cryptikchaos.core.env.configuration import constants
 
 from cryptikchaos.core.env.service import EnvService
@@ -36,6 +38,10 @@ class CoreServices:
         
     def __del__(self):
         
+        Logger.info("Closing services.")  
+
         self.comm_service.__del__()
         self.env_service.__del__()
         self.parser_service.__del__()
+        
+        Logger.info("Successfully closed services.")

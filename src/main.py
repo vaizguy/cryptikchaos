@@ -34,29 +34,29 @@ class CryptikChaosApp(
     Inherits from GUI service. (gui.service.GUIService)
 
     """
-        
-    # Core services   
-    core_services = None
-    # GUI service
-    gui_service = None
-    
+   
     # Peer host (by default is localhost)
     if constants.ENABLE_TEST_MODE:
         my_host = constants.LOCAL_TEST_HOST
     else:
         my_host = constants.PEER_HOST
-  
+        
+    def __init__(self):
+        
+        # Init GUI Service
+        super(CryptikChaosApp, self).__init__(
+            self.handleinput_cmd_hook,
+            self.getcommands_cmd_hook
+        )
+          
     def build(self):
         "Build the kivy App."
-        
-        # Initiate Kivy GUI
-        self.gui_service = GUIService.build(self)
-        
+                
         # If not in test mode get LAN IP
         if not constants.ENABLE_TEST_MODE:
             self.my_host = constants.PEER_HOST
 
-        return self.gui_service
+        return super(CryptikChaosApp, self).build()
            
     def print_message(self, msg, peerid=None, intermediate=False, wrap=True):
         "Print a message in the output window."
