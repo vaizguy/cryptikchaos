@@ -108,9 +108,7 @@ class StoreManager(object):
         
         if not self._storage.keys():
             return None 
-        
-        print "\n{} Storage Table".format(self._name) 
-        
+                
         table = PrettyTable(["ID"] + list(self._store_keys))
 
         for sid in self._storage.keys():   

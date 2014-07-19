@@ -20,7 +20,6 @@ pythonpath.AddSysPath('.')
 from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.gui.service import GUIService
 from cryptikchaos.libs.utilities import wrap_line
-from cryptikchaos.core.parser.service import ParserService
 
 from kivy.logger import Logger
 
@@ -46,11 +45,6 @@ class CryptikChaosApp(
         my_host = constants.LOCAL_TEST_HOST
     else:
         my_host = constants.PEER_HOST
-    
-    # Lexical parser service
-    parser_service = ParserService(
-        cmd_aliases = constants.CMD_ALIASES 
-    )
   
     def build(self):
         "Build the kivy App."
@@ -136,7 +130,7 @@ class CryptikChaosApp(
     def parse_line(self, line):
         "Parse command line."
             
-        (cmd, arg_str) = self.parser_service.parse_command(line)
+        (cmd, arg_str) = self.core_services.parser_service.parse_command(line)
             
         return (cmd, arg_str)
 
