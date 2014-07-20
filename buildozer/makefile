@@ -27,5 +27,5 @@ run: deploy
 	$(BUILDOZER) --verbose android run | tee -i run_apk.log
 
 test: run
-	$(BUILDOZER) --verbose android logcat | awk '/I\/python/{print > "test_apk.log"} 1'
+	$(BUILDOZER) --verbose android logcat | gawk '/I\/python/{print > "test_apk.log"} 1'
 

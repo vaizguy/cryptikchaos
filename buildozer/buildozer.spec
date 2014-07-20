@@ -36,7 +36,7 @@ version.filename = %(source.dir)s/main.py
 #version = 0.5
 
 # (list) Application requirements
-requirements = kivy,twisted,pyopenssl,pycrypto
+requirements = kivy,twisted,pyopenssl,pycrypto,plyer
 
 # (str) Presplash of the application
 #presplash.filename = %(source.dir)s/data/presplash.png
@@ -56,7 +56,7 @@ fullscreen = 0
 #
 
 # (list) Permissions
-android.permissions = INTERNET
+android.permissions = INTERNET,READ_PHONE_STATE
 
 # (int) Android API to use
 #android.api = 14
