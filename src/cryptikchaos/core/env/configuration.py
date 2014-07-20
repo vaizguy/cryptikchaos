@@ -17,6 +17,7 @@ import random
 import string
 
 from kivy.utils import platform
+from plyer import uniqueid
 
 from cryptikchaos.core.env import constants
 
@@ -86,7 +87,7 @@ constants.KIVY_RESOURCE_PATH_2 = "{}/libs/garden/navigationdrawer".format(
 
 # ---peer attribute constants---------------------------------------------####
 
-constants.PEER_ID = md5hash(str(uuid.getnode()))[0:8]
+constants.PEER_ID = md5hash(uniqueid.id)[0:8]
 constants.PEER_PORT = 1597
 constants.PEER_HOST = get_my_ip()
 constants.PEER_NAME = "MYPOD"

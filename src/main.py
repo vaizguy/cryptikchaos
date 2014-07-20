@@ -17,7 +17,6 @@ kivy.require('1.7.2')
 import pythonpath
 pythonpath.AddSysPath('.')
 
-from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.gui.service import GUIService
 
 from kivy.logger import Logger

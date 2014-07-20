@@ -4,6 +4,9 @@ Created on May 31, 2014
 @author: vaizguy
 '''
 
+__author__ = "Arun Vaidya"
+__version__ = "0.6"
+
 from cryptikchaos.libs.crypto.pyDHE import DiffieHellman
 
 

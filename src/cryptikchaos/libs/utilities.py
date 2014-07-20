@@ -237,6 +237,10 @@ def bytes_to_num(bytes_repr):
     
     return int(bytes_repr.encode('hex'), 16)
 
+def long2hex(self, long_num):
+    
+    return  hex(long_num).rstrip("L").lstrip("0x") or "0"
+
 
 if __name__ == "__main__":
     ## Test for factor_line

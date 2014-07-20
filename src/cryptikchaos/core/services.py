@@ -14,6 +14,7 @@ from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.core.env.service import EnvService
 from cryptikchaos.core.comm.service import CommService
 from cryptikchaos.core.parser.service import ParserService
+from cryptikchaos.core.device.service import DeviceService
 
 from cryptikchaos.libs.utilities import wrap_line
 
@@ -27,6 +28,9 @@ class CoreServices:
             my_host = constants.LOCAL_TEST_HOST
         else:
             my_host = constants.PEER_HOST
+            
+        # Initiate device service
+        self.device_service = DeviceService()
         
         # Initiate communication service
         self.comm_service = CommService(
@@ -51,10 +55,12 @@ class CoreServices:
     def __del__(self):
         
         Logger.info("Closing services.")  
-
-        self.comm_service.__del__()
-        self.env_service.__del__()
-        self.parser_service.__del__()
+        
+        try:
+            self.comm_service.__del__()
+            self.env_service.__del__()
+            self.parser_service.__del__()
+        except: pass
         
         Logger.info("Successfully closed services.")
         
