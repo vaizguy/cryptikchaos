@@ -18,9 +18,12 @@ from cryptikchaos.gui.screens.inputscreen import InputScreen
 
 class MainPanel(ScreenManager):
     
-    def __init__(self, greeting, font_type, font_size, **kwargs):
+    def __init__(self, drawer, greeting, font_type, font_size, **kwargs):
         
         super(ScreenManager, self).__init__(**kwargs)
+        
+        # Parent drawer
+        self.drawer = drawer
                 
         # Animation
         self.transition_slide_up = SlideTransition(direction="up")
@@ -75,6 +78,8 @@ class MainPanel(ScreenManager):
     def goto_console_screen(self):          
         
         self.delay_by_1()
+        self.close_navbar()
+        self.delay_by_1()
         self.unfocus_input_gui_hook()
         self.delay_by_1()
         self.transition = self.transition_slide_down
@@ -109,6 +114,10 @@ class MainPanel(ScreenManager):
     def delay_by_1(self):
         Clock.schedule_once(lambda dt: self._pass, 1)
         
+    def close_navbar(self):
+        if self.drawer.state=="open":
+            self.drawer.anim_to_state("closed")      
+
         
 if __name__ == '__main__':
     

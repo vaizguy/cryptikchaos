@@ -9,7 +9,6 @@ __version__ = "0.6"
 
 import re
 from kivy.uix.textinput import TextInput
-from kivy.clock import Clock
 
 from cryptikchaos.core.env.configuration import constants
 

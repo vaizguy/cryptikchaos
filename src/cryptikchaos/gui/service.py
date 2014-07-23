@@ -51,6 +51,8 @@ class GUIService(App):
         
         # Set up Main panel
         self.main_panel = MainPanel(
+            # drawer obj
+            drawer=self.drawer,
             # Console splash greeting
             greeting=constants.GUI_WELCOME_MSG,
             # Font type face
