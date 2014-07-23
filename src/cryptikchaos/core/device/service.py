@@ -7,15 +7,9 @@ Created on Jul 20, 2014
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
-import plyer
+from plyer import uniqueid
 
 
 class DeviceService:
-    
-    def __init__(self):
-        
-        self.DEVICE_ID = plyer.uniqueid.id
-        
-    def get_devid(self):
-        
-        return self.DEVICE_ID
+
+    DEVICE_ID = uniqueid.id

@@ -45,18 +45,19 @@ STREAM_TYPES = enum(UNAUTH=False, AUTH=True)
 
 
 class StreamManager(StoreManager):
+
     "Stream manager class."
 
     def __init__(self, peerid, peerkey, peerhost):
-        
+
         # Authorized keys
         self._valid_keys = (
             'STREAM_FLAG',
-            'STREAM_TYPE' ,
+            'STREAM_TYPE',
             'STREAM_CONTENT',
             'STREAM_PKEY'
         )
-        
+
         # Create store
         super(StreamManager, self).__init__("StreamStore", self._valid_keys)
         # Peer public key
@@ -65,15 +66,15 @@ class StreamManager(StoreManager):
         self.peer_host = peerhost
 
     def __del__(self):
-        
+
         # Clear stored streams
         if super(StreamManager, self):
             super(StreamManager, self).__del__()
-                   
+
     def pack_stream(self, stream_type, stream_content, stream_host,
-            stream_flag=STREAM_TYPES.AUTH, shared_key=None):
+                    stream_flag=STREAM_TYPES.AUTH, shared_key=None):
         "Pack data into stream."
-                       
+
         # Check length of content.
         if len(stream_content) > constants.STREAM_CONTENT_LEN:
             raise StreamOverflowError(constants.STREAM_CONTENT_LEN)
@@ -81,14 +82,14 @@ class StreamManager(StoreManager):
         # Check length of capsule type.
         if len(stream_type) > constants.STREAM_TYPE_LEN:
             raise StreamOverflowError(constants.STREAM_TYPE_LEN)
-        
+
         # Generate uid
         stream_uid = generate_uuid(stream_host)
         # Stream type
         stream_type = stream_type.upper()
         # Stream peer key
         stream_token = None
-                
+
         # Shuffle content
         if constants.ENABLE_SHUFFLE:
             Logger.info("Scrambling content...")
@@ -97,14 +98,14 @@ class StreamManager(StoreManager):
                 string=stream_content,
                 iterations=constants.STREAM_CONT_SHUFF_ITER
             )
-            
+
         # Check stream signing mode
         if stream_flag == STREAM_TYPES.UNAUTH:
             # Stream key is peer key
-            ## NOTE peer public key is sent during 
-            ## authentication.
+            # NOTE peer public key is sent during
+            # authentication.
             stream_token = num_to_bytes(self.public_key)
-            
+
         elif stream_flag == STREAM_TYPES.AUTH:
             # Generate token at source side
             stream_token = generate_token(stream_uid, shared_key)
@@ -120,16 +121,16 @@ class StreamManager(StoreManager):
                 stream_content = self.pad(stream_content)
                 # Encrypt string
                 stream_content = AES_obj.encrypt(stream_content)
-            
+
         # Create stream object
         stream_obj = Stream(
-            stream_uid, 
+            stream_uid,
             stream_flag,
             stream_type,
             stream_content,
             stream_token,
         )
-                
+
         # Add stream to store
         self.add_store(
             stream_uid, stream_obj.dict
@@ -146,13 +147,13 @@ class StreamManager(StoreManager):
                     constants.STREAM_PEER_KEY_LEN,
                     constants.STREAM_CHKSUM_LEN
                 ),
-                self.get_store_item(stream_uid, 'STREAM_FLAG'   ),
-                self.get_store_item(stream_uid, 'STREAM_TYPE'   ),
+                self.get_store_item(stream_uid, 'STREAM_FLAG'),
+                self.get_store_item(stream_uid, 'STREAM_TYPE'),
                 self.get_store_item(stream_uid, 'STREAM_CONTENT'),
-                self.get_store_item(stream_uid, 'STREAM_PKEY'   ),
+                self.get_store_item(stream_uid, 'STREAM_PKEY'),
                 self.get_store_hmac(stream_uid)
             )
-            
+
         elif stream_flag == STREAM_TYPES.AUTH:
             Logger.info("Packing Message Stream...")
 
@@ -164,13 +165,13 @@ class StreamManager(StoreManager):
                     constants.STREAM_TOKEN_LEN,
                     constants.STREAM_CHKSUM_LEN
                 ),
-                self.get_store_item(stream_uid, 'STREAM_FLAG'   ),
-                self.get_store_item(stream_uid, 'STREAM_TYPE'   ),
+                self.get_store_item(stream_uid, 'STREAM_FLAG'),
+                self.get_store_item(stream_uid, 'STREAM_TYPE'),
                 self.get_store_item(stream_uid, 'STREAM_CONTENT'),
-                self.get_store_item(stream_uid, 'STREAM_PKEY'   ),
+                self.get_store_item(stream_uid, 'STREAM_PKEY'),
                 self.get_store_hmac(stream_uid)
             )
-            
+
         else:
             Logger.error("Invalid Stream Flag received.")
             return None
@@ -179,28 +180,28 @@ class StreamManager(StoreManager):
         if constants.ENABLE_COMPRESSION:
             Logger.info("Compressing Stream...")
             stream = compress(stream)
-                
+
         Logger.info("Succesfully packed stream.")
         return stream
 
     def unpack_stream(self, stream, shared_key=None):
         "Unpack serial data into stream."
-        
+
         # Decompress data stream
         if constants.ENABLE_COMPRESSION:
             Logger.info("Decompressing Stream...")
             stream = decompress(stream)
-        
+
         # Check if data is of expected chunk size
         if len(stream) != constants.STREAM_SIZE_AUTH_BLOCK and \
            len(stream) != constants.STREAM_SIZE_MSG_BLOCK:
             raise StreamOverflowError()
-        
+
         if len(stream) == constants.STREAM_SIZE_AUTH_BLOCK:
             Logger.info("Unpacking Authentication Stream...")
-            
+
             # Unpack auth stream to variables
-            (     
+            (
                 stream_flag,
                 stream_type,
                 stream_content,
@@ -214,12 +215,12 @@ class StreamManager(StoreManager):
                     constants.STREAM_CHKSUM_LEN
                 ), stream
             )
-            
+
         elif len(stream) == constants.STREAM_SIZE_MSG_BLOCK:
             Logger.info("Unpacking Message Stream...")
 
             # Unpack msg block stream to variables
-            (     
+            (
                 stream_flag,
                 stream_type,
                 stream_content,
@@ -233,52 +234,52 @@ class StreamManager(StoreManager):
                     constants.STREAM_CHKSUM_LEN
                 ), stream
             )
-            
+
         else:
             Logger.error("Invalid Stream Length received.")
-            return [None]*3
-                       
+            return [None] * 3
+
         # Remove all null characters if present
         stream_content = stream_content.rstrip('\0')
-        stream_token =  stream_token.rstrip('\0')
-        
+        stream_token = stream_token.rstrip('\0')
+
         # Get  uid
         stream_uid = generate_uuid(self.peer_host)
-                                               
+
         # Get stream object
         stream_obj = Stream(
-                     stream_uid, 
-                     stream_flag,
-                     stream_type,
-                     stream_content,
-                     stream_token,
-                )
-        
+            stream_uid,
+            stream_flag,
+            stream_type,
+            stream_content,
+            stream_token,
+        )
+
         # Add stream to store
         self.add_store(stream_uid, stream_obj.dict)
 
         # Verify stream integrity
         if not self.check_hmac(stream_uid, stream_hmac):
             Logger.error("Stream Checksum mismatch.")
-            return [None]*3
-        
+            return [None] * 3
+
         # Check stream signing mode
         if stream_flag == STREAM_TYPES.UNAUTH:
             # Stream key is peer public key
             pass
-                    
-        elif stream_flag == STREAM_TYPES.AUTH:            
-            ## Generate token at destination side                    
+
+        elif stream_flag == STREAM_TYPES.AUTH:
+            # Generate token at destination side
             # Perform key challenge
             if generate_token(stream_uid, shared_key) != stream_token:
                 Logger.error("Token challenge Fail!")
-                return [None]*3
+                return [None] * 3
             else:
                 Logger.info("Token challenge Pass!")
-            
+
             # AES Decryption
-            if constants.AES_AVAILABLE:    
-                Logger.info("Decrypting content...")        
+            if constants.AES_AVAILABLE:
+                Logger.info("Decrypting content...")
                 # Generate iv from stream token
                 iv = md5hash(stream_token, hexdigest=False)
                 # Create AES object
@@ -291,29 +292,29 @@ class StreamManager(StoreManager):
         # Unshuffle contentself._storage[sid].hmac()
         if constants.ENABLE_SHUFFLE:
             Logger.info("Unscrambling content...")
-            
+
             stream_content = unshuffler(
                 shuffled_string=stream_content,
                 iterations=constants.STREAM_CONT_SHUFF_ITER
             )
-       
-        if stream_flag == STREAM_TYPES.UNAUTH: 
+
+        if stream_flag == STREAM_TYPES.UNAUTH:
             Logger.info("Successfully unpacked AUTH Stream.")
-            return (    self.get_store_item(stream_uid, "STREAM_TYPE"   ),
-                        self.get_store_item(stream_uid, "STREAM_CONTENT"),
+            return (self.get_store_item(stream_uid, "STREAM_TYPE"),
+                    self.get_store_item(stream_uid, "STREAM_CONTENT"),
                     bytes_to_num(
-                        self.get_store_item(stream_uid, "STREAM_PKEY"   )
+                        self.get_store_item(stream_uid, "STREAM_PKEY")
                     ))
-            
+
         elif stream_flag == STREAM_TYPES.AUTH:
             Logger.info("Successfully unpacked MSG Stream.")
-            return (self.get_store_item(stream_uid, "STREAM_TYPE"   ),
+            return (self.get_store_item(stream_uid, "STREAM_TYPE"),
                     stream_content,
-                    self.get_store_item(stream_uid, "STREAM_PKEY"   ))
-            
+                    self.get_store_item(stream_uid, "STREAM_PKEY"))
+
         else:
             Logger.info("Unpack of stream unsuccessfull.")
-            return [None]*3
+            return [None] * 3
 
     def get_stream(self, sid):
         "Return stream data in form of tuple."
@@ -322,30 +323,28 @@ class StreamManager(StoreManager):
         return self.get_store(sid)
 
     if constants.AES_AVAILABLE:
-        def pad (self, s, BS=16):
+        def pad(self, s, BS=16):
             "Return string of size mutiple of Block Size"
-        
+
             if len(s) % 16 == 0:
                 return s
             else:
-                return s + '\0' * (constants.STREAM_CONTENT_LEN-len(s))
-    
-        def unpad (self, s):
+                return s + '\0' * (constants.STREAM_CONTENT_LEN - len(s))
+
+        def unpad(self, s):
             "Remove appended null characters"
-        
+
             return s.rstrip('\0')
-        
-        
+
+
 if __name__ == "__main__":
-    
+
     SM = StreamManager(123, "PKEYTEST", "localhost")
     S = SM.pack_stream(
-        stream_type="ACKN", 
-        stream_content="Hello", 
+        stream_type="ACKN",
+        stream_content="Hello",
         stream_host="127.0.0.1",
         public_key="PKEYTEST"
-    ) 
+    )
     print S
     print SM.unpack_stream(S)
-    
-    

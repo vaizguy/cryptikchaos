@@ -26,12 +26,13 @@ from kivy.resources import resource_add_path
 # Add kivy resource paths
 resource_add_path(constants.KIVY_RESOURCE_PATH_1)
 
-        
+
 class TestServerApp(App):
+
     "Test sever application."
 
     def build(self):
-        
+
         self.label = Label(
             markup=True,
             font_name=constants.GUI_FONT_TYPE,
@@ -40,7 +41,7 @@ class TestServerApp(App):
             shorten=True,
             valign='top'
         )
-        
+
         # Display initial text
         self.display_text(
             """
@@ -49,20 +50,20 @@ class TestServerApp(App):
             \n[{}]\
             \n\
             \n""".format(
-                constants.LOCAL_TEST_PEER_ID,
-                constants.LOCAL_TEST_HOST,
-                get_time()
-            )
+            constants.LOCAL_TEST_PEER_ID,
+            constants.LOCAL_TEST_HOST,
+            get_time()
+        )
         )
 
         return self.label
-    
+
     def on_start(self):
         '''Event handler for the on_start event, which is fired after
         initialization (after build() has been called), and before the
         application is being run.
         '''
-                
+
         Logger.info("Cryptikchaos Test server started.")
 
         # Initiate Twisted Server
@@ -72,18 +73,18 @@ class TestServerApp(App):
             port=constants.LOCAL_TEST_PORT,
             clientinit=False,
             printer=self.print_message)
-        
+
     def on_stop(self):
         '''Event handler for the on_stop event, which is fired when the
         application has finished running (e.g. the window is about to be
         closed).
         '''
-        
-        Logger.info("Closing services.")  
-        
+
+        Logger.info("Closing services.")
+
         # Close services
         self.comm_service.__del__()
-        
+
         Logger.info("Successfully closed services.")
         Logger.info("Closing Cryptikchaos Test Server.")
 
@@ -92,10 +93,10 @@ class TestServerApp(App):
 
         # Convert to string
         msg = str(msg).rstrip()
-        
+
         if not peerid:
             peerid = constants.LOCAL_TEST_PEER_ID
-            
+
         # If local pid, substitute with peer name
         if peerid == constants.LOCAL_TEST_PEER_ID:
             peerid = constants.LOCAL_TEST_PEER_NAME
@@ -113,18 +114,18 @@ class TestServerApp(App):
             str(peerid),
             msg
         )
-            
+
         # Factor line
         text = wrap_line(text)
-        
+
         # Add text
         self.display_text(text)
-        
+
     def display_text(self, text):
-        
+
         # Append line to label
         self.label.text += "[color={}]{}[/color]".format(
-            constants.GUI_FONT_COLOR,           
+            constants.GUI_FONT_COLOR,
             text
         )
 
@@ -139,4 +140,4 @@ if __name__ == '__main__':
         # Stop services
         TServerApp.on_stop()
     else:
-        Logger.info("Closed Cryptikchaos Test Server.")     
+        Logger.info("Closed Cryptikchaos Test Server.")

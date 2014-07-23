@@ -17,40 +17,44 @@ from cryptikchaos.gui.screens.inputscreen import InputScreen
 
 
 class MainPanel(ScreenManager):
-    
+
     def __init__(self, drawer, greeting, font_type, font_size, **kwargs):
-        
+
+        # Init Screen manager
         super(ScreenManager, self).__init__(**kwargs)
-        
+
         # Parent drawer
         self.drawer = drawer
-                
+
         # Animation
         self.transition_slide_up = SlideTransition(direction="up")
         self.transition_slide_down = SlideTransition(direction="down")
         self.transition_slide_right = SlideTransition(direction="right")
         self.transition_slide_left = SlideTransition(direction="left")
-                               
+
+        # Console screen
         self.console_screen = ConsoleScreen(
-            greeting=greeting,             
-            font_type=font_type, 
-            font_size=font_size, 
+            greeting=greeting,
+            font_type=font_type,
+            font_size=font_size,
             goto_inputscreen=self.goto_input_screen,
             name="console"
         )
-        
+
+        # About app info screen
         self.about_screen = AboutScreen(name="about")
-        
+
+        # Text input screen
         self.input_screen = InputScreen(
-            font_type=font_type, 
-            font_size=font_size, 
+            font_type=font_type,
+            font_size=font_size,
             goto_consolescreen=self.goto_console_screen,
             name="input"
         )
-        
+
         # Add console - GUI hooks
-        self.inputtext_gui_hook=self.console_screen.console_window.inputtext_gui_hook
-        self.getmaxwidth_gui_hook=self.console_screen.console_window.getmaxwidth_gui_hook
+        self.inputtext_gui_hook = self.console_screen.console_window.inputtext_gui_hook
+        self.getmaxwidth_gui_hook = self.console_screen.console_window.getmaxwidth_gui_hook
         self.focus_input_gui_hook = self.input_screen.console_input.focus_input_box
         self.unfocus_input_gui_hook = self.input_screen.console_input.unfocus_input_box
 
@@ -60,23 +64,20 @@ class MainPanel(ScreenManager):
         self.add_widget(self.about_screen)
         # Add input screen
         self.add_widget(self.input_screen)
-        
+
         # Default screen
         self.current = "console"
-        
-        # Last transition
-        self.last_transition = None
-        
+
     def register_handleinput_cmd_hook(self, hook):
-        
+
         self.input_screen.register_handleinput_cmd_hook(hook)
-                
+
     def register_getcommands_cmd_hook(self, hook):
-        
+
         self.input_screen.register_getcommands_cmd_hook(hook)
-                
-    def goto_console_screen(self):          
-        
+
+    def goto_console_screen(self):
+
         self.delay_by_1()
         self.close_navbar()
         self.delay_by_1()
@@ -84,63 +85,59 @@ class MainPanel(ScreenManager):
         self.delay_by_1()
         self.transition = self.transition_slide_down
         self.current = "console"
-        self.last_transition = self.transition
-        
+
     def goto_about_screen(self):
-        
+
         self.delay_by_1()
-        self.unfocus_input_gui_hook()       
+        self.unfocus_input_gui_hook()
         self.delay_by_1()
         self.transition = self.transition_slide_up
         self.current = "about"
-        self.last_transition = self.transition
 
     def goto_input_screen(self):
-        
+
         self.delay_by_1()
         self.transition = self.transition_slide_left
         self.current = "input"
-        self.last_transition = self.transition
         # Focus input after delay
         self.delay_by_1()
         self.focus_input_gui_hook()
-        
+
     def is_console_focused(self):
         return self.current == "console"
-        
+
     def _pass(self):
         return None
-    
+
     def delay_by_1(self):
         Clock.schedule_once(lambda dt: self._pass, 1)
-        
-    def close_navbar(self):
-        if self.drawer.state=="open":
-            self.drawer.anim_to_state("closed")      
 
-        
+    def close_navbar(self):
+        if self.drawer.state == "open":
+            self.drawer.anim_to_state("closed")
+
+
 if __name__ == '__main__':
-    
+
     from kivy.app import App
     from cryptikchaos.core.env.configuration import constants
-    
+
     # Add kivy resource paths
     from kivy.resources import resource_add_path
     resource_add_path(constants.KIVY_RESOURCE_PATH_1)
     resource_add_path(constants.KIVY_RESOURCE_PATH_2)
-       
-    
+
     class ScreenManagerApp(App):
-    
+
         def build(self):
-            root =MainPanel(
+            root = MainPanel(
                 greeting="MainPanel Test",
                 font_type=constants.GUI_FONT_TYPE,
                 font_size=constants.GUI_FONT_SIZE,
-                handleinput_cmd_hook=lambda *args, **kwargs:None,
-                getcommands_cmd_hook=lambda *args, **kwargs:None        
+                handleinput_cmd_hook=lambda *args, **kwargs: None,
+                getcommands_cmd_hook=lambda *args, **kwargs: None
             )
-                       
+
             return root
-        
+
     ScreenManagerApp().run()

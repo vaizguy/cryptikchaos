@@ -9,7 +9,7 @@ re-binding. Easy solution (in Python 2.1 and up): use an instance as "module"...
 In Python 2.1 and up, no check is made any more to force entries in sys.modules
 to be actually module objects. You can install an instance object there and take
 advantage of its attribute-access special methods (e.g., as in this snippet, to
-prevent type rebindings. 
+prevent type rebindings.
 
 Usage:
   import consttype
@@ -22,16 +22,18 @@ Usage:
 
 
 class _constants:
+
     "Code taken from Alex Martelli's python constant recipe."
 
     # ConstError Exception class
     class ConstError(TypeError):
         pass
-    
-    def __init__(self):pass
-    
+
+    def __init__(self):
+        pass
+
     def __repr__(self):
-        
+
         return "Constant()"
 
     # Prevent changing of constant once set.
@@ -44,9 +46,9 @@ class _constants:
             raise self.ConstError, "Can't rebind constant {}".format(name)
         else:
             self.__dict__[name] = value
-            
+
     def __setitem__(self, name, value):
-        
+
         return self.__setattr__(name, value)
 
     def __delattr__(self, name):
@@ -56,13 +58,13 @@ class _constants:
 
 import sys
 # Save reference to module
-ref = sys.modules['__main__'] 
+ref = sys.modules['__main__']
 # overwrite module reference
 sys.modules[__name__] = _constants()
 
 if __name__ == "__main__":
     import constants
-    
+
     constants.TEST = "REBIND TEST PASS"
     try:
         constants.TEST = "REBIND TEST FAIL"

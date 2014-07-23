@@ -1,7 +1,7 @@
 '''
 Created on Jul 21, 2013
 
-Twisted network server core. 
+Twisted network server core.
 
 @author: vaizguy
 '''
@@ -27,7 +27,7 @@ class CommCoreServerProtocol(LineReceiver):
         self._peer_host = None
         self._peer_port = None
         self._peer_repr = None
-        self.factory    = factory
+        self.factory = factory
 
         # Delimiter for sending line
         self.delimiter = constants.STREAM_LINE_DELIMITER
@@ -38,7 +38,7 @@ class CommCoreServerProtocol(LineReceiver):
         self._peer_host = self.transport.getPeer().host
         self._peer_port = self.transport.getPeer().port
         self._peer_repr = self._peer_host + " on " + str(self._peer_port)
-        
+
         Logger.debug(
             "Connection success! Connected to {}".format(self._peer_repr)
         )
@@ -62,15 +62,15 @@ class CommCoreServerProtocol(LineReceiver):
                 base64.b64encode(line), len(line)
             )
         )
-        
+
         response = self.factory.app.handle_request_stream(line, self.transport)
 
         if response:
             self.sendLine(response)
-            
+
     def lineLengthExceeded(self, line):
         "Run when line length is exceeded."
-        
+
         Logger.error("received line is more than {}".format(self.MAX_LENGTH))
 
 
@@ -81,11 +81,10 @@ class CommCoreServerFactory(protocol.Factory):
     def __init__(self, app):
 
         self.app = app
-    
+
     def buildProtocol(self, addr):
         "Build protocol on successful connection."
 
         Logger.debug("Connected.")
 
         return self.protocol(self)
-    

@@ -16,6 +16,7 @@ kivy.require('1.7.2')
 # Add cryptikchaos path
 import pythonpath
 pythonpath.AddSysPath('.')
+pythonpath.AddSysPath('../../../src')
 
 from cryptikchaos.gui.service import GUIService
 
@@ -24,7 +25,7 @@ from kivy.logger import Logger
 
 class CryptikChaosApp(
     # GUI service
-    GUIService,  
+    GUIService,
 ):
 
     """
@@ -32,23 +33,18 @@ class CryptikChaosApp(
     Inherits from GUI service. (gui.service.GUIService)
 
     """
-        
+
     def __init__(self):
-        
+
         # Init GUI Service
         super(CryptikChaosApp, self).__init__()
-          
-    def build(self):
-        "Build the kivy App."
 
-        return super(CryptikChaosApp, self).build()
-           
 
 if __name__ == '__main__':
 
     try:
         # Build App interface
-        App = CryptikChaosApp()    
+        App = CryptikChaosApp()
         # Start App mainloop
         App.run()
     except KeyboardInterrupt:
@@ -57,5 +53,3 @@ if __name__ == '__main__':
         App.on_stop()
     else:
         Logger.info("Closed Cryptikchaos Client.")
-        
-

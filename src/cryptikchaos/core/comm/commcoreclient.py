@@ -29,18 +29,18 @@ class CommCoreClientProtocol(LineReceiver):
         self._peer_host = None
         self._peer_port = None
         self._peer_repr = None
-        self.factory    = factory
-        
+        self.factory = factory
+
         # Delimiter for sending line
         self.delimiter = constants.STREAM_LINE_DELIMITER
 
     def connectionMade(self):
         "Run when connection is established with server."
         # maintain the TCP connection
-        self.transport.setTcpKeepAlive(True) 
+        self.transport.setTcpKeepAlive(True)
         # allow Nagle algorithm
-        self.transport.setTcpNoDelay(False) 
-        
+        self.transport.setTcpNoDelay(False)
+
         self._peer_host = self.transport.getPeer().host
         self._peer_port = self.transport.getPeer().port
         self._peer_repr = self._peer_host + " on " + str(self._peer_port)
@@ -55,9 +55,9 @@ class CommCoreClientProtocol(LineReceiver):
 
         Logger.warn("Lost connection with peer {}".format(
             self._peer_repr
-            )
         )
-        
+        )
+
         self.factory.app._print(
             "Lost connection with peer {}".format(self._peer_repr)
         )
@@ -73,16 +73,17 @@ class CommCoreClientProtocol(LineReceiver):
             )
         )
 
-        response = self.factory.app.handle_response_stream(line, self.transport)
+        response = self.factory.app.handle_response_stream(
+            line, self.transport)
 
         if response:
             print response
-            
+
     def lineLengthExceeded(self, line):
         "Run when line length is exceeded."
-        
+
         Logger.error("received line is more than {}".format(self.MAX_LENGTH))
-        
+
 
 class CommCoreClientFactory(protocol.Factory):
 

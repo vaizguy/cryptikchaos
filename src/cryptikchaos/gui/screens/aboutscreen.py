@@ -8,14 +8,15 @@ __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
 from kivy.uix.screenmanager import Screen
-from kivy.uix.label         import Label
+from kivy.uix.label import Label
+
 
 class AboutScreen(Screen):
-    
+
     def __init__(self, **kwargs):
-        
+
         super(Screen, self).__init__(**kwargs)
-        
+
         # information about app label
         self.about_label = Label(
             text="""
@@ -32,12 +33,9 @@ Thoughts?
 [i]cryptikchaos@googlegroups.com[/i]
 
 """,
-            markup=True, 
+            markup=True,
             valign='top',
             halign='left',
-        )  
-        
-        self.add_widget(self.about_label)
-    
+        )
 
-    
+        self.add_widget(self.about_label)

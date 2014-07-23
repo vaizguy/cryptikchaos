@@ -41,21 +41,21 @@ except ImportError:
     constants.NETWORKX_AVAILABLE = False
 else:
     constants.NETWORKX_AVAILABLE = True
-   
+
 try:
     from Crypto.Cipher import AES
 except ImportError:
     constants.AES_AVAILABLE = False
 else:
     constants.AES_AVAILABLE = True
-     
+
 # ---Application switches-------------------------------------------------####
 
-constants.ENABLE_TEST_MODE    = True
-constants.ENABLE_COMPRESSION  = True
-constants.ENABLE_SHUFFLE      = True
+constants.ENABLE_TEST_MODE = True
+constants.ENABLE_COMPRESSION = True
+constants.ENABLE_SHUFFLE = True
 constants.ENABLE_INPUT_SCREEN = True
-constants.ENABLE_TLS          = True
+constants.ENABLE_TLS = True
 
 # Platform flag
 if platform() == "android":
@@ -69,9 +69,9 @@ else:
 constants.TIME_FORMAT = "%a, %d %b %Y %H:%M:%S +0000"
 constants.REBIND_CHECK = True
 constants.CMD_ALIASES = {
-            "@" : "send",
-            "?" : "help"
-        }
+    "@": "send",
+    "?": "help"
+}
 # ------------------------------------------------------------------------####
 
 # ---Project Path CONSTANTS-----------------------------------------------####
@@ -94,9 +94,7 @@ constants.PEER_NAME = "MYPOD"
 # ------------------------------------------------------------------------####
 
 
-
 # ------------------Protocol Stream type CONSTANTS-----------------------####
-
 constants.PROTO_BULK_TYPE = "BULK"
 constants.PROTO_MACK_TYPE = "MACK"
 
@@ -189,8 +187,8 @@ constants.RULER = '-'
 # ---SSL Field requirements constants-------------------------------------####
 constants.SSL_CERT_FIELDS = ('C', 'CN', 'O', 'ST', 'emailAddress', 'OU')
 constants.SSL_POST_VERIF_VALUES = {
-    1:["cryptikchaosCA", "cryptikchaos", "criptikchaostest"], 
-    4:["cryptikchaos@googlegroups.com"]
+    1: ["cryptikchaosCA", "cryptikchaos", "criptikchaostest"],
+    4: ["cryptikchaos@googlegroups.com"]
 }
 # ------------------------------------------------------------------------####
 
@@ -204,7 +202,7 @@ else:
 constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_LOGO = criptiklogo()
 if not constants.PLATFORM_ANDROID:
-    #constants.GUI_FONT_COLOR = "#00E217"
+    # constants.GUI_FONT_COLOR = "#00E217"
     constants.GUI_FONT_COLOR = "#999999"
 else:
     constants.GUI_FONT_COLOR = "#FFFFFF"
@@ -227,7 +225,7 @@ constants.GUI_WELCOME_MSG = """
     constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_LEFT_PADDING,
     constants.PEER_ID,
-    my_host,    
+    my_host,
     constants.GUI_LABEL_LEFT_PADDING,
     get_time(),
 )

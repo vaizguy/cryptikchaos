@@ -20,22 +20,24 @@ from kivy.logger import Logger
 if constants.NETWORKX_AVAILABLE:
     import networkx as nx
     import matplotlib.pyplot as plt
-    
+
+
 class SwarmManager(StoreManager):
+
     "Manage peers in the swarm."
 
     def __init__(self, peerid, peerkey):
-       
+
         # Authorized keys
         self._valid_keys = (
-            "PEER_ID", "PEER_KEY", "PEER_IP", "PEER_PORT", \
+            "PEER_ID", "PEER_KEY", "PEER_IP", "PEER_PORT",
             "PEER_STATUS", "PEER_COLOR"
         )
-        
+
         # Create store
         super(SwarmManager, self).__init__(
-            "{}_SwarmStore".format(peerid), 
-            self._valid_keys, 
+            "{}_SwarmStore".format(peerid),
+            self._valid_keys,
         )
 
         # Client Attributes
@@ -47,23 +49,23 @@ class SwarmManager(StoreManager):
         self.peer_connections = {}
         # Hold peer pending streams
         self.peer_stream_buffer = {}
-        
+
         # Create graph
         if constants.NETWORKX_AVAILABLE:
             self.swarm_graph = nx.Graph()
 
     def __del__(self):
-        
+
         peer_ids = self.list_peer_ids()
-        
+
         # Exit if no connections to clear
-        if peer_ids:       
+        if peer_ids:
             # Remove peer connections
             for pid in peer_ids:
                 # Delete peer
                 self.delete_peer(pid)
-           
-        # Close store 
+
+        # Close store
         if super(SwarmManager, self):
             super(SwarmManager, self).__del__()
 
@@ -81,31 +83,31 @@ class SwarmManager(StoreManager):
             return None
         else:
             Logger.debug("Adding Peer {} , {}@{}".format(pid, host, port))
-            
+
         # Peer dictionary structure defined here
         self.add_store(
             pid, dictionary=Peer(pid, key, host, port).dict
         )
-        
+
         # init stream buffer
         self.peer_stream_buffer[pid] = []
-        
+
         # Add peer to swarm graph
         if constants.NETWORKX_AVAILABLE:
             self.add_swarm_graph_node(pid)
 
     def delete_peer(self, pid):
         "Remove unauth peer."
-        
+
         Logger.warn("Peer [{}] left swarm.".format(pid))
-        # remove peer connection 
+        # remove peer connection
         del self.peer_connections[pid]
 
         return self.delete_store(pid)
 
     def get_peer(self, pid):
         "Get peer from db."
-        
+
         return self.get_store(pid)
 
     def add_peer_connection(self, pid, conn):
@@ -146,13 +148,13 @@ class SwarmManager(StoreManager):
 
     def list_peer_ids(self):
         "Returns a list of all peer IDs present in swarm."
-        
+
         try:
             return self.keys()
 
         except AttributeError:
             return []
-        
+
     def list_peers(self):
         "Returns a list of all the peers."
 
@@ -162,13 +164,13 @@ class SwarmManager(StoreManager):
 
             # Get peer attributes
             p_info = self.get_store(k)
-            
+
             # Concatenate if key is bigger than 4 chars
-            if len(p_info["PEER_KEY"]) >=4:
+            if len(p_info["PEER_KEY"]) >= 4:
                 peer_key = p_info["PEER_KEY"][0:3] + "XXXX"
             else:
                 peer_key = p_info["PEER_KEY"]
-                 
+
             # Append as tuples (peer id, peer host, peer port, peer status)
             peerlist.append(
                 (p_info["PEER_ID"],
@@ -178,7 +180,7 @@ class SwarmManager(StoreManager):
                  p_info["PEER_STATUS"]))
 
         return peerlist
-    
+
     def list_peer_id_colors(self):
         "Returns a list of all the peers."
 
@@ -191,12 +193,12 @@ class SwarmManager(StoreManager):
             )
 
         return rcclist
-    
+
     def peer_table(self):
         "Display all peers"
-        
-        table= self.storage_table()
-        
+
+        table = self.storage_table()
+
         if table:
             return table
         else:
@@ -207,7 +209,7 @@ class SwarmManager(StoreManager):
 
         return self.get_store_item(pid, "PEER_IP")
 
-    ## Need to simplify mapping TODO
+    # Need to simplify mapping TODO
     def get_peerid_from_ip(self, peer_ip, peer_port=constants.PEER_PORT):
         "Get a peerid from stored IP addresses. Assumes 1to1 relation."
 
@@ -231,53 +233,53 @@ class SwarmManager(StoreManager):
         "Get the peers key."
 
         return self.get_store_item(pid, "PEER_KEY")
-        
+
     def get_peerid_color(self, pid):
         "Return peer's color code."
-        
+
         pid_rcc = self.get_store_item(pid, "PEER_COLOR")
-               
+
         if pid_rcc:
             return pid_rcc
         else:
             return self.my_msg_rcc
-        
+
     def is_peer(self, pid):
         "Check if peer got added successfully."
-        
-        return self.in_store(pid)       
-    
+
+        return self.in_store(pid)
+
     def add_stream_buffer(self, pid, stream_id):
         "Add pending streams to peer stream buffer"
-        
+
         self.peer_stream_buffer[pid].append(stream_id)
-        
+
     def get_stream_buffer(self, pid):
         "Return stream buffer"
-        
+
         return self.peer_stream_buffer[pid]
-    
+
     # Swarm Graphing functions
     if constants.NETWORKX_AVAILABLE:
         def add_swarm_graph_node(self, pid):
             "Add peer node to swarm graph."
-    
+
             self.swarm_graph.add_edge(self.my_peerid, pid)
-            
+
         def plot_swarm_graph(self):
             "Visualize the swarm"
-            
+
             # Check if no peers in swarm
             if not self.list_peers():
-                return False                
-            
+                return False
+
             # Plot circular graph
             nx.draw_circular(self.swarm_graph)
 
             # Show graph plot
-            plt.show()   
-            
-            return True         
+            plt.show()
+
+            return True
 
 if __name__ == '__main__':
     sm = SwarmManager(1000, "key")

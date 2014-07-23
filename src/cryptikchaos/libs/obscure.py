@@ -11,10 +11,11 @@ __version__ = "0.6"
 
 import hashlib
 
-def shuffler(string, key=None, iterations=1):  
+
+def shuffler(string, key=None, iterations=1):
     """
     Scramble plaintext readability.
-    """  
+    """
 
     if key:
         salt = hashlib.sha512(string + key).hexdigest()
@@ -23,19 +24,20 @@ def shuffler(string, key=None, iterations=1):
     for _ in xrange(1, iterations):
         shuffled_string = []
         even_chars = []
-        odd_chars  = []
+        odd_chars = []
 
-        for odd_pos in [ x for x in xrange (0, len(string)) if x%2!=0]:
+        for odd_pos in [x for x in xrange(0, len(string)) if x % 2 != 0]:
             odd_chars.append(string[odd_pos])
-        
-        for even_pos in [ x for x in xrange (0, len(string)) if x%2==0]:
+
+        for even_pos in [x for x in xrange(0, len(string)) if x % 2 == 0]:
             even_chars.insert(0, string[even_pos])
 
-        shuffled_string = odd_chars + even_chars 
+        shuffled_string = odd_chars + even_chars
 
         string = "".join(shuffled_string)
 
     return string
+
 
 def unshuffler(shuffled_string, key=None, iterations=1):
     """
@@ -44,11 +46,11 @@ def unshuffler(shuffled_string, key=None, iterations=1):
 
     wlen = len(shuffled_string)
 
-    string = [None]*wlen
+    string = [None] * wlen
 
     for _ in xrange(1, iterations):
-        odd_segment = shuffled_string[0:wlen/2]
-        even_segment = shuffled_string[wlen/2:wlen]
+        odd_segment = shuffled_string[0:wlen / 2]
+        even_segment = shuffled_string[wlen / 2:wlen]
 
         odd_pos = 1
         for c in odd_segment:
@@ -65,28 +67,30 @@ def unshuffler(shuffled_string, key=None, iterations=1):
     string = shuffled_string
 
     if key:
-        if string[-128:] == hashlib.sha512(string[:-128]+key).hexdigest():
+        if string[-128:] == hashlib.sha512(string[:-128] + key).hexdigest():
             return string[:-128]
         else:
             return ""
     else:
         return string
-    
+
 if __name__ == "__main__":
-    import random, string
-    
+    import random
+    import string
+
     # Random string of 64 bytes
-    string = "".join([random.choice(string.ascii_uppercase + string.digits) for x in range(128)])
+    string = "".join([random.choice(string.ascii_uppercase + string.digits)
+                     for x in range(128)])
     print "Original String: {}".format(string)
-    
+
     # Shuffle string
     shuff = shuffler(string, iterations=1000)
     print "Scrambled : {} length : {}".format(shuff, len(shuff))
-    
+
     # Unshuffle shuffled string
     unshuff = unshuffler(shuff, iterations=1000)
     print "Unscrambled: {} length : {}".format(unshuff, len(unshuff))
-    
+
     # Match unshuffled string with original
     if unshuff == string:
         print "Shuffler test pass!"
