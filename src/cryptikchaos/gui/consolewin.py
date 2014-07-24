@@ -14,7 +14,7 @@ from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
 
 from cryptikchaos.core.env.configuration import constants
-if not constants.PLATFORM_ANDROID and not constants.ENABLE_INPUT_SCREEN:
+if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
     from cryptikchaos.gui.inputwin import ConsoleInput
 
 
@@ -87,7 +87,7 @@ class ConsoleWindow(GridLayout):
         self.display_text(text=greeting)
 
         # Input text box
-        if not constants.PLATFORM_ANDROID and not constants.ENABLE_INPUT_SCREEN:
+        if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
             self.console_input = ConsoleInput(
                 # Font type
                 font_type=font_type,
@@ -146,17 +146,14 @@ if __name__ == '__main__':
 
             # Build ConsoleWindow
             root = ConsoleWindow(
-                # Input handler hook
-                handleinput_cmd_hook=self.handle_input_hook,
-                # Get command list hook
-                getcommands_cmd_hook=lambda: [],
+                goto_inputscreen=lambda *args, **kwargs: None,                 
                 # Console splash greeting
                 greeting="Testing Window!",
                 # Font type face
                 font_type=constants.GUI_FONT_TYPE,
                 # Font size
                 font_size=14
-            )  # TODO messy implementation
+            )
 
             # Window resize hook
             Window.bind(on_resize=self.resize)

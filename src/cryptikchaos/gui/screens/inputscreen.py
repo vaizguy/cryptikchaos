@@ -8,7 +8,7 @@ __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
 from kivy.uix.screenmanager import Screen
-from cryptikchaos.gui.inputwin import ConsoleInput
+from cryptikchaos.gui.consoleinput import ConsoleInput
 
 
 class InputScreen(Screen):

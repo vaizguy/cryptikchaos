@@ -268,7 +268,7 @@ class CommService:
         # Get peer ID
         peer_id = self.swarm_manager.get_peerid_from_ip(dip, port)
 
-        # Pack the message
+        # Print with local peer id
         if not peer_id:
             peer_id = self.peerid
         # Print the message
@@ -664,10 +664,8 @@ class CommService:
             return False
 
         # Start a connection with peer
-        if self.start_authentication(pid, host, port):
-            return True
-        else:
-            return False
+        return self.start_authentication(pid, host, port)
+
     # ------------------------------------------------
 
     # ------------------------------------------------

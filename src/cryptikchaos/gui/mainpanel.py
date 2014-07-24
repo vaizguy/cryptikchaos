@@ -9,7 +9,6 @@ __version__ = "0.6"
 
 from kivy.uix.screenmanager import ScreenManager
 from kivy.uix.screenmanager import SlideTransition
-from kivy.clock import Clock
 
 from cryptikchaos.gui.screens.consolescreen import ConsoleScreen
 from cryptikchaos.gui.screens.aboutscreen import AboutScreen
@@ -78,43 +77,33 @@ class MainPanel(ScreenManager):
 
     def goto_console_screen(self):
 
-        self.delay_by_1()
         self.close_navbar()
-        self.delay_by_1()
         self.unfocus_input_gui_hook()
-        self.delay_by_1()
         self.transition = self.transition_slide_down
         self.current = "console"
 
     def goto_about_screen(self):
 
-        self.delay_by_1()
+        self.close_navbar()
         self.unfocus_input_gui_hook()
-        self.delay_by_1()
         self.transition = self.transition_slide_up
         self.current = "about"
 
     def goto_input_screen(self):
 
-        self.delay_by_1()
+        self.close_navbar()
         self.transition = self.transition_slide_left
         self.current = "input"
-        # Focus input after delay
-        self.delay_by_1()
         self.focus_input_gui_hook()
 
     def is_console_focused(self):
         return self.current == "console"
 
-    def _pass(self):
-        return None
-
-    def delay_by_1(self):
-        Clock.schedule_once(lambda dt: self._pass, 1)
-
     def close_navbar(self):
-        if self.drawer.state == "open":
-            self.drawer.anim_to_state("closed")
+        
+        if self.drawer:
+            if self.drawer.state == "open":
+                self.drawer.anim_to_state("closed")
 
 
 if __name__ == '__main__':
@@ -131,11 +120,10 @@ if __name__ == '__main__':
 
         def build(self):
             root = MainPanel(
+                drawer=None,
                 greeting="MainPanel Test",
                 font_type=constants.GUI_FONT_TYPE,
                 font_size=constants.GUI_FONT_SIZE,
-                handleinput_cmd_hook=lambda *args, **kwargs: None,
-                getcommands_cmd_hook=lambda *args, **kwargs: None
             )
 
             return root
