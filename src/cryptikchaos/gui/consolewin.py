@@ -15,7 +15,7 @@ from kivy.uix.scrollview import ScrollView
 
 from cryptikchaos.core.env.configuration import constants
 if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
-    from cryptikchaos.gui.inputwin import ConsoleInput
+    from cryptikchaos.gui.consoleinput import ConsoleInput
 
 
 class ConsoleWindow(GridLayout):
@@ -100,14 +100,15 @@ class ConsoleWindow(GridLayout):
             )
             # Add widget
             self.add_widget(self.console_input)
+            
         else:
             # Command input button
             self.enter_cmd_button = Button(
                 text="Enter Command",
-                size_hint_y=0.1
+                size_hint_y=0.1,
             )
+            # Bind event - on_press
             self.enter_cmd_button.bind(on_press=self.goto_inputscreen)
-
             # Add button
             self.add_widget(self.enter_cmd_button)
 

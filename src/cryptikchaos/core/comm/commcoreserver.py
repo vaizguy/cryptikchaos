@@ -63,9 +63,15 @@ class CommCoreServerProtocol(LineReceiver):
             )
         )
 
+        # Handle request, generate response
         response = self.factory.app.handle_request_stream(line, self.transport)
 
         if response:
+            Logger.debug(
+                "SERVER: responded : {}, Data Length: {}".format(
+                    base64.b64encode(response), len(response)
+                )
+            )
             self.sendLine(response)
 
     def lineLengthExceeded(self, line):

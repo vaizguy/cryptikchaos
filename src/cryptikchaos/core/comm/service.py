@@ -91,11 +91,11 @@ class CommService:
 
         # Start the listener
         if serverinit:
-            self._start_server()
+            self._start_listener()
 
         # Start peer connections
         if clientinit:
-            self._start_peer_connections()
+            self._start_connections()
 
     def __del__(self):
 
@@ -107,7 +107,7 @@ class CommService:
         self.stream_manager.__del__()
         Logger.info("Succesfully Closed managers.")
 
-    def _start_server(self):
+    def _start_listener(self):
         "Start twisted server listener."
 
         if constants.ENABLE_TLS:
@@ -120,7 +120,7 @@ class CommService:
         else:
             reactor.listenTCP(self.port, CommCoreServerFactory(self))
 
-    def _start_peer_connections(self):
+    def _start_connections(self):
         "Start peer connections on start."
 
         # Connect to all peers
@@ -187,10 +187,16 @@ class CommService:
 
         return pid
 
-    def _get_auth_content(self, content):
-        "Get peer id and request token from auth stream content"
+    def _pack_auth_content(self, peer_id, request_id):
+        "Pack peer ID and request token in to string"
+        
+        return peer_id + request_id
 
-        return (content[:8], content[8:])
+    def _unpack_auth_content(self, content):
+        "Split peer ID and request token from string"
+        
+        INDX = constants.PEER_ID_LEN
+        return (content[:INDX], content[INDX:])
 
     def _transfer_data(self, pid, data_class, data_content,
                        desthost=None):
@@ -377,13 +383,12 @@ class CommService:
             peer_port
         )
 
-        # If peer id is valid
         if peer_id:
             # Announce successful server connection
             self._print(
                 constants.GUI_PEER_REPR.format(
                     peer_id, peer_ip, peer_port
-                ) + " has entered the swarm",
+                ) + " has entered the swarm.",
                 peer_ip,
                 peer_port
             )
@@ -412,7 +417,7 @@ class CommService:
             self._print(
                 constants.GUI_PEER_REPR.format(
                     peer_id, peer_ip, peer_port
-                ) + " has left the swarm",
+                ) + " has left the swarm.",
                 peer_ip,
                 peer_port
             )
@@ -441,11 +446,14 @@ class CommService:
 
         # Get request ID
         request_id = self.valid_auth_req_tokens[peer_ip]
+        
+        # Pack auth content
+        content = self._pack_auth_content(self.peerid, request_id)
 
         # Pack authentication data into stream
         stream = self.stream_manager.pack_stream(
             stream_type=constants.PROTO_AUTH_TYPE,
-            stream_content=self.peerid + request_id,
+            stream_content=content,
             stream_flag=STREAM_TYPES.UNAUTH,
             stream_host=peer_ip
         )
@@ -573,7 +581,7 @@ class CommService:
 
         if (header == constants.PROTO_AACK_TYPE):
             # Extract peer ID, request ID
-            (pid, request_id) = self._get_auth_content(content)
+            (pid, request_id) = self._unpack_auth_content(content)
 
             # Check if request ACK ID is valid
             try:
@@ -583,7 +591,7 @@ class CommService:
                             request_id
                         )
                     )
-                    return False
+                    return None
 
             except KeyError:
                 Logger.debug(
@@ -591,7 +599,7 @@ class CommService:
                         src_ip
                     )
                 )
-                return False
+                return None
 
             else:
                 Logger.debug("Received valid request ACK.")
@@ -614,11 +622,14 @@ class CommService:
             # Connect to peer using normal connection this should refresh
             # the connection in db to normal client conn from auth conn
             self.start_connection(pid, src_ip, src_port)
+            
+            # pack auth content
+            content = self._pack_auth_content(self.peerid, request_id)
 
             # Send disconnect response for AUTH channel
             dcon_rsp = self.stream_manager.pack_stream(
                 stream_type=constants.PROTO_DCON_TYPE,
-                stream_content=self.peerid + request_id,
+                stream_content=content,
                 stream_flag=STREAM_TYPES.UNAUTH,
                 stream_host=src_ip
             )
@@ -673,11 +684,8 @@ class CommService:
     # ------------------------------------------------
     def handle_request_stream(self, stream, connection):
 
-        Logger.debug(
-            "Handling Stream : {} Stream Length: {}".format(b64encode(stream), len(stream)))
-
         # Get the sender peer's information from connection
-        (src_pid, shared_key, src_ip, src_port
+        (src_pid, shared_key, src_ip, _
          ) = self._get_source_from_connection(connection)
 
         # Response (default = None)
@@ -705,7 +713,7 @@ class CommService:
         # ------------------------------------------------------------
         if header == constants.PROTO_AUTH_TYPE:
             # Extract peer id
-            (pid, request_id) = self._get_auth_content(content)
+            (pid, request_id) = self._unpack_auth_content(content)
 
             Logger.debug("Received auth request from Peer: {}".format(pid))
 
@@ -772,7 +780,7 @@ class CommService:
             Logger.debug("Received Disconnect ACK, AUTH Success!")
 
             # Extract peer id
-            (pid, _) = self._get_auth_content(content)
+            (pid, _) = self._unpack_auth_content(content)
 
             if self.swarm_manager.is_peer(pid) and \
                 self.comsec_core.generate_shared_key(pkey) == \
@@ -805,9 +813,6 @@ class CommService:
                 stream_host=src_ip,
                 shared_key=shared_key
             )
-
-        if rsp:
-            Logger.debug("Responded: {}".format(b64encode(rsp)))
 
         return rsp
 

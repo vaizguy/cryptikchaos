@@ -24,7 +24,7 @@ else:
     pass
 
 from cryptikchaos.gui.mainpanel import MainPanel
-from cryptikchaos.gui.navbar import NavBar
+from cryptikchaos.gui.sidepanel import SidePanel
 from cryptikchaos.core.services import CoreServices
 
 # Add kivy resource paths
@@ -63,7 +63,7 @@ class GUIService(App):
         )
 
         # Set up Side pane
-        self.side_panel = NavBar(
+        self.side_panel = SidePanel(
             # drawer obj
             drawer=self.drawer,
             # screen manager obj

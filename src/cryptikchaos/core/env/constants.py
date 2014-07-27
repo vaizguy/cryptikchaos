@@ -25,6 +25,9 @@ class _constants:
 
     "Code taken from Alex Martelli's python constant recipe."
 
+    __name__ = "constants"
+    __file__ = "constants.py"
+
     # ConstError Exception class
     class ConstError(TypeError):
         pass
@@ -63,6 +66,7 @@ ref = sys.modules['__main__']
 sys.modules[__name__] = _constants()
 
 if __name__ == "__main__":
+    print __name__, _constants
     import constants
 
     constants.TEST = "REBIND TEST PASS"

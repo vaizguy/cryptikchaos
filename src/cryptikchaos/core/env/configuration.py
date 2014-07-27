@@ -87,7 +87,8 @@ constants.KIVY_RESOURCE_PATH_2 = "{}/libs/garden/navigationdrawer".format(
 
 # ---peer attribute constants---------------------------------------------####
 
-constants.PEER_ID = md5hash(uniqueid.id)[0:8]
+constants.PEER_ID_LEN = 8
+constants.PEER_ID = md5hash(uniqueid.id)[0:constants.PEER_ID_LEN]
 constants.PEER_PORT = 1597
 constants.PEER_HOST = get_my_ip()
 constants.PEER_NAME = "MYPOD"
@@ -95,9 +96,10 @@ constants.PEER_NAME = "MYPOD"
 
 
 # ------------------Protocol Stream type CONSTANTS-----------------------####
+#--
 constants.PROTO_BULK_TYPE = "BULK"
 constants.PROTO_MACK_TYPE = "MACK"
-
+#--
 constants.PROTO_AUTH_TYPE = "AUTH"
 constants.PROTO_AACK_TYPE = "AACK"
 constants.PROTO_DCON_TYPE = "DCON"

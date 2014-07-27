@@ -17,6 +17,7 @@ kivy.require('1.7.2')
 import pythonpath
 pythonpath.AddSysPath('.')
 pythonpath.AddSysPath('../../../src')
+pythonpath.AddSysPath('../../src')
 
 from cryptikchaos.gui.service import GUIService
 
