@@ -27,11 +27,13 @@ class AboutScreen(Screen):
 [i]work in progress![i]
 
 Get the code,
-[i]www.github.com/vaizguy/cryptikchaos[/i]
+[i]http://www.github.com/vaizguy/cryptikchaos[/i]
 
 Thoughts?
 [i]cryptikchaos@googlegroups.com[/i]
 
+Vaizlabs, 
+[i]http://felix-vaizlabs.rhcloud.com[/i]
 """,
             markup=True,
             valign='top',
