@@ -72,6 +72,7 @@ constants.CMD_ALIASES = {
     "@": "send",
     "?": "help"
 }
+constants.VERSION = __version__
 # ------------------------------------------------------------------------####
 
 # ---Project Path CONSTANTS-----------------------------------------------####
@@ -219,6 +220,7 @@ else:
 constants.GUI_WELCOME_MSG = """
 
 {}>> CryptikChaos Network <<
+{}>> version - {} <<
 {}>> Drag left edge for navigation <<
 {}>> Enter "help" (or) [TAB] for command listing <<
 {}>> Peer {}--{} <<
@@ -226,6 +228,8 @@ constants.GUI_WELCOME_MSG = """
 
 """.format(
     constants.GUI_LABEL_LEFT_PADDING,
+    constants.GUI_LABEL_LEFT_PADDING,
+    constants.VERSION,
     constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_LEFT_PADDING,

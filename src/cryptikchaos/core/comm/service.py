@@ -208,6 +208,7 @@ class CommService:
         # Get peer connection
         conn = self.swarm_manager.connect_to_peer(peer_route)
 
+        # Set destination host IP
         if not desthost:
             desthost = self.swarm_manager.peer_host(pid)
 

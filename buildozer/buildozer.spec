@@ -40,6 +40,7 @@ requirements = kivy,twisted,pyopenssl,pycrypto,plyer
 
 # (str) Presplash of the application
 #presplash.filename = %(source.dir)s/data/presplash.png
+presplash.filename = %(source.dir)s/cryptikchaos/data/presplash.png
 
 # (str) Icon of the application
 icon.filename = %(source.dir)s/cryptikchaos/data/icon.png
