@@ -112,18 +112,20 @@ def get_my_ip():
 
     try:
         # Get IP from curlmyip.com which gives the raw ip address
-        my_ip = urlopen('http://curlmyip.com').read().strip()
+        my_pub_ip = urlopen('http://curlmyip.com').read().strip()
 
         # Check for portal redirects if offline
-        if not ip_address_is_valid(my_ip):
-            my_ip = get_local_ip()
+        if not ip_address_is_valid(my_pub_ip):
+            my_pub_ip = None
 
     except URLError:
         Logger.debug('No active internet connection.')
-        # If offline return host
-        my_ip = get_local_ip()
+        my_pub_ip = None
+    
+    # Get local IP
+    my_loc_ip = get_local_ip()
 
-    return my_ip
+    return (my_loc_ip, my_pub_ip)
 
 
 def get_local_ip():

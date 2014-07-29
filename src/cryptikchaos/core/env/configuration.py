@@ -90,7 +90,10 @@ constants.KIVY_RESOURCE_PATH_2 = "{}/libs/garden/navigationdrawer".format(
 constants.PEER_ID_LEN = 8
 constants.PEER_ID = md5hash(uniqueid.id)[0:constants.PEER_ID_LEN]
 constants.PEER_PORT = 1597
-constants.PEER_HOST = get_my_ip()
+# TODO , p2p functionality doesnt work over the internet 
+# due to which the app is tested over a Local area network
+# http://docs.openpeer.org/OpenPeerProtocolSpecification/#DesignConsiderations
+constants.PEER_HOST = get_my_ip()[0]
 constants.PEER_NAME = "MYPOD"
 # ------------------------------------------------------------------------####
 
