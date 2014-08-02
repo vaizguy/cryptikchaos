@@ -74,7 +74,6 @@ class ConsoleWindow(GridLayout):
 
         ## Create scrollable label for console output
         self.scroll_view = ConsoleScrollView(
-            text=greeting,
             font_type=font_type,
             font_size=font_size
         )
@@ -83,6 +82,7 @@ class ConsoleWindow(GridLayout):
 
         # Internal function-hook alias
         self.display_text = self.inputtext_gui_hook
+        self.display_text(greeting)
 
         # Input text box
         if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
