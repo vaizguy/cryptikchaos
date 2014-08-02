@@ -1,3 +1,4 @@
+![vaizlabs](/src/cryptikchaos/data/vaizlabs_logo.png)
 
 +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
    __                                _ _  __  ___
@@ -80,4 +81,7 @@ Discussion:
 -----------
 
 Feel free to leave your queries/suggestions on our [mailing list](mailto:cryptikchaos@googlegroups.com).
+
+Visit us at, https://felix-vaizlabs.rhcloud.com
+
 
