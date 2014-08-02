@@ -23,10 +23,10 @@ source.include_exts = py,jpeg,png,jpg,ttf
 source.exclude_exts = spec,csh,sh,md
 
 # (list) List of directory to exclude (let empty to not exclude anything)
-source.exclude_dirs = archive,test
+source.exclude_dirs = archive,%(source.dir)s/cryptikchaos/test,%(source.dir)s/cryptikchaos/certs
 
 # (list) List of exclusions using pattern matching
-source.exclude_patterns = LICENSE,test
+source.exclude_patterns = LICENSE,test,serial,crlnumber
 
 # (str) Application versioning (method 1)
 version.regex = __version__ = "(.*)"
