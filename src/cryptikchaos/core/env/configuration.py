@@ -58,7 +58,7 @@ constants.ENABLE_INPUT_SCREEN = True
 constants.ENABLE_TLS = True
 
 # Platform flag
-if platform() == "android":
+if platform == "android":
     constants.PLATFORM_ANDROID = True
 else:
     constants.PLATFORM_ANDROID = False
