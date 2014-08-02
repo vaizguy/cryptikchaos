@@ -12,10 +12,46 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
+from kivy.lang import Builder
+from kivy.properties import StringProperty, ObjectProperty
 
 from cryptikchaos.core.env.configuration import constants
 if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
     from cryptikchaos.gui.consoleinput import ConsoleInput
+
+
+Builder.load_string('''
+<ConsoleScrollView>:
+    label_w: labelWindow
+    size_hint_y: 0.9
+    do_scroll_y: True
+    
+    Label:
+        id: labelWindow
+        size_hint_y: None
+        height: self.texture_size[1]
+        text_size: self.width, None
+        markup: True
+        shorten: True
+        text: root.text
+        font_name: root.font_type
+        font_size: root.font_size
+''')
+
+
+class  ConsoleScrollView(ScrollView):
+       
+    text = StringProperty('')
+    label_w = ObjectProperty()
+    font_type = ObjectProperty()
+    font_size = ObjectProperty()
+    
+    def display_text(self, text):
+        
+        self.label_w.text += "[color={}]{}[/color]".format(
+            constants.GUI_FONT_COLOR,
+            text
+        )
 
 
 class ConsoleWindow(GridLayout):
@@ -33,58 +69,20 @@ class ConsoleWindow(GridLayout):
 
         self.goto_input_screen = goto_inputscreen
 
-        if not constants.PLATFORM_ANDROID:
-            # Height and width
-            self.height = 400
-            self.width = 800
-
         # Create viewing area
         self.view_area = GridLayout(cols=1, size_hint=(1, None))
 
-        # Create label for console output
-        self.label = Label(
-            size_hint=(1, None),
-            markup=True,
-            font_name=font_type,
-            font_size=font_size,
-            valign='top',
-            halign='left',
+        ## Create scrollable label for console output
+        self.scroll_view = ConsoleScrollView(
+            text=greeting,
+            font_type=font_type,
+            font_size=font_size
         )
-
-        if not constants.PLATFORM_ANDROID:
-            self.label.text_size = (self.width - 50, None)
-            self.label.shorten = True,
-
-        # bind label to scrollable size
-        self.label.bind(texture_size=self.label.setter('size'))
-
-        # Add label to viewing area
-        self.view_area.add_widget(self.label)
-
-        # Scroll view label
-        self.scroll_view = ScrollView(
-            size_hint_y=0.9,
-        )
-
-        if not constants.PLATFORM_ANDROID:
-            self.scroll_view.size = (self.height, self.width)
-
-        # TODO X-axis scroll not working
-        self.scroll_view.do_scroll_y = True
-        self.scroll_view.do_scroll_x = True
-        # Add label to scroll view
-        self.scroll_view.add_widget(self.view_area)
-
-        # Bind text size to view area
-        self.view_area.bind(minimum_height=self.view_area.setter('height'))
-
+        
         self.add_widget(self.scroll_view)
 
         # Internal function-hook alias
         self.display_text = self.inputtext_gui_hook
-
-        # Display welcome message
-        self.display_text(text=greeting)
 
         # Input text box
         if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
@@ -115,10 +113,7 @@ class ConsoleWindow(GridLayout):
     # GUI Hooks-----------------------
     def inputtext_gui_hook(self, text):
 
-        self.label.text += "[color={}]{}[/color]".format(
-            constants.GUI_FONT_COLOR,
-            text
-        )
+        self.scroll_view.display_text(text)
 
     def getmaxwidth_gui_hook(self):
 
@@ -149,7 +144,7 @@ if __name__ == '__main__':
             root = ConsoleWindow(
                 goto_inputscreen=lambda *args, **kwargs: None,                 
                 # Console splash greeting
-                greeting="Testing Window!",
+                greeting="Testing Window!" * 1000,
                 # Font type face
                 font_type=constants.GUI_FONT_TYPE,
                 # Font size
@@ -158,7 +153,7 @@ if __name__ == '__main__':
 
             # Window resize hook
             Window.bind(on_resize=self.resize)
-
+            
             return root
 
         def handle_input_hook(self, text):

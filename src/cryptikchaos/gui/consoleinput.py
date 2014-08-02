@@ -101,7 +101,7 @@ class ConsoleInput(TextInput):
         self._add_text(instance)
 
         # Reset cursor
-        instance.do_cursor_movement("cursor_end")
+        #instance.do_cursor_movement("cursor_end")
 
     def register_handleinput_cmd_hook(self, hook):
 

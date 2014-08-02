@@ -200,7 +200,10 @@ class SwarmManager(StoreManager):
         table = self.storage_table()
 
         if table:
-            return table
+            return """
+            \nPeers:
+            \n{}
+            """.format(table)
         else:
             return "No peers in swarm."
 
@@ -276,9 +279,12 @@ class SwarmManager(StoreManager):
             # Plot circular graph
             nx.draw_circular(self.swarm_graph)
 
-            # Show graph plot
-            plt.show()
-
+            if not constants.PLATFORM_ANDROID:
+                # Show graph plot
+                plt.show()
+            else:
+                plt.savefig("graph.pdf")
+                
             return True
 
 if __name__ == '__main__':

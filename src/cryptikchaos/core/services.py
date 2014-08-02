@@ -108,15 +108,6 @@ class CoreServices:
                 msg
             )
 
-        # TODO Horizontal scroll is not working
-        # Setting maximum line length to 75 and
-        # adding a newline character after 75 chars
-        if not constants.PLATFORM_ANDROID and wrap:
-            # Get window size
-            wsize = self.getmaxwidth_gui_hook() / 7
-            # Wrap line
-            text = wrap_line(line=text, cmax=wsize)
-
         text = '\n{}'.format(text)
 
         # Send text to console
