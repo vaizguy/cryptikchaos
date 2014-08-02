@@ -26,7 +26,7 @@ source.exclude_exts = spec,csh,sh,md
 source.exclude_dirs = archive,%(source.dir)s/cryptikchaos/test,%(source.dir)s/cryptikchaos/certs
 
 # (list) List of exclusions using pattern matching
-source.exclude_patterns = LICENSE,test,serial,crlnumber
+source.exclude_patterns = LICENSE,test,serial,crlnumber,*CA
 
 # (str) Application versioning (method 1)
 version.regex = __version__ = "(.*)"
@@ -36,7 +36,7 @@ version.filename = %(source.dir)s/main.py
 #version = 0.5
 
 # (list) Application requirements
-requirements = kivy,twisted,pyopenssl,pycrypto,plyer
+requirements = kivy,twisted,pyopenssl,pycrypto,plyer,pympler
 
 # (str) Presplash of the application
 #presplash.filename = %(source.dir)s/data/presplash.png

@@ -15,13 +15,15 @@ post_build:
 	sed -i 's/\(constants.ENABLE_TEST_MODE\s\+=\) False/\1 True/' $(CONFIG_DIR)/configuration.py
 	sed -i 's/\(constants.ENABLE_TLS\s\+=\) False/\1 True/' $(CONFIG_DIR)/configuration.py
 
-build_apk: purge_logs pre_build
+build_apk: 
 	$(BUILDOZER) --verbose android debug | tee -i build_apk.log
 
+build: purge_logs pre_build build_apk post_build
+	
 deploy_apk: uninstall_apk build_apk
 	$(BUILDOZER) --verbose android deploy | tee -i deploy_apk.log
 
-deploy: deploy_apk post_build
+deploy: deploy_apk
 
 run: deploy
 	$(BUILDOZER) --verbose android run | tee -i run_apk.log
