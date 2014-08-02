@@ -15,12 +15,11 @@ pythonpath.AddSysPath('../../')
 
 from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.core.comm.service import CommService
-from cryptikchaos.libs.utilities import wrap_line
 from cryptikchaos.libs.utilities import get_time
+from cryptikchaos.gui.consolesv import ConsoleScrollView
 
 from kivy.app import App
 from kivy import Logger
-from kivy.uix.label import Label
 from kivy.resources import resource_add_path
 
 # Add kivy resource paths
@@ -33,17 +32,13 @@ class TestServerApp(App):
 
     def build(self):
 
-        self.label = Label(
-            markup=True,
-            font_name=constants.GUI_FONT_TYPE,
-            font_size=constants.GUI_FONT_SIZE,
-            text_size=(750, None),
-            shorten=True,
-            valign='top'
+        self.test_win = ConsoleScrollView(
+            font_type=constants.GUI_FONT_TYPE,
+            font_size=constants.GUI_FONT_SIZE
         )
 
         # Display initial text
-        self.display_text(
+        self.test_win.display_text(
             """
             \n>> Test Server started <<\
             \n>> Peer {}--{} <<\
@@ -56,7 +51,7 @@ class TestServerApp(App):
         )
         )
 
-        return self.label
+        return self.test_win
 
     def on_start(self):
         '''Event handler for the on_start event, which is fired after
@@ -115,11 +110,8 @@ class TestServerApp(App):
             msg
         )
 
-        # Factor line
-        text = wrap_line(text)
-
         # Add text
-        self.display_text(text)
+        self.test_win.display_text(text)
 
     def display_text(self, text):
 

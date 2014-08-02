@@ -9,50 +9,14 @@ __version__ = "0.6"
 
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
 from kivy.uix.button import Button
-from kivy.uix.scrollview import ScrollView
-from kivy.lang import Builder
-from kivy.properties import StringProperty, ObjectProperty
+
 
 from cryptikchaos.core.env.configuration import constants
 if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
     from cryptikchaos.gui.consoleinput import ConsoleInput
 
-
-Builder.load_string('''
-<ConsoleScrollView>:
-    label_w: labelWindow
-    size_hint_y: 0.9
-    do_scroll_y: True
-    
-    Label:
-        id: labelWindow
-        size_hint_y: None
-        height: self.texture_size[1]
-        text_size: self.width, None
-        markup: True
-        shorten: True
-        text: root.text
-        font_name: root.font_type
-        font_size: root.font_size
-''')
-
-
-class  ConsoleScrollView(ScrollView):
-       
-    text = StringProperty('')
-    label_w = ObjectProperty()
-    font_type = ObjectProperty()
-    font_size = ObjectProperty()
-    
-    def display_text(self, text):
-        
-        self.label_w.text += "[color={}]{}[/color]".format(
-            constants.GUI_FONT_COLOR,
-            text
-        )
-
+from cryptikchaos.gui.consolesv import ConsoleScrollView
 
 class ConsoleWindow(GridLayout):
 
