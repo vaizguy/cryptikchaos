@@ -1,7 +1,7 @@
 '''
 Created on Aug 5, 2013
 
-Contains all unchangable constants used accross application.
+Contains all constants used accross application.
 Must be changed with care.
 
 @author: vaizguy
@@ -51,11 +51,11 @@ else:
 
 # ---Application switches-------------------------------------------------####
 
-constants.ENABLE_TEST_MODE = False
+constants.ENABLE_TEST_MODE = True
 constants.ENABLE_COMPRESSION = True
 constants.ENABLE_SHUFFLE = True
 constants.ENABLE_INPUT_SCREEN = True
-constants.ENABLE_TLS = False
+constants.ENABLE_TLS = True
 
 # Platform flag
 if platform() == "android":
@@ -208,12 +208,12 @@ else:
 constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_LOGO = criptiklogo()
 if not constants.PLATFORM_ANDROID:
-    constants.GUI_FONT_COLOR = "#00E217"
-    #constants.GUI_FONT_COLOR = "#999999"
+    #constants.GUI_FONT_COLOR = "#00E217"
+    constants.GUI_FONT_COLOR = "#999999"
     #constants.GUI_FONT_COLOR = "#000000"
 else:
-    constants.GUI_FONT_COLOR = "#00E217"
-    #constants.GUI_FONT_COLOR = "#FFFFFF"
+    #constants.GUI_FONT_COLOR = "#00E217"
+    constants.GUI_FONT_COLOR = "#FFFFFF"
     #constants.GUI_FONT_COLOR = "#000000"
 
 if constants.ENABLE_TEST_MODE:
