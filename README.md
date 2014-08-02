@@ -14,7 +14,7 @@
 CryptikChaos
 ============
 
-Basic P2P chat client built on kivy and twisted python.
+Basic P2P client built on kivy and twisted python.
 
 #####_THIS PROJECT IS PURELY FOR EDUCATIONAL PURPOSES AND IS UNDER DEVELOPMENT._
 
@@ -23,21 +23,14 @@ Dependencies:
 
 **Tested with:**
 
-Minimum Requirements;
-
 | Module         | Version    | Description        | 
 |----------------|------------|--------------------|
 | Python         | 2.7.6      | Language           |
 | Kivy           | 1.7.2      | Python NUI FWK     | 
 | Twisted Python | 13.2.0     | Communications FWK | 
-
-Optional Packages;
-
-| Module   | Version | Description       |
-|----------|---------|-------------------|
-| Pympler  | 0.2.1   | Memory Profiler   |
-| Networkx | 1.8.1   | Network Graph PKG |
-| PyCrypto | 2.6     | AES Crypto PKG    |
+| Pympler        | 0.2.1      | Memory Profiler    |
+| Networkx       | 1.8.1      | Network Graph PKG  |
+| PyCrypto       | 2.6        | AES Crypto PKG     |
 
 Run Main application:
 ---------------------
