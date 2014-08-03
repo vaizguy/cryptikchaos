@@ -20,7 +20,7 @@ build_apk:
 
 build: purge_logs pre_build build_apk post_build
 	
-deploy_apk: uninstall_apk build_apk
+deploy_apk: uninstall_apk build
 	$(BUILDOZER) --verbose android deploy | tee -i deploy_apk.log
 
 deploy: deploy_apk
