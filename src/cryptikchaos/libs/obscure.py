@@ -9,7 +9,7 @@ Contains methods that obscure plaintext.
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
-import hashlib
+from hashlib import sha512
 
 
 def shuffler(string, key=None, iterations=1):
@@ -18,7 +18,7 @@ def shuffler(string, key=None, iterations=1):
     """
 
     if key:
-        salt = hashlib.sha512(string + key).hexdigest()
+        salt = sha512(string + key).hexdigest()
         string = string + salt
 
     for _ in xrange(1, iterations):
@@ -67,7 +67,7 @@ def unshuffler(shuffled_string, key=None, iterations=1):
     string = shuffled_string
 
     if key:
-        if string[-128:] == hashlib.sha512(string[:-128] + key).hexdigest():
+        if string[-128:] == sha512(string[:-128] + key).hexdigest():
             return string[:-128]
         else:
             return ""

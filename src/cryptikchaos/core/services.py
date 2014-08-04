@@ -16,8 +16,6 @@ from cryptikchaos.core.comm.service import CommService
 from cryptikchaos.core.parser.service import ParserService
 from cryptikchaos.core.device.service import DeviceService
 
-from cryptikchaos.libs.utilities import wrap_line
-
 
 class CoreServices:
 
@@ -370,7 +368,8 @@ class CoreServices:
 
         # Print test string
         self.print_message(
-            "Sending Test String: {}".format(constants.LOCAL_TEST_STR))
+            "Sending Test String: {}".format(constants.LOCAL_TEST_STR)
+        )
 
         # Check sending of message.
         self.cmd_send(
@@ -448,7 +447,7 @@ class CoreServices:
             """
             Command: memprof
             Lists memory footprints of active python objects.
-            Top-50
+            Requires Pympler module to be installed.
             Usage: memprof
             """
 

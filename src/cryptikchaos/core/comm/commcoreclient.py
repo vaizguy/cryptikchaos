@@ -9,13 +9,14 @@ Twisted network client core.
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
-from cryptikchaos.core.env.configuration import constants
-
 from kivy.logger import Logger
-import base64
+from base64 import b64encode
+
 # connection to command server
 from twisted.internet import protocol
 from twisted.protocols.basic import LineReceiver
+
+from cryptikchaos.core.env.configuration import constants
 
 
 class CommCoreClientProtocol(LineReceiver):
@@ -55,7 +56,7 @@ class CommCoreClientProtocol(LineReceiver):
 
         Logger.warn("Lost connection with peer {}".format(
             self._peer_repr
-        )
+            )
         )
 
         self.factory.app._print(
@@ -69,7 +70,7 @@ class CommCoreClientProtocol(LineReceiver):
 
         Logger.debug(
             "CLIENT: received : {}, Data Length: {}".format(
-                base64.b64encode(line), len(line)
+                b64encode(line), len(line)
             )
         )
 

@@ -11,12 +11,12 @@ from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 
-
 from cryptikchaos.core.env.configuration import constants
 if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
     from cryptikchaos.gui.consoleinput import ConsoleInput
 
 from cryptikchaos.gui.consolesv import ConsoleScrollView
+
 
 class ConsoleWindow(GridLayout):
 

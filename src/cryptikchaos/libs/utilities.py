@@ -11,7 +11,8 @@ from kivy import Logger
 
 from time import gmtime, strftime
 from struct import pack, unpack
-from socket import inet_aton, inet_ntoa, socket, AF_INET, SOCK_STREAM, SOCK_DGRAM, error
+from socket import inet_aton, inet_ntoa, socket, \
+    AF_INET, SOCK_STREAM, SOCK_DGRAM, error
 from uuid import uuid4, uuid5, NAMESPACE_URL, getnode
 from hashlib import sha512, sha256, md5
 from zlib    import compress as zlib_compress, \

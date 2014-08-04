@@ -14,7 +14,7 @@ from kivy.logger import Logger
 from twisted.internet import protocol
 from twisted.protocols.basic import LineReceiver
 
-import base64
+from base64 import b64encode
 
 
 class CommCoreAuthProtocol(LineReceiver):
@@ -59,7 +59,7 @@ class CommCoreAuthProtocol(LineReceiver):
     def lineReceived(self, line):
         "Run when response is recieved from server."
 
-        Logger.debug("AUTH: Recieved : {}".format(base64.b64encode(line)))
+        Logger.debug("AUTH: Recieved : {}".format(b64encode(line)))
 
         dcon_rsp = self.factory.app.handle_auth_response_stream(
             line, self.transport)

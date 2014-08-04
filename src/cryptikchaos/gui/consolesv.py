@@ -1,8 +1,14 @@
 '''
 Created on Aug 3, 2014
 
+Code from kivy wiki,
+https://github.com/kivy/kivy/wiki/Scrollable-Label
+
 @author: vaizguy
 '''
+
+__author__ = "Arun Vaidya"
+__version__ = "0.6"
 
 from kivy.uix.scrollview import ScrollView
 from kivy.lang import Builder

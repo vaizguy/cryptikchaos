@@ -1,7 +1,7 @@
 '''
 Created on Aug 3, 2013
 
-Peer manager is used to Handle the peer information.
+Peer manager handles information of peers who have joined the swarm.
 
 @author: vaizguy
 '''
@@ -9,17 +9,17 @@ Peer manager is used to Handle the peer information.
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
-from cryptikchaos.libs.Storage.manager import StoreManager
+from kivy.logger import Logger
 
 from cryptikchaos.core.env.configuration import constants
-
-from cryptikchaos.core.comm.swarm.peer import Peer
-
-from kivy.logger import Logger
 
 if constants.NETWORKX_AVAILABLE:
     import networkx as nx
     import matplotlib.pyplot as plt
+    
+from cryptikchaos.libs.Storage.manager import StoreManager
+
+from cryptikchaos.core.comm.swarm.peer import Peer
 
 
 class SwarmManager(StoreManager):

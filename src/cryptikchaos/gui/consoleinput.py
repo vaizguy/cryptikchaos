@@ -7,7 +7,7 @@ Created on Jul 5, 2014
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
-import re
+from re import match
 from kivy.uix.textinput import TextInput
 
 from cryptikchaos.core.env.configuration import constants
@@ -166,7 +166,7 @@ class ConsoleInput(TextInput):
         command_list = [c[4:] for c in self.getcommands_cmd_hook()]
 
         # Get commands with pcmd matches
-        pcmd_matches = [c for c in command_list if re.match(r'\s*{}'.format(pcmd), c)
+        pcmd_matches = [c for c in command_list if match(r'\s*{}'.format(pcmd), c)
                         and c not in instance.autocomplete_buffer]
 
         # Sort cmd list alphabetically

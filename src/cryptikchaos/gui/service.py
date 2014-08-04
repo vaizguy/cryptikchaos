@@ -7,13 +7,13 @@ Created on Oct 8, 2013
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
-from cryptikchaos.core.env.configuration import constants
-
 from kivy.app import App
 from kivy.resources import resource_add_path
 from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.core.window import Window
+
+from cryptikchaos.core.env.configuration import constants
 
 try:
     from cryptikchaos.libs.garden.navigationdrawer \

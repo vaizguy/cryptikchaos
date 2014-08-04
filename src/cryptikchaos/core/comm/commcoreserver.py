@@ -9,13 +9,13 @@ Twisted network server core.
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
-from cryptikchaos.core.env.configuration import constants
-
 from kivy.logger import Logger
-import base64
+from base64 import b64encode
 
 from twisted.internet import protocol
 from twisted.protocols.basic import LineReceiver
+
+from cryptikchaos.core.env.configuration import constants
 
 
 class CommCoreServerProtocol(LineReceiver):
@@ -59,7 +59,7 @@ class CommCoreServerProtocol(LineReceiver):
 
         Logger.debug(
             "SERVER: received : {}, Data Length: {}".format(
-                base64.b64encode(line), len(line)
+                b64encode(line), len(line)
             )
         )
 
@@ -69,7 +69,7 @@ class CommCoreServerProtocol(LineReceiver):
         if response:
             Logger.debug(
                 "SERVER: responded : {}, Data Length: {}".format(
-                    base64.b64encode(response), len(response)
+                    b64encode(response), len(response)
                 )
             )
             self.sendLine(response)
