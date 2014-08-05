@@ -222,15 +222,13 @@ else:
     my_host = constants.PEER_HOST
 constants.GUI_WELCOME_MSG = """
 
-{}>> CryptikChaos Network <<
-{}>> version - {} <<
-{}>> Drag left edge for navigation <<
-{}>> Enter "help" (or) [TAB] for command listing <<
-{}>> Peer {}--{} <<
-{}[{}]
+{} CryptikChaos Network v{} 
+{} Drag left edge for navigation 
+{} Enter "help" (or) [TAB] for command listing! 
+{} Peer {}--{} 
+{} {}
 
 """.format(
-    constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_LEFT_PADDING,
     constants.VERSION,
     constants.GUI_LABEL_LEFT_PADDING,
