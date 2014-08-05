@@ -14,7 +14,7 @@ from kivy import Logger
 
 from cryptikchaos.core.env.configuration import constants
 
-from cryptikchaos.libs.Storage.manager import StoreManager
+from cryptikchaos.storage.manager import StoreManager
 
 from cryptikchaos.libs.utilities import generate_uuid
 from cryptikchaos.libs.utilities import generate_token

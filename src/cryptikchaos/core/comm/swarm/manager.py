@@ -17,7 +17,7 @@ if constants.NETWORKX_AVAILABLE:
     import networkx as nx
     import matplotlib.pyplot as plt
     
-from cryptikchaos.libs.Storage.manager import StoreManager
+from cryptikchaos.storage.manager import StoreManager
 
 from cryptikchaos.core.comm.swarm.peer import Peer
 
