@@ -644,6 +644,14 @@ class CommService:
     # ------------------------------------------------
     def pass_message(self, pid, msg):
         "Pass message to client. Stream Type: BULK"
+        
+        # Check if peer is valid
+        if not self.swarm_manager.is_peer(pid):
+            Logger.warn(
+                "Peer {} is not in swarm. Add peer using adpeer cmd.".format(pid))
+            self._print(
+                "Peer {} is not in swarm. Add peer using adpeer cmd.".format(pid))
+            return False            
 
         # Check to see peer connection status
         if not self.swarm_manager.get_peer_connection_status(pid):
