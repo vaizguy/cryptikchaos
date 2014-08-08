@@ -1,11 +1,14 @@
 #! /bin/bash
 
 # Path to profile database
-PROFILE_PATH="../../../profile"
+PROFILE_PATH="../../../debug/profile"
 # Path to main app
 MAIN_SCRIPT="../../main.py"
 # Path to test server app
 TEST_SCRIPT="./testserver.py"
+
+# Path to profile pstats file
+PSTAT_PATH="$PROFILE_PATH/profile.pstats"
 
 ## For Profiling
 if [[ $1 =~ "profile" ]]; then
@@ -18,16 +21,16 @@ if [[ $1 =~ "profile" ]]; then
 
     # Launch the main client
     xterm -geometry 96x24+0+0 -e \
-        "python -m cProfile -o ../../profile.pstats \
+        "python -m cProfile -o $PSTAT_PATH \
         -s time $MAIN_SCRIPT"
 
     # Convert Profile statistics to a graph diag.
     ${PROFILE_PATH}/gprof2dot.py \
-        -f pstats ../../profile.pstats \
+        -f pstats $PSTAT_PATH \
         | dot -Tsvg -o ${PROFILE_PATH}/callgraph.svg
 
     # Remove pstat file
-    rm -f ../../profile.pstats 
+    rm -f $PSTAT_PATH 
 
 ## No profiling
 else
