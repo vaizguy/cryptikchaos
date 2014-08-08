@@ -264,6 +264,21 @@ def long2hex(self, long_num):
 
     return hex(long_num).rstrip("L").lstrip("0x") or "0"
 
+def run_kivy_app(cls):
+    
+    app = cls()
+    
+    try:
+        Logger.info("Opening {} Kivy Application.".format(type(app).__name__))
+        # Start App mainloop
+        app.run()
+    except KeyboardInterrupt:
+        Logger.info("Recieved Keyboard interrupt. [CTRL+C]")
+        # Stop services
+        app.on_stop()
+    else:
+        Logger.info("Closed {} Kivy Application.".format(type(app).__name__))
+        
 
 if __name__ == "__main__":
     # Test for factor_line

@@ -26,10 +26,10 @@ from kivy.resources import resource_add_path
 resource_add_path(constants.KIVY_RESOURCE_PATH_1)
 
 
-class TestServerApp(App):
+class CryptikChaosTestApp(App):
 
     "Test sever application."
-
+    
     def build(self):
 
         self.test_win = ConsoleScrollView(
@@ -39,10 +39,10 @@ class TestServerApp(App):
 
         # Display initial text
         self.test_win.display_text(
-            """
-            \n>> Test Server started <<\
-            \n>> Peer {}--{} <<\
-            \n[{}]\
+            """\
+            \n Test Server started \
+            \n Peer {}--{} \
+            \n {}\
             \n\
             \n""".format(
             constants.LOCAL_TEST_PEER_ID,
@@ -122,14 +122,6 @@ class TestServerApp(App):
         )
 
 if __name__ == '__main__':
-    try:
-        # Build server interface
-        TServerApp = TestServerApp()
-        # Start test server main loop
-        TServerApp.run()
-    except KeyboardInterrupt:
-        Logger.info("Recieved Keyboard interrupt. [CTRL+C]")
-        # Stop services
-        TServerApp.on_stop()
-    else:
-        Logger.info("Closed Cryptikchaos Test Server.")
+    
+    from cryptikchaos.libs.utilities import run_kivy_app   
+    run_kivy_app(CryptikChaosTestApp)

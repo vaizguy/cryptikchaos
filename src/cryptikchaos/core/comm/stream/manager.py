@@ -112,7 +112,7 @@ class StreamManager(StoreManager):
 
             # AES Encryption
             if constants.AES_AVAILABLE:
-                Logger.debug("Encrypting content...")
+                Logger.info("Encrypting content...")
                 # Generate iv from stream token
                 iv = md5hash(stream_token, hexdigest=False)
                 # Create AES object
