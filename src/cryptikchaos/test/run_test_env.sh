@@ -5,7 +5,7 @@ PROFILE_PATH="../../../profile"
 # Path to main app
 MAIN_SCRIPT="../../main.py"
 # Path to test server app
-TEST_SCRIPT="./test_server.py"
+TEST_SCRIPT="./testserver.py"
 
 ## For Profiling
 if [[ $1 =~ "profile" ]]; then
