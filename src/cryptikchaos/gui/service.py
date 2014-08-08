@@ -111,7 +111,7 @@ class GUIService(App):
         application is being run.
         '''
 
-        Logger.info("Cryptikchaos Client started.")
+        Logger.debug("Cryptikchaos Client started.")
 
         # Print criptikchaos banner
         Clock.schedule_once(self.print_logo, 1)
@@ -125,7 +125,7 @@ class GUIService(App):
         # Close services
         self.core_services.__del__()
 
-        Logger.info("Stopped Cryptikchaos Client.")
+        Logger.debug("Stopped Cryptikchaos Client.")
 
     def on_pause(self):
 

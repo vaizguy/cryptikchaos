@@ -23,10 +23,10 @@ source.include_exts = py,jpeg,png,jpg,ttf,txt
 source.exclude_exts = spec,csh,sh,md
 
 # (list) List of directory to exclude (let empty to not exclude anything)
-source.exclude_dirs = archive,%(source.dir)s/cryptikchaos/test,%(source.dir)s/cryptikchaos/certs
+source.exclude_dirs = archive, test, certs
 
 # (list) List of exclusions using pattern matching
-source.exclude_patterns = LICENSE,test,serial,crlnumber,*CA
+source.exclude_patterns = LICENSE,test,serial,crlnumber,*CA,testserver.py
 
 # (str) Application versioning (method 1)
 version.regex = __version__ = "(.*)"
@@ -46,7 +46,8 @@ presplash.filename = %(source.dir)s/cryptikchaos/data/presplash.png
 icon.filename = %(source.dir)s/cryptikchaos/data/icon.png
 
 # (str) Supported orientation (one of landscape, portrait or all)
-orientation = portrait
+#orientation = portrait
+orientation = all
 
 # (bool) Indicate if the application should be fullscreen or not
 fullscreen = 0
