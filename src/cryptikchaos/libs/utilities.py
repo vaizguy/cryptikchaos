@@ -265,7 +265,7 @@ def long2hex(self, long_num):
     return hex(long_num).rstrip("L").lstrip("0x") or "0"
 
 def run_kivy_app(cls):
-    
+       
     app = cls()
     
     try:

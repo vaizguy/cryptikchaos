@@ -34,7 +34,7 @@ resource_add_path(constants.KIVY_RESOURCE_PATH_2)
 
 class GUIService(App):
 
-    "Graphival user interface service."
+    "Graphical user interface service."
 
     # Init attributes
     core_services = None

@@ -1,7 +1,7 @@
 '''
 Test Sever used to test the server side protocol.
 To Run:
-python test_server.py
+python testserver.py
 
 @author: vaizguy
 '''
@@ -11,7 +11,7 @@ __version__ = "0.6"
 
 # Add cryptikchaos path
 import pythonpath
-pythonpath.AddSysPath('../../')
+pythonpath.AddSysPath('../..') # (pwd: test)
 
 from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.core.comm.service import CommService
