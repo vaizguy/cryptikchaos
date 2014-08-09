@@ -281,8 +281,6 @@ class CommService:
         # Print the message
         if self._printer:
             self._printer(msg, peer_id)
-        else:
-            Logger.info(msg)
 
     def _print_test(self, ctype, content):
         "Print test message."

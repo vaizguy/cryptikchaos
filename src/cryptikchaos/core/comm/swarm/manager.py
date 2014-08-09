@@ -167,7 +167,7 @@ class SwarmManager(StoreManager):
 
             # Concatenate if key is bigger than 4 chars
             if len(p_info["PEER_KEY"]) >= 4:
-                peer_key = p_info["PEER_KEY"][0:3] + "XXXX"
+                peer_key = p_info["PEER_KEY"][0:3] + "XXX"
             else:
                 peer_key = p_info["PEER_KEY"]
 

@@ -15,8 +15,8 @@ pythonpath.AddSysPath('../..') # (pwd: test)
 
 from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.core.comm.service import CommService
+from cryptikchaos.core.gui.consolesv import ConsoleScrollView
 from cryptikchaos.libs.utilities import get_time
-from cryptikchaos.gui.consolesv import ConsoleScrollView
 
 from kivy.app import App
 from kivy import Logger

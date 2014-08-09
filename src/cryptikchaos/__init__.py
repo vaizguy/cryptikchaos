@@ -18,10 +18,10 @@ kivy.require('1.7.2')
 import pythonpath
 pythonpath.AddSysPath('../../src')
     
-from cryptikchaos.gui.service import GUIService
+from cryptikchaos.core.services import CoreServices
 
 
-class CryptikChaosApp(GUIService):
+class CryptikChaosApp(CoreServices):
 
     """
     Main Application class.

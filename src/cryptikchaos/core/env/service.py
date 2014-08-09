@@ -66,7 +66,7 @@ class EnvService:
                 )
             else:
                 constants.append(
-                    (i, k, "{}...".format(v.encode('string_escape')[:20]))
+                    (i, k, "{}*".format(v.encode('string_escape')[:20]))
                 )
             i += 1
 

@@ -120,7 +120,7 @@ class StoreManager(object):
                 if (len(str(v)) <= 8):
                     row += [v]
                 else:
-                    row += ["{}..".format(v[:8])]
+                    row += ["{}*".format(v[:8])]
 
             table.add_row(row)
 

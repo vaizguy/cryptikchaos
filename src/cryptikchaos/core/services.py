@@ -15,9 +15,10 @@ from cryptikchaos.core.env.service import EnvService
 from cryptikchaos.core.comm.service import CommService
 from cryptikchaos.core.parser.service import ParserService
 from cryptikchaos.core.device.service import DeviceService
+from cryptikchaos.core.gui.service import GUIService
 
 
-class CoreServices:
+class CoreServices(object):
 
     def __init__(self):
 
@@ -45,10 +46,16 @@ class CoreServices:
         self.parser_service = ParserService(
             cmd_aliases=constants.CMD_ALIASES
         )
+        
+        # Start GUI service
+        self.gui_service = GUIService(
+            self.handleinput_cmd_hook, 
+            self.getcommands_cmd_hook
+        )
 
         # Get hooks
-        self.inputtext_gui_hook = None
-        self.getmaxwidth_gui_hook = None
+        self.inputtext_gui_hook = self.gui_service.inputtext_gui_hook
+        self.getmaxwidth_gui_hook = self.gui_service.getmaxwidth_gui_hook
 
     def __del__(self):
 
@@ -70,8 +77,16 @@ class CoreServices:
     def register_getmaxwidth_gui_hook(self, hook):
 
         self.getmaxwidth_gui_hook = hook
+        
+    def run(self):
+        
+        return self.gui_service.run()
+    
+    def on_stop(self):
+        
+        return self.gui_service.on_stop()
 
-    def print_message(self, msg, peerid=None, intermediate=False, wrap=True):
+    def print_message(self, msg, peerid=None, intermediate=False):
         "Print a message in the output window."
 
         # Convert to string
@@ -110,10 +125,20 @@ class CoreServices:
 
         # Send text to console
         self.inputtext_gui_hook(text)
+                    
+        # Print in log
+        if constants.ENABLE_CMD_LOG:
+            # Get peer id for log
+            if not peerid:
+                logger_peerid = constants.PEER_NAME
+            else:
+                logger_peerid = peerid
+                
+            Logger.debug("[{}] => {}".format(logger_peerid, msg))
 
     def print_table(self, table):
 
-        self.print_message(msg=table, wrap=False)
+        self.print_message(msg=table)
 
     # Console-GUI Hooks
     # ----------------------------------------------------
