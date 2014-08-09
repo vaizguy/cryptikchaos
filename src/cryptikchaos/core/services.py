@@ -27,12 +27,15 @@ class CoreServices(object):
             my_host = constants.LOCAL_TEST_HOST
         else:
             my_host = constants.PEER_HOST
+            
+        # Initialize Services
+        self.services = {}
 
         # Initiate device service
-        self.device_service = DeviceService()
+        self.services["DEVICE"] = DeviceService()
 
         # Initiate communication service
-        self.comm_service = CommService(
+        self.services["COMM"] = CommService(
             peerid=constants.PEER_ID,
             host=my_host,
             port=constants.PEER_PORT,
@@ -40,31 +43,32 @@ class CoreServices(object):
         )
 
         # Initiate environment service
-        self.env_service = EnvService()
+        self.services["ENV"] = EnvService()
 
         # Initiate Lexical parser service
-        self.parser_service = ParserService(
+        self.services["PARSER"] = ParserService(
             cmd_aliases=constants.CMD_ALIASES
         )
         
         # Start GUI service
-        self.gui_service = GUIService(
+        self.services["GUI"] = GUIService(
             self.handleinput_cmd_hook, 
             self.getcommands_cmd_hook
         )
 
         # Get hooks
-        self.inputtext_gui_hook = self.gui_service.inputtext_gui_hook
-        self.getmaxwidth_gui_hook = self.gui_service.getmaxwidth_gui_hook
+        self.inputtext_gui_hook = self.services["GUI"].inputtext_gui_hook
+        self.getmaxwidth_gui_hook = self.services["GUI"].getmaxwidth_gui_hook
 
     def __del__(self):
 
         Logger.info("Closing services.")
 
         try:
-            self.comm_service.__del__()
-            self.env_service.__del__()
-            self.parser_service.__del__()
+            self.services["COMM"].__del__()
+            self.services["ENV"].__del__()
+            self.services["PARSER"].__del__()
+            del self.services
         except:
             pass
 
@@ -80,11 +84,11 @@ class CoreServices(object):
         
     def run(self):
         
-        return self.gui_service.run()
+        return self.services["GUI"].run()
     
     def on_stop(self):
         
-        return self.gui_service.on_stop()
+        return self.services["GUI"].on_stop()
 
     def print_message(self, msg, peerid=None, intermediate=False):
         "Print a message in the output window."
@@ -101,14 +105,14 @@ class CoreServices(object):
         else:
         # One line print
             if not peerid:
-                peerid = self.comm_service.peerid
+                peerid = self.services["COMM"].peerid
 
             # If local pid, substitute with peer name
-            if peerid == self.comm_service.peerid:
+            if peerid == self.services["COMM"].peerid:
                 peerid = constants.PEER_NAME
 
             # Get peer message color
-            rcc = self.comm_service.swarm_manager.get_peerid_color(
+            rcc = self.services["COMM"].swarm_manager.get_peerid_color(
                 peerid
             )
 
@@ -159,7 +163,7 @@ class CoreServices(object):
     def parse_line(self, line):
         "Parse command line."
 
-        (cmd, arg_str) = self.parser_service.parse_command(line)
+        (cmd, arg_str) = self.services["PARSER"].parse_command(line)
 
         return (cmd, arg_str)
 
@@ -329,7 +333,7 @@ class CoreServices(object):
             return None
         else:
             self.print_message("Adding Peer {} @ {}.".format(pid, host))
-            self.comm_service.add_peer_to_swarm(pid, host)
+            self.services["COMM"].add_peer_to_swarm(pid, host)
 
     def cmd_addtest(self, _):
         """
@@ -372,7 +376,7 @@ class CoreServices(object):
                 Logger.warn("Please enter a message to send.")
                 return None
 
-        if self.comm_service.pass_message(pid, msg):
+        if self.services["COMM"].pass_message(pid, msg):
             # command log
             Logger.debug("Message sent to peer {}.".format(pid))
             # Display send message
@@ -409,7 +413,7 @@ class CoreServices(object):
         """
 
         self.print_table(
-            self.comm_service.swarm_manager.peer_table()
+            self.services["COMM"].swarm_manager.peer_table()
         )
 
     def cmd_peerip(self, cmdline=[]):
@@ -420,7 +424,7 @@ class CoreServices(object):
         """
 
         for peer_id in cmdline:
-            self.comm_service.display_peer_host(peer_id)
+            self.services["COMM"].display_peer_host(peer_id)
 
     def cmd_env(self, _):
         """
@@ -431,7 +435,7 @@ class CoreServices(object):
         """
 
         self.print_table(
-            self.env_service.display_table()
+            self.services["ENV"].display_table()
         )
 
     def cmd_eko(self, cmdline=[]):
@@ -449,7 +453,7 @@ class CoreServices(object):
             cmdline = " ".join(cmdline)
 
         # Get constant
-        v = self.env_service.get_constant(cmdline)
+        v = self.services["ENV"].get_constant(cmdline)
 
         # Print constant value or string
         if v:
@@ -476,7 +480,7 @@ class CoreServices(object):
             Usage: memprof
             """
 
-            self.env_service.memory_summary()
+            self.services["ENV"].memory_summary()
             self.print_message("Dumped Memory profile to terminal.")
 
     # Swarm graph visualizer
@@ -489,7 +493,7 @@ class CoreServices(object):
             Usage: graphswarm
             """
 
-            if self.comm_service.swarm_manager.plot_swarm_graph():
+            if self.services["COMM"].swarm_manager.plot_swarm_graph():
                 self.print_message("Generated peer graph.")
             else:
                 self.print_message("No peers in swarm.")
