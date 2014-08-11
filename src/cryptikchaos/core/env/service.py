@@ -22,7 +22,7 @@ if constants.PYMPLER_AVAILABLE:
     from pympler import summary, muppy
 
 
-class EnvService:
+class EnvService(object):
 
     """
     Used to view currently defined environment.

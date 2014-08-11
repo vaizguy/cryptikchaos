@@ -72,3 +72,6 @@ src/cryptikchaos/certs/cryptikchaosCA/*
 buildozer/bin
 android-ndk-r9b
 adt-bundle-linux-x86_64-20131030
+
+# Twisted trial files
+_trial_temp

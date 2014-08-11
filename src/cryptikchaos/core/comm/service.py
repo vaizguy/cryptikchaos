@@ -40,7 +40,7 @@ from base64 import b64encode
 import traceback
 
 
-class CommService:
+class CommService(object):
 
     """
     Twisted communications service.
@@ -91,7 +91,7 @@ class CommService:
 
         # Start the listener
         if serverinit:
-            self._start_listener()
+            self.listener = self._start_listener()
 
         # Start peer connections
         if clientinit:
@@ -99,26 +99,31 @@ class CommService:
 
     def __del__(self):
 
-        Logger.info("Closing Communications service.")
-        Logger.info("Closing managers.")
         # Close swarm handler
         self.swarm_manager.__del__()
         # Close stream manager
         self.stream_manager.__del__()
-        Logger.info("Succesfully Closed managers.")
+        # Close twisted listener
+        self._stop_listener()
 
     def _start_listener(self):
         "Start twisted server listener."
 
         if constants.ENABLE_TLS:
-            reactor.listenSSL(
+            return reactor.listenSSL(
                 self.port,
                 CommCoreServerFactory(self),
                 TLSCtxFactory(
                     self.sslcrt, self.sslkey, self.ssca, self.on_ssl_verification)
             )
         else:
-            reactor.listenTCP(self.port, CommCoreServerFactory(self))
+            return reactor.listenTCP(self.port, CommCoreServerFactory(self))       
+        
+    def _stop_listener(self):
+        "Stop twisted server listener"
+        
+        self.listener.stopListening()        
+        Logger.info('Ended twisted communications!')
 
     def _start_connections(self):
         "Start peer connections on start."
@@ -753,11 +758,14 @@ class CommService:
                 status=True,
                 conn=connection
             )
+            
+            # Get content
+            content = self._pack_auth_content(self.peerid, request_id)
 
             # Send current peer info
             rsp = self.stream_manager.pack_stream(
                 stream_type=constants.PROTO_AACK_TYPE,
-                stream_content=self.peerid + request_id,
+                stream_content=content,
                 stream_flag=STREAM_TYPES.UNAUTH,
                 stream_host=src_ip
             )
