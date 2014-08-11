@@ -92,7 +92,7 @@ class MainPanel(ScreenManager):
     def goto_input_screen(self):
 
         self.close_navbar()
-        self.transition = self.transition_slide_left
+        self.transition = self.transition_slide_down
         self.current = "input"
         self.focus_input_gui_hook()
 

@@ -12,7 +12,7 @@ __version__ = "0.6"
 
 from kivy.uix.scrollview import ScrollView
 from kivy.lang import Builder
-from kivy.properties import StringProperty, ObjectProperty
+from kivy.properties import StringProperty, ObjectProperty, NumericProperty
 
 from cryptikchaos.core.env.configuration import constants
 
@@ -46,8 +46,8 @@ class  ConsoleScrollView(ScrollView):
        
     text = StringProperty('')
     label_w = ObjectProperty()
-    font_type = ObjectProperty()
-    font_size = ObjectProperty()
+    font_type = StringProperty()
+    font_size = NumericProperty()
     
     def display_text(self, text):
         
