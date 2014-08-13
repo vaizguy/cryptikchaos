@@ -56,10 +56,14 @@ def generate_uuid(host=None):
     """
     Generate capsule UID for particular host.
     """
-
-    return str(
+    
+    uuid_str =  str(
         uuid5(NAMESPACE_URL, host)
     )[0:8]
+    
+    Logger.debug("UUID({}) = {}".format(host, uuid_str))
+    
+    return uuid_str
 
 
 def generate_auth_token():
@@ -72,7 +76,7 @@ def generate_token(uid, pkey):
     Generate capsule signature from capsule destination uid and
     peer public key.
     """
-
+    
     return sha256(
         "{}{}".format(
             sha512(uid).digest(),

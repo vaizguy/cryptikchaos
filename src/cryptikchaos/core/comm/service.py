@@ -276,7 +276,7 @@ class CommService(object):
     def _print(self, msg, dip=constants.PEER_HOST,
                port=constants.PEER_PORT):
         "Print message on console with peer id."
-
+        
         # Get peer ID
         peer_id = self.swarm_manager.get_peerid_from_ip(dip, port)
 
@@ -286,6 +286,8 @@ class CommService(object):
         # Print the message
         if self._printer:
             self._printer(msg, peer_id)
+        
+        Logger.info("{} : {}".format(peer_id, msg))
 
     def _print_test(self, ctype, content):
         "Print test message."

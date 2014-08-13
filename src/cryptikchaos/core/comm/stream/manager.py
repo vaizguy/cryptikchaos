@@ -12,6 +12,8 @@ __version__ = "0.6"
 
 from kivy import Logger
 
+from base64 import b64encode
+
 from cryptikchaos.core.env.configuration import constants
 
 from cryptikchaos.storage.manager import StoreManager
@@ -89,6 +91,9 @@ class StreamManager(StoreManager):
         stream_type = stream_type.upper()
         # Stream peer key
         stream_token = None
+        
+        #For testing
+        _debug_stream_content = stream_content
 
         # Shuffle content
         if constants.ENABLE_SHUFFLE:
@@ -175,6 +180,19 @@ class StreamManager(StoreManager):
         else:
             Logger.error("Invalid Stream Flag received.")
             return None
+        
+        Logger.debug("""DEBUG STREAM:
+        FLAG: {}
+        TYPE: {}
+        CONTENT: {}
+        KEY: {}
+        CHECKSUM: {}
+        """.format(
+                self.get_store_item(stream_uid, 'STREAM_FLAG'),
+                self.get_store_item(stream_uid, 'STREAM_TYPE'),
+                _debug_stream_content,
+                b64encode(self.get_store_item(stream_uid, 'STREAM_PKEY')),
+                self.get_store_hmac(stream_uid)))
 
         # Compress stream
         if constants.ENABLE_COMPRESSION:
@@ -273,6 +291,8 @@ class StreamManager(StoreManager):
             # Perform key challenge
             if generate_token(stream_uid, shared_key) != stream_token:
                 Logger.error("Token challenge Fail!")
+                Logger.error("RCVD: {}".format(stream_token))
+                Logger.error("EXPD: {}".format(generate_token(stream_uid, shared_key)))
                 return [None] * 3
             else:
                 Logger.info("Token challenge Pass!")
