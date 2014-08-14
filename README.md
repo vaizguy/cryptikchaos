@@ -45,12 +45,16 @@ constants.ENABLE_TEST_MODE = False
 Setting up test environment:
 ----------------------------
 
+**Test Interface/Protocol**
 * In module `src/cryptikchaos/env/configuration.py` enforce following values;
 ```python
 constants.ENABLE_TEST_MODE = True
 constants.ENABLE_TLS = False
 ```
 * If `constants.ENABLE_TLS = True`, you will be prompted for respective pem passwords on any connection request as well as accessing the peer certificates, these are the private passwords used during creation of certificate signing reqest, more instructions are available in `src/cryptikchaos/certs/CERTS.md`. This is still in development.
+
+**Test Server Protocol with Trial**
+* Go to `src/cryptikchaos/core/comm` and run `trial test.test_server`
 
 Run a simple send message test:
 -------------------------------
