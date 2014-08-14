@@ -33,8 +33,8 @@ class CryptikChaosTestApp(App):
     def build(self):
 
         self.test_win = ConsoleScrollView(
-            font_type=constants.GUI_FONT_TYPE,
-            font_size=constants.GUI_FONT_SIZE
+            font_type=constants.GUI_OUTPUT_FONT_TYPE,
+            font_size=constants.GUI_OUTPUT_FONT_SIZE
         )
 
         # Display initial text
