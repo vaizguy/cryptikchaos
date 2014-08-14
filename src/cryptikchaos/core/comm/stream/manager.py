@@ -181,6 +181,15 @@ class StreamManager(StoreManager):
             Logger.error("Invalid Stream Flag received.")
             return None
         
+        def pkey_action(val):
+            
+            val = md5hash(val)
+            return val
+            
+        if stream_flag == STREAM_TYPES.UNAUTH:
+            Logger.debug("""Stream Packing: \n{}""".format(
+                self.storage_table(shorten_len=64, action_dict={"STREAM_PKEY":pkey_action}) ))
+        
         Logger.debug("""DEBUG STREAM:
         FLAG: {}
         TYPE: {}

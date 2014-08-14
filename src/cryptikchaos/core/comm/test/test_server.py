@@ -5,6 +5,8 @@ Created on Aug 9, 2014
 '''
 
 from base64 import b64encode
+import random
+import string
 import pythonpath
 pythonpath.AddSysPath('../../../../src')
 
@@ -18,7 +20,7 @@ from cryptikchaos.core.comm.stream.manager import STREAM_TYPES
 from cryptikchaos.libs.utilities import generate_auth_token
 
   
-def print_message(msg, peerid="TESTPRINT", intermediate=False, *args):
+def print_message(msg, peerid="[TESTPRINT]", intermediate=False, *args):
 
     print "[TRIAL             ] {} {}\n".format(peerid, msg)
     
@@ -43,8 +45,18 @@ def log_stream(stype, content, skey, l, sim=None):
         content, 
         skey
     ))
+    
+def random_stream(l=constants.STREAM_CONTENT_LEN):
+    return ''.join(
+        random.choice(string.ascii_uppercase + string.digits) for _ in range(
+            l
+        )
+    )
                           
-class SimpleTransactionTestCase(unittest.TestCase):
+class OuroborosTestCase(unittest.TestCase):
+    """
+    Cyclical testing with the client talking to server 
+    through `proto_helpers.StringTransport`."""
     
     client_peer_id = "V_CLIENT"
     server_peer_id = "V_SERVER"
@@ -53,6 +65,7 @@ class SimpleTransactionTestCase(unittest.TestCase):
     
     def setUp(self):
               
+        # Communications service, contains both client & server
         self.comm_service = CommService(
             peerid=self.server_peer_id,
             host=self.peer_ip,
@@ -60,6 +73,7 @@ class SimpleTransactionTestCase(unittest.TestCase):
             printer=print_message
         )
         
+        # Start server protocol factory
         self.factory = CommCoreServerFactory(self.comm_service)
         self.proto = self.factory.buildProtocol((self.peer_ip, self.peer_port))
         self.tr = proto_helpers.StringTransport()
@@ -73,16 +87,17 @@ class SimpleTransactionTestCase(unittest.TestCase):
         self.mack_stream = None
         
         # Get auth request ID
-        self.request_transaction_id = generate_auth_token()
+        self.request_transaction_id = None
         
     def tearDown(self):
            
         # Stop listener
         self.comm_service._stop_listener() 
         
-    def _prepare_transaction(self):
+    def _get_auth_transaction(self):
         
-        ## In order of stream packing for single transaction
+        # Get auth request ID
+        self.request_transaction_id = generate_auth_token()
         
         #REQUEST
         # Pack auth content
@@ -90,7 +105,7 @@ class SimpleTransactionTestCase(unittest.TestCase):
                             self.client_peer_id, self.request_transaction_id)
 
         # Pack authentication data into stream
-        self.auth_stream = self.comm_service.stream_manager.pack_stream(
+        auth_stream = self.comm_service.stream_manager.pack_stream(
             stream_type=constants.PROTO_AUTH_TYPE,
             stream_content=auth_content,
             stream_flag=STREAM_TYPES.UNAUTH,
@@ -103,7 +118,7 @@ class SimpleTransactionTestCase(unittest.TestCase):
                           self.server_peer_id, self.request_transaction_id)
         
         # Send current peer info
-        self.aack_stream = self.comm_service.stream_manager.pack_stream(
+        aack_stream = self.comm_service.stream_manager.pack_stream(
             stream_type=constants.PROTO_AACK_TYPE,
             stream_content=aack_content,
             stream_flag=STREAM_TYPES.UNAUTH,
@@ -114,38 +129,46 @@ class SimpleTransactionTestCase(unittest.TestCase):
             constants.PROTO_AACK_TYPE, 
             aack_content, 
             self.comm_service.peerkey,
-            len(self.aack_stream)
+            len(aack_stream)
         )
         
         #DISCONNECT  
         dcon_content = self.comm_service._pack_auth_content(
                                 self.client_peer_id, self.request_transaction_id)
         
-        self.dcon_stream = self.comm_service.stream_manager.pack_stream(
+        dcon_stream = self.comm_service.stream_manager.pack_stream(
             stream_type=constants.PROTO_DCON_TYPE,
             stream_content=dcon_content,
             stream_flag=STREAM_TYPES.UNAUTH,
             stream_host=self.peer_ip
         )
         
+        return (auth_stream, aack_stream, dcon_stream)
+        
+    def _get_bulk_transaction(self):
+        
+        ## In order of stream packing for single transaction
+        
         #BULK MESSAGE
         shared_key = self.comm_service.comsec_core.generate_shared_key(self.comm_service.peerkey)
         # Pack data into stream
-        self.bulk_stream = self.comm_service.stream_manager.pack_stream(
+        bulk_stream = self.comm_service.stream_manager.pack_stream(
             stream_type=constants.PROTO_BULK_TYPE,
-            stream_content="Hello World!",
+            stream_content=random_stream(),
             stream_host=self.peer_ip,
             shared_key=shared_key
         )
         
         #BULK MESSAGE ACK
-        self.mack_stream = self.comm_service.stream_manager.pack_stream(
+        mack_stream = self.comm_service.stream_manager.pack_stream(
             stream_type=constants.PROTO_MACK_TYPE,
             stream_content='',
             stream_host=self.peer_ip,
             shared_key=shared_key
         )
         
+        return (bulk_stream, mack_stream)
+    
     def unpack_stream(self, stream, shared_key=None):
         
         (header, content, pkey) = self.comm_service.stream_manager.unpack_stream(
@@ -157,17 +180,20 @@ class SimpleTransactionTestCase(unittest.TestCase):
         
         return (header, content, pkey)
         
-    def _start_transaction(self):
+    def _start_transaction(self, transactions=1):
+        
+        # Get auth transaction
+        (auth_stream, aack_stream, dcon_stream) = self._get_auth_transaction()
         
         # send simulated auth request from virtual client
-        self.proto.dataReceived('{}\r\n'.format(self.auth_stream))
+        self.proto.dataReceived('{}\r\n'.format(auth_stream))
         
         # Get auth response from sim
         aack_response = self.tr.value().rstrip('\r\n')
                 
         # Check if ack is expected
-        self.assertEqual(len(aack_response), len(self.aack_stream), "Responses of different length")
-        self.assertEqual(aack_response, self.aack_stream)
+        self.assertEqual(len(aack_response), len(aack_stream), "Responses of different length")
+        self.assertEqual(aack_response, aack_stream)
         
         # Unpack sim ack from auth req
         (_, _, pkey) = self.unpack_stream(stream=aack_response)
@@ -192,30 +218,42 @@ class SimpleTransactionTestCase(unittest.TestCase):
         )
         
         # send sim disconnect
-        self.proto.dataReceived('{}\r\n'.format(self.dcon_stream))
-        
-        # Reset connection 
-        self.tr.loseConnection()
-        self.tr = proto_helpers.StringTransport()
-        self.proto.makeConnection(self.tr)
+        self.proto.dataReceived('{}\r\n'.format(dcon_stream))
+                
+        # check if request id is still valid
+        self.assertFalse(
+            self.request_transaction_id in self.comm_service.valid_auth_req_tokens,
+            msg='Transaction ID was not deleted from memory at the server side on DCON.')
 
-        # send simulated bulk msg from virtual client
-        self.proto.dataReceived('{}\r\n'.format(self.bulk_stream))
+        # DCON success, Del transaction id
+        self.request_transaction_id = None
         
-        # Get msg ack response from sim
-        mack_response = self.tr.value().rstrip('\r\n')
-        
-        # Unpack sim mack from msg txn
-        self.unpack_stream(stream=mack_response, shared_key=shared_key)
-        
-        # Check if mack is expected
-        self.assertEqual(len(mack_response), len(self.mack_stream), "Responses of different length")
-        self.assertEqual(mack_response, self.mack_stream)
+        # Run transactions
+        for i in range(1, transactions+1):
+            
+            print_message("Bulk Message Test Iteration : {}".format(i))
+            
+            (bulk_stream, mack_stream) = self._get_bulk_transaction()
+                   
+            # Reset connection 
+            self.tr.loseConnection()
+            self.tr = proto_helpers.StringTransport()
+            self.proto.makeConnection(self.tr)
+    
+            # send simulated bulk msg from virtual client
+            self.proto.dataReceived('{}\r\n'.format(bulk_stream))
+            
+            # Get msg ack response from sim
+            mack_response = self.tr.value().rstrip('\r\n')
+            
+            # Unpack sim mack from msg txn
+            self.unpack_stream(stream=mack_response, shared_key=shared_key)
+            
+            # Check if mack is expected
+            self.assertEqual(len(mack_response), len(mack_stream), "Responses of different length")
+            self.assertEqual(mack_response, mack_stream)
     
     def test_transaction(self):
         
-        # Prepare stream
-        self._prepare_transaction()
-                
         # Test the auth transaction
-        self._start_transaction()       
+        self._start_transaction(1)       

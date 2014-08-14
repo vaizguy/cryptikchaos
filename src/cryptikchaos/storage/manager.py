@@ -99,7 +99,7 @@ class StoreManager(object):
         else:
             return None
 
-    def storage_table(self):
+    def storage_table(self, shorten_len=8, action_dict={}):
         "Display Store in table format."
 
         if not self._storage.keys():
@@ -116,12 +116,16 @@ class StoreManager(object):
             for k in _dict.keys():
                 # get value
                 v = _dict[k]
+                # Apply action
+                for (key, action) in action_dict.iteritems():
+                    if k == key:
+                        v = action(v)
                 # Check on length
-                if (len(str(v)) <= 8):
-                    row += [v]
+                if (len(str(v)) > shorten_len):
+                    row += ["{}*".format(v[:shorten_len])]
                 else:
-                    row += ["{}*".format(v[:8])]
-
+                    row += [v]
+                    
             table.add_row(row)
 
         return table
