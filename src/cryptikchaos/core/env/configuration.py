@@ -201,11 +201,12 @@ constants.SSL_POST_VERIF_VALUES = {
 
 # ------------------GUI Attribute CONSTANTS-------------------------------####
 
-constants.GUI_FONT_TYPE = "DroidSansMono.ttf"
-if constants.PLATFORM_ANDROID:
-    constants.GUI_FONT_SIZE = 15
-else:
-    constants.GUI_FONT_SIZE = 14
+constants.GUI_OUTPUT_FONT_TYPE = "DroidSansMono.ttf"
+constants.GUI_INPUT_FONT_TYPE = "DroidSans.ttf"
+
+constants.GUI_OUTPUT_FONT_SIZE = 15
+constants.GUI_INPUT_FONT_SIZE = 15
+
 constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_LOGO = criptiklogo()
 if not constants.PLATFORM_ANDROID:

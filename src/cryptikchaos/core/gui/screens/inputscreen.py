@@ -20,9 +20,9 @@ class InputScreen(Screen):
 
         # Console input
         self.console_input = ConsoleInput(
-            font_type,
-            font_size,
-            goto_consolescreen
+            font_type='DroidSans',
+            font_size=20,
+            goto_consolescreen=goto_consolescreen
         )
 
         # Add the console input

@@ -82,7 +82,7 @@ class SimpleTransactionTestCase(unittest.TestCase):
         
     def _prepare_transaction(self):
         
-        ## AUTH Request
+        ## In order of stream packing for single transaction
         
         #REQUEST
         # Pack auth content

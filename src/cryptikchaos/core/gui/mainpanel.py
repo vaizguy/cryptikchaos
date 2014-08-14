@@ -17,7 +17,7 @@ from cryptikchaos.core.gui.screens.inputscreen import InputScreen
 
 class MainPanel(ScreenManager):
 
-    def __init__(self, drawer, greeting, font_type, font_size, **kwargs):
+    def __init__(self, drawer, greeting, input_font_type, output_font_type, input_font_size, output_font_size, **kwargs):
 
         # Init Screen manager
         super(ScreenManager, self).__init__(**kwargs)
@@ -34,8 +34,8 @@ class MainPanel(ScreenManager):
         # Console screen
         self.console_screen = ConsoleScreen(
             greeting=greeting,
-            font_type=font_type,
-            font_size=font_size,
+            font_type=output_font_type,
+            font_size=output_font_size,
             goto_inputscreen=self.goto_input_screen,
             name="console"
         )
@@ -45,8 +45,8 @@ class MainPanel(ScreenManager):
 
         # Text input screen
         self.input_screen = InputScreen(
-            font_type=font_type,
-            font_size=font_size,
+            font_type=input_font_type,
+            font_size=input_font_size,
             goto_consolescreen=self.goto_console_screen,
             name="input"
         )
