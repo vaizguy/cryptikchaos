@@ -52,7 +52,7 @@ class SimpleTransactionTestCase(unittest.TestCase):
     peer_port = 1597
     
     def setUp(self):
-        
+              
         self.comm_service = CommService(
             peerid=self.server_peer_id,
             host=self.peer_ip,
@@ -78,7 +78,7 @@ class SimpleTransactionTestCase(unittest.TestCase):
     def tearDown(self):
            
         # Stop listener
-        self.comm_service._stop_listener()        
+        self.comm_service._stop_listener() 
         
     def _prepare_transaction(self):
         
@@ -166,25 +166,35 @@ class SimpleTransactionTestCase(unittest.TestCase):
         aack_response = self.tr.value().rstrip('\r\n')
                 
         # Check if ack is expected
+        self.assertEqual(len(aack_response), len(self.aack_stream), "Responses of different length")
         self.assertEqual(aack_response, self.aack_stream)
         
         # Unpack sim ack from auth req
         (_, _, pkey) = self.unpack_stream(stream=aack_response)
         
+        # Get shared key from recieved key
         shared_key = self.comm_service.comsec_core.generate_shared_key(pkey)
-        self.comm_service.swarm_manager.add_peer(self.server_peer_id, shared_key, self.peer_ip, self.peer_port)
+        
+        # Add the peer in to the swarm
+        self.comm_service.swarm_manager.add_peer(
+            self.server_peer_id, 
+            shared_key, 
+            self.peer_ip, 
+            self.peer_port
+        )
+        
+        # remove connection
         self.comm_service._update_peer_connection_status(
-                self.peer_ip,
-                self.peer_port,
-                False,
-                None
-            )
+            self.peer_ip,
+            self.peer_port,
+            False,
+            None
+        )
         
         # send sim disconnect
         self.proto.dataReceived('{}\r\n'.format(self.dcon_stream))
         
-        # Connect to peer using normal connection this should refresh
-        # the connection in db to normal client conn from auth conn
+        # Reset connection 
         self.tr.loseConnection()
         self.tr = proto_helpers.StringTransport()
         self.proto.makeConnection(self.tr)
@@ -199,7 +209,7 @@ class SimpleTransactionTestCase(unittest.TestCase):
         self.unpack_stream(stream=mack_response, shared_key=shared_key)
         
         # Check if mack is expected
-        self.assertEqual(len(mack_response), len(self.mack_stream))
+        self.assertEqual(len(mack_response), len(self.mack_stream), "Responses of different length")
         self.assertEqual(mack_response, self.mack_stream)
     
     def test_transaction(self):
