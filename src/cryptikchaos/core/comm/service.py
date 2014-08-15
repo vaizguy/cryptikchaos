@@ -710,6 +710,8 @@ class CommService(object):
             stream=stream,
             shared_key=shared_key
         )
+        
+        print "HEADER", header
 
         # Check if stream type is valid
         if not header:
@@ -820,6 +822,8 @@ class CommService(object):
             )
 
         elif header == constants.PROTO_BULK_TYPE:
+            
+            print "YES", header
 
             # Message receipt successful
             self._print(content, src_ip)

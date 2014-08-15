@@ -18,8 +18,8 @@ from cryptikchaos.core.comm.commcoreserver import CommCoreServerFactory
 from cryptikchaos.core.comm.service import CommService
 from cryptikchaos.core.comm.stream.manager import STREAM_TYPES
 from cryptikchaos.libs.utilities import generate_auth_token
+from cryptikchaos.libs.utilities import md5hash
 
-  
 def print_message(msg, peerid="[TESTPRINT]", intermediate=False, *args):
 
     print "[TRIAL             ] {} {}\n".format(peerid, msg)
@@ -169,6 +169,28 @@ class OuroborosTestCase(unittest.TestCase):
         
         return (bulk_stream, mack_stream)
     
+    def _get_fake_transaction(self):
+        
+        #BULK MESSAGE
+        shared_key = self.comm_service.comsec_core.generate_shared_key(self.comm_service.peerkey)
+        # Pack data into stream
+        fake_stream = self.comm_service.stream_manager.pack_stream(
+            stream_type=constants.PROTO_BULK_TYPE, 
+            stream_content=random_stream(), 
+            stream_host=self.peer_ip, 
+            shared_key=md5hash(shared_key)
+        )
+        
+        #BULK MESSAGE ACK
+        fmack_stream = self.comm_service.stream_manager.pack_stream(
+            stream_type=constants.PROTO_MACK_TYPE,
+            stream_content='',
+            stream_host=self.peer_ip,
+            shared_key=shared_key
+        )      
+        
+        return (fake_stream, fmack_stream)
+    
     def unpack_stream(self, stream, shared_key=None):
         
         (header, content, pkey) = self.comm_service.stream_manager.unpack_stream(
@@ -252,6 +274,20 @@ class OuroborosTestCase(unittest.TestCase):
             # Check if mack is expected
             self.assertEqual(len(mack_response), len(mack_stream), "Responses of different length")
             self.assertEqual(mack_response, mack_stream)
+            
+            # Reset connection to clear test transport buffer
+            self.tr.loseConnection()
+            self.tr = proto_helpers.StringTransport()
+            self.proto.makeConnection(self.tr)
+            
+            #Check for invalid bulk msg stream
+            (fake_stream, fmack_stream) = self._get_fake_transaction()
+            
+            self.proto.dataReceived('{}\r\n'.format(fake_stream))
+            fmack_response = self.tr.value().rstrip('\r\n')
+            fmack_response = self.tr.value().rstrip('\r\n')
+
+            self.assertNotEqual(fmack_response, fmack_stream)
     
     def test_transaction(self):
         
