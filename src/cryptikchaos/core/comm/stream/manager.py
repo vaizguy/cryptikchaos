@@ -300,8 +300,8 @@ class StreamManager(StoreManager):
             # Perform key challenge
             if generate_token(stream_uid, shared_key) != stream_token:
                 Logger.error("Token challenge Fail!")
-                Logger.error("RCVD: {}".format(stream_token))
-                Logger.error("EXPD: {}".format(generate_token(stream_uid, shared_key)))
+                Logger.error("RCVD: {}".format(b64encode(stream_token)))
+                Logger.error("EXPD: {}".format(b64encode(generate_token(stream_uid, shared_key))))
                 return [None] * 3
             else:
                 Logger.info("Token challenge Pass!")

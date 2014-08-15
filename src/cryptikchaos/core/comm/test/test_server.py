@@ -287,7 +287,7 @@ class OuroborosTestCase(unittest.TestCase):
             fmack_response = self.tr.value().rstrip('\r\n')
             fmack_response = self.tr.value().rstrip('\r\n')
 
-            self.assertNotEqual(fmack_response, fmack_stream)
+            self.assertNotEqual(fmack_response, fmack_stream, "Fake request got a valid mack.")
     
     def test_transaction(self):
         
