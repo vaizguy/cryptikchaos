@@ -8,7 +8,7 @@ __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
 from kivy.uix.screenmanager import Screen
-from kivy.uix.label import Label
+from kivy.uix.rst import RstDocument
 
 
 class AboutScreen(Screen):
@@ -18,26 +18,42 @@ class AboutScreen(Screen):
         super(Screen, self).__init__(**kwargs)
 
         # information about app label
-        self.about_label = Label(
+        self.about_label = RstDocument(
             text="""
+CryptikChaos[sup]TM[/sup] [i]is a work in progress![i]
+=======================================================
 
-[b][i]"..and the G33K shall inherit the earth."[/i][/b]
+.. NOTE:: [i]"..and the G33K_ shall inherit the earth."[/i]
 
-[b]CryptikChaos[sup]TM[/sup][/b]
-[i]work in progress![i]
+This is an experimental application and si still under development.
+You can find topics of help under the help_ command.
 
-Get the code,
-[i]http://www.github.com/vaizguy/cryptikchaos[/i]
+About
+=====
+:Home: [i]http://felix-vaizlabs.rhcloud.com[/i]
+:Author: Arun Vaidya <vaizguy@gmail.com>
+:License: GPLv3
+:Code: [i]http://www.github.com/vaizguy/cryptikchaos[/i]
+:Groups: [i]cryptikchaos@googlegroups.com[/i]
 
-Thoughts?
-[i]cryptikchaos@googlegroups.com[/i]
-
-Vaizlabs, 
-[i]http://felix-vaizlabs.rhcloud.com[/i]
-""",
+""" ,
             markup=True,
             valign='top',
             halign='left',
         )
-
+        
         self.add_widget(self.about_label)
+
+if __name__ == '__main__':
+    
+    from kivy.app import App
+    
+    class AboutLabelPreviewApp(App):
+        
+        def build(self):
+            return AboutScreen()
+        
+    A = AboutLabelPreviewApp()
+    A.run()
+    
+    

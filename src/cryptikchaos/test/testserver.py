@@ -39,12 +39,13 @@ class CryptikChaosTestApp(App):
 
         # Display initial text
         self.test_win.display_text(
-            """\
-            \n Test Server started \
-            \n Peer {}--{} \
-            \n {}\
-            \n\
-            \n""".format(
+            """
+Test Server\n
+===========\n
+:PeerID: {}\n
+:PeerIP: {}\n
+:Date: {}\n
+""".format(
             constants.LOCAL_TEST_PEER_ID,
             constants.LOCAL_TEST_HOST,
             get_time()
@@ -102,7 +103,7 @@ class CryptikChaosTestApp(App):
         )
 
         # Single line output with peer id
-        text = "{}{}[color={}]{}[/color] : {}\n".format(
+        text = "\n{}{}[color={}]{}[/color] : {}\n".format(
             constants.GUI_LABEL_LEFT_PADDING,
             constants.GUI_LABEL_PROMPT_SYM,
             rcc,

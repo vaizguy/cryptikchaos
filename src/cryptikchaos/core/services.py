@@ -94,7 +94,7 @@ class CoreServices(object):
         "Print a message in the output window."
 
         # Convert to string
-        msg = str(msg).rstrip()
+        #msg = str(msg).rstrip()
 
         # Indicates multiline output required
         if intermediate:
@@ -125,7 +125,7 @@ class CoreServices(object):
                 msg
             )
 
-        text = '\n{}'.format(text)
+        text = '\n\n{}'.format(text)
 
         # Send text to console
         self.inputtext_gui_hook(text)

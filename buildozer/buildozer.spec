@@ -36,7 +36,7 @@ version.filename = %(source.dir)s/main.py
 #version = 0.5
 
 # (list) Application requirements
-requirements = kivy,twisted,pyopenssl,pycrypto,plyer,pympler
+requirements = kivy,twisted,pyopenssl,pycrypto,plyer,pympler,docutils
 
 # (str) Presplash of the application
 #presplash.filename = %(source.dir)s/data/presplash.png

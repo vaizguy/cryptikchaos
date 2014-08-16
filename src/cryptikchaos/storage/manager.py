@@ -8,7 +8,7 @@ from kivy.logger import Logger
 
 from cryptikchaos.storage.store import Store
 
-from cryptikchaos.libs.Table.prettytable import PrettyTable
+from cryptikchaos.libs.Table.rstTable import rstTable
 
 
 class StoreManager(object):
@@ -99,13 +99,13 @@ class StoreManager(object):
         else:
             return None
 
-    def storage_table(self, shorten_len=8, action_dict={}):
+    def storage_table(self, shorten_len=40, action_dict={}):
         "Display Store in table format."
 
         if not self._storage.keys():
             return None
 
-        table = PrettyTable(["ID"] + list(self._store_keys))
+        table = rstTable(["ID"] + list(self._store_keys))
 
         for sid in self._storage.keys():
 

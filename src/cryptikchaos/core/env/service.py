@@ -9,12 +9,13 @@ View app environment constants through the App.
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
+import re
 from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.core.env import constants as const
 from cryptikchaos.libs.utilities import serialize
 from cryptikchaos.libs.utilities import deserialize
 
-from cryptikchaos.libs.Table.prettytable import PrettyTable
+from cryptikchaos.libs.Table.rstTable import rstTable
 
 from kivy import Logger
 
@@ -58,16 +59,17 @@ class EnvService(object):
         i = 1
 
         for k in sorted(self.env_dict.keys()):
-            v = self.env_dict[k].strip()
+            v = self.env_dict[k].strip() 
 
-            if len(v[:20]) < 20:
+            if len(v[:50]) < 50:
                 constants.append(
-                    (i, k, "{}".format(v.encode('string_escape')[:20]))
+                    (re.escape(str(i)), re.escape(k), "{}".format(re.escape(v)))
                 )
             else:
                 constants.append(
-                    (i, k, "{}*".format(v.encode('string_escape')[:20]))
+                    (re.escape(str(i)), re.escape(k), "{}*".format(re.escape(v)[:50]))
                 )
+
             i += 1
 
         return constants
@@ -121,15 +123,17 @@ class EnvService(object):
         constants = self.list_constants()
 
         if constants:
-            table = PrettyTable(["S.NO", "CONSTANT", "VALUE"])
+            table = rstTable(["S.NO", "CONSTANT", "VALUE"])
 
             for c in constants:
                 table.add_row(c)
 
             return """
-                \nEnvironment Constants:
-                \nTo see value use: 'eko <constant name>'
-                \n{}""".format(table)
+Environment Constants:\n
+To see value use: 'eko <constant name>'\n
+\n{}
+
+""".format(table)
         else:
             return "No environment variables defined."
 

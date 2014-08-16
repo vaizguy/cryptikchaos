@@ -224,25 +224,25 @@ else:
     my_host = constants.PEER_HOST
 constants.GUI_WELCOME_MSG = """
 
-{} CryptikChaos Network v{} 
-{} Drag left edge for navigation 
-{} Enter "help" (or) [TAB] for command listing! 
-{} Peer {}--{} 
-{} {}
-
+{}CryptikChaos Network v{}_ 
+--------------------------
+{}.. NOTE:: [i]Drag left edge for navigation, Enter "help" (or) [TAB] for command listing![/i] \n
+{}:PeerID: {} \n
+{}:PeerIP: {} \n
+{}:Date: {}\n
 """.format(
     constants.GUI_LABEL_LEFT_PADDING,
     constants.VERSION,
     constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_LEFT_PADDING,
-    constants.GUI_LABEL_LEFT_PADDING,
     constants.PEER_ID,
+    constants.GUI_LABEL_LEFT_PADDING,
     my_host,
     constants.GUI_LABEL_LEFT_PADDING,
     get_time(),
 )
 
-constants.GUI_LABEL_PROMPT_SYM = ">> "
+constants.GUI_LABEL_PROMPT_SYM = "\n>> "
 constants.GUI_LABEL_PROMPT = "{}{}".format(
     constants.GUI_LABEL_LEFT_PADDING,
     constants.GUI_LABEL_PROMPT_SYM
