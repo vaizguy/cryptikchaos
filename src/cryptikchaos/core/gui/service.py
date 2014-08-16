@@ -10,6 +10,7 @@ __version__ = "0.6"
 from kivy.app import App
 from kivy.resources import resource_add_path
 from kivy.clock import Clock
+Clock.max_iteration = 15
 from kivy.logger import Logger
 from kivy.core.window import Window
 

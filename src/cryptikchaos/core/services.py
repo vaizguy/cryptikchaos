@@ -125,7 +125,7 @@ class CoreServices(object):
                 msg
             )
 
-        text = '\n\n{}'.format(text)
+        text = '\n{}'.format(text)
 
         # Send text to console
         self.inputtext_gui_hook(text)
@@ -194,10 +194,10 @@ class CoreServices(object):
         "Print help topics."
 
         if cmds:
-            self.print_message("{}".format(str(header)), None, True)
+            self.print_message("\n{}".format(str(header)), None, True)
             if constants.RULER:
                 self.print_message(
-                    ("{}".format(str(constants.RULER * len(header)))), None, True)
+                    ("\n{}".format(str(constants.RULER * len(header)))), None, True)
             self.columnize(cmds, maxcol - 1)
             self.print_message(("\n"), None, True)
 
@@ -218,7 +218,7 @@ class CoreServices(object):
                             ", ".join(map(str, nonstrings)))
         size = len(list)
         if size == 1:
-            self.print_message('%s' % str(list[0]), None, True)
+            self.print_message('\n%s' % str(list[0]), None, True)
             return
         # Try every row count from 1 upwards
         for nrows in range(1, len(list)):
@@ -256,7 +256,7 @@ class CoreServices(object):
                 del texts[-1]
             for col in range(len(texts)):
                 texts[col] = texts[col].ljust(colwidths[col])
-            self.print_message("%s" % str("  ".join(texts)), None, True)
+            self.print_message("\n%s" % str("  ".join(texts)), None, True)
 
     def cmd_help(self, arg):
         """

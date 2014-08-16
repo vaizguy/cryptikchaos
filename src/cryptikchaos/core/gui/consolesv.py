@@ -24,7 +24,7 @@ class  ConsoleScrollView(RstDocument):
     
     def display_text(self, text):
         
-        self.text += "[color={}]{}[/color] \n".format(
+        self.text += "[color={}]{}[/color]".format(
             constants.GUI_FONT_COLOR,
             text
         )

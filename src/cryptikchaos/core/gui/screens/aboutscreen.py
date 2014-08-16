@@ -25,7 +25,7 @@ CryptikChaos[sup]TM[/sup] [i]is a work in progress![i]
 
 .. NOTE:: [i]"..and the G33K_ shall inherit the earth."[/i]
 
-This is an experimental application and si still under development.
+This is an experimental application and still under development.
 You can find topics of help under the help_ command.
 
 About
