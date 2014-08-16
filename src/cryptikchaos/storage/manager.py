@@ -8,7 +8,7 @@ from kivy.logger import Logger
 
 from cryptikchaos.storage.store import Store
 
-from cryptikchaos.libs.Table.rstTable import rstTable
+from cryptikchaos.libs.Table.restTable import restTable
 
 
 class StoreManager(object):
@@ -105,7 +105,7 @@ class StoreManager(object):
         if not self._storage.keys():
             return None
 
-        table = rstTable(["ID"] + list(self._store_keys))
+        table = restTable(["ID"] + list(self._store_keys))
 
         for sid in self._storage.keys():
 

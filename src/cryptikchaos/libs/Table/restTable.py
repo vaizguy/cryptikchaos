@@ -5,7 +5,7 @@ Created on Aug 16, 2014
 '''
 
 
-class rstTable:
+class restTable:
 
     def __init__(self, col_names):
 

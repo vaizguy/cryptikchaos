@@ -15,7 +15,7 @@ from cryptikchaos.core.env import constants as const
 from cryptikchaos.libs.utilities import serialize
 from cryptikchaos.libs.utilities import deserialize
 
-from cryptikchaos.libs.Table.rstTable import rstTable
+from cryptikchaos.libs.Table.restTable import restTable
 
 from kivy import Logger
 
@@ -123,7 +123,7 @@ class EnvService(object):
         constants = self.list_constants()
 
         if constants:
-            table = rstTable(["S.NO", "CONSTANT", "VALUE"])
+            table = restTable(["S.NO", "CONSTANT", "VALUE"])
 
             for c in constants:
                 table.add_row(c)
