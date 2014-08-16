@@ -63,11 +63,11 @@ class EnvService(object):
 
             if len(v[:50]) < 50:
                 constants.append(
-                    (re.escape(str(i)), re.escape(k), "{}".format(re.escape(v)))
+                    (i, k, v)
                 )
             else:
                 constants.append(
-                    (re.escape(str(i)), re.escape(k), "{}*".format(re.escape(v)[:50]))
+                    (i, k,v[:50])
                 )
 
             i += 1

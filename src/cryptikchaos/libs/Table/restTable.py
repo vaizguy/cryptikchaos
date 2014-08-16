@@ -4,32 +4,38 @@ Created on Aug 16, 2014
 @author: vaizguy
 '''
 
+import re
+
 
 class restTable:
 
     def __init__(self, col_names):
 
-        num_of_cols = len(col_names)
+        self.num_of_cols = len(col_names)
         self.row_1 = col_names
         self.table = ''
 
         self.list_of_rows = []
-        self.list_of_rows.append(self.row_1)
+        self.add_row(self.row_1)
 
     def add_row(self, row):
+        
+        row = list(row)
 
         self.list_of_rows.append(row)
 
     def build(self):
 
-        cols_dict = {}
         cols_minlen_dict = {}
 
         for row in self.list_of_rows:
 
             cnt = 1
-            for col in row:
-
+            for i in range(0, len(row)):
+                # convert column val into string
+                row[i] = re.escape(str(row[i]))
+                # set col
+                col = row[i]
                 # measure the size of the col
                 col_len = len(str(col))
                 try:
@@ -38,21 +44,14 @@ class restTable:
                 except KeyError:
                     cols_minlen_dict[cnt] = col_len
 
-                # Save col value
-                try:
-                    cols_dict[cnt].append(col)
-                except KeyError:
-                    cols_dict[cnt] = [col]
-                    
                 cnt += 1
 
-        #print cols_dict
-        print cols_minlen_dict
+        #print cols_minlen_dict
 
         # header syntax
         # =============
         header_col_dict = {}
-
+        # Get header cols boundary
         for (k, v) in cols_minlen_dict.iteritems():
             header_col_dict[k] = "=" * v
 
@@ -60,57 +59,41 @@ class restTable:
 
         # Build table
         col_delim = "  "
-
+        self.table = ""
+        
         # Build header
         table_header = ""
+        table_boundary = ""
+        # Get header
+        for cnt in range(1, self.num_of_cols+1):
+            if cnt == self.num_of_cols:
+                table_boundary += header_col_dict[cnt]
+            else:
+                table_boundary += header_col_dict[cnt] + col_delim
 
-        # first/third line
-        tbl_header_buondary = ''
-        for cnt in range(1, len(cols_dict)+1):
-            
-            tbl_header_buondary += header_col_dict[cnt] + col_delim
-
-        # strip line
-        tbl_header_buondary = tbl_header_buondary.rstrip()
-        #print repr(tbl_header_buondary)
-
-        table_header += tbl_header_buondary
-
-        # Get titles
-        titles_row = ''
-
-        cnt = 1
-        for col in self.list_of_rows[0]:
-            max_col_len = cols_minlen_dict[cnt]
-            col_len = len(str(col))
-            titles_row += str(col) + " "*(max_col_len-col_len) + col_delim
-            cnt += 1
-
-        titles_row = titles_row.rstrip()
-        #print repr(titles_row)
-
-        table_header += '\n' + titles_row + '\n' + table_header
-        #print repr(table_header)
+        table_header += table_boundary
 
         # Table content
-        table_content = ""
-        for row in self.list_of_rows[1:]:
+        table_content = '\n' + table_header + '\n'
+        for row in self.list_of_rows:
             col_cnt = 1
 
             for col in row:
                 max_col_len = cols_minlen_dict[col_cnt]
                 col_len = len(str(col))
-                table_content += str(col) + " "*(max_col_len-col_len) + col_delim
+                if col_cnt == self.num_of_cols:
+                    table_content += col 
+                else:
+                    table_content += col + " "*(max_col_len-col_len) + col_delim
                 col_cnt += 1
-
-            table_content = table_content.rstrip()
-            table_content += '\n'
+                
+            if row == self.list_of_rows[0]:
+                table_content += '\n' + table_boundary + '\n' 
+            else: 
+                table_content += '\n'
         
-        table_content = table_content.rstrip()
         #print repr(table_content)
-
-        # Get table
-        self.table = table_header + '\n' + table_content + '\n' + tbl_header_buondary
+        self.table = table_content + table_boundary
 
     def __repr__(self):
 
@@ -120,11 +103,12 @@ class restTable:
 
 if __name__ == '__main__':
 
-    rst = rstTable(['Title1', 'Title2', 'Title3'])
+    rst = restTable(['Title1', 'Title2', 'Title3'])
 
-    rst.add_row(['Val1', 'Key1', 'Col3'])
+    rst.add_row(['Val1', 'Kjjjjjjjjjjjjjey1', 'Col3'])
     rst.add_row(['Val2', 'Key2', 'c3'])
-    rst.add_row(['Val3', 'Key3', 'column3'])
+    rst.add_row(['Val3', 'Key3', 'coljjjjjjjjjjjjjjumn3'])
+    rst.add_row((5, '6', 'coljjjjjjjjjjjjjjumn3'))
 
     print rst
 

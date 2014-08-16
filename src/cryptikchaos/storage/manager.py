@@ -119,6 +119,7 @@ class StoreManager(object):
                 # Apply action
                 for (key, action) in action_dict.iteritems():
                     if k == key:
+                        Logger.debug('Performing  action on {}'.format(k))
                         v = action(v)
                 # Check on length
                 if (len(str(v)) > shorten_len):

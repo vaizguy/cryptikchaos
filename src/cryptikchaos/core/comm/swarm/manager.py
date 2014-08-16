@@ -12,6 +12,7 @@ __version__ = "0.6"
 from kivy.logger import Logger
 
 from cryptikchaos.core.env.configuration import constants
+from cryptikchaos.libs.utilities import md5hash
 
 if constants.NETWORKX_AVAILABLE:
     import networkx as nx
@@ -196,13 +197,18 @@ class SwarmManager(StoreManager):
 
     def peer_table(self):
         "Display all peers"
+        
+        def pkey_action(val):
+            
+            val = md5hash(val)
+            return val
 
-        table = self.storage_table()
+        table = self.storage_table(action_dict={"PEER_KEY":pkey_action})
 
         if table:
             return """
             \nPeers:
-            \n{}
+            {}
             """.format(table)
         else:
             return "No peers in swarm."
