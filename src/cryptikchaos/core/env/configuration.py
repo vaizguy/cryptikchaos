@@ -227,8 +227,8 @@ constants.GUI_WELCOME_MSG = """
 {}CryptikChaos Network v{}_
 =============================
 {}.. NOTE:: [i]Drag left edge for navigation, Enter "help" (or) [TAB] for command listing![/i] \n
-{}:PeerID: {} \n
-{}:PeerIP: {} \n
+{}:Node ID: {} \n
+{}:Node IP: {} \n
 {}:Date: {}\n
 ------------\n
 """.format(

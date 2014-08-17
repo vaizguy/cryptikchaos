@@ -86,6 +86,9 @@ class GUIService(App):
 
     def build(self):
         "Build the kivy App."
+        
+        # Set title
+        self.title = "CryptikChaos"
 
         # Add main and side pane
         self.drawer.add_widget(self.side_panel)

@@ -17,7 +17,8 @@ from cryptikchaos.core.gui.screens.inputscreen import InputScreen
 
 class MainPanel(ScreenManager):
 
-    def __init__(self, drawer, greeting, input_font_type, output_font_type, input_font_size, output_font_size, **kwargs):
+    def __init__(self, drawer, greeting, input_font_type, output_font_type, 
+        input_font_size, output_font_size, **kwargs):
 
         # Init Screen manager
         super(ScreenManager, self).__init__(**kwargs)
