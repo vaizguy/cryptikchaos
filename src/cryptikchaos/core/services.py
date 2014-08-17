@@ -128,7 +128,7 @@ class CoreServices(object):
         text = '\n{}'.format(text)
 
         # Send text to console
-        self.inputtext_gui_hook(text)
+        self.inputtext_gui_hook('\n'+text)
                     
         # Print in log
         if constants.ENABLE_CMD_LOG:

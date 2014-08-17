@@ -40,11 +40,13 @@ class CryptikChaosTestApp(App):
         # Display initial text
         self.test_win.display_text(
             """
-Test Server\n
-===========\n
+=========================
+CryptikChaos Test_ Server
+=========================
 :PeerID: {}\n
 :PeerIP: {}\n
 :Date: {}\n
+------------\n
 """.format(
             constants.LOCAL_TEST_PEER_ID,
             constants.LOCAL_TEST_HOST,

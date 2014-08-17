@@ -151,8 +151,8 @@ class ConsoleInput(TextInput):
 
     def on_tab(self, instance, pcmd):
         "Method hook for entry of [TAB]"
-
-        if not self.help_displayed_flag:
+        
+        if not self.help_displayed_flag and pcmd not in 'help':
             # Display help
             instance.handleinput_cmd_hook("help")
 
