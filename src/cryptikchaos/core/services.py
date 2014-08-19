@@ -16,17 +16,11 @@ from cryptikchaos.core.comm.service import CommService
 from cryptikchaos.core.parser.service import ParserService
 from cryptikchaos.core.device.service import DeviceService
 from cryptikchaos.core.gui.service import GUIService
-
-
+    
+    
 class CoreServices(object):
 
     def __init__(self):
-
-        # Peer host (by default is localhost)
-        if constants.ENABLE_TEST_MODE:
-            my_host = constants.LOCAL_TEST_HOST
-        else:
-            my_host = constants.PEER_HOST
             
         # Initialize Services
         self.services = {}
@@ -37,7 +31,7 @@ class CoreServices(object):
         # Initiate communication service
         self.services["COMM"] = CommService(
             peerid=constants.PEER_ID,
-            host=my_host,
+            host=constants.MY_HOST,
             port=constants.PEER_PORT,
             printer=self.print_message
         )

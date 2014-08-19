@@ -63,6 +63,7 @@ if platform == "android":
     constants.PLATFORM_ANDROID = True
 else:
     constants.PLATFORM_ANDROID = False
+constants.PLATFORM = platform
 # ------------------------------------------------------------------------####
 
 # ---Application Environment----------------------------------------------####
@@ -250,3 +251,11 @@ constants.GUI_LABEL_PROMPT = "{}{}".format(
 )
 constants.GUI_PEER_REPR = "Peer {}--{}:{}"
 # ------------------------------------------------------------------------####
+
+# Peer host (by default is localhost)
+if constants.ENABLE_TEST_MODE:
+    constants.MY_HOST = constants.LOCAL_TEST_HOST
+else:
+    constants.MY_HOST = constants.PEER_HOST
+# ------------------------------------------------------------------------####
+ 

@@ -9,6 +9,7 @@ __version__ = "0.6"
 
 from kivy.uix.screenmanager import Screen
 
+from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.core.gui.rstdocbase import RstDocumentBase
 
 
@@ -36,8 +37,17 @@ About
 :License: GPLv3
 :Code: [i]http://www.github.com/vaizguy/cryptikchaos[/i]
 :Groups: [i]cryptikchaos@googlegroups.com[/i]
-
-""" ,
+:UID: {}
+:Host: {}
+:Platform: {}
+:Version: {}
+--------------
+""".format( 
+           constants.PEER_ID,
+           constants.MY_HOST,
+           constants.PLATFORM,
+           __version__
+           ) ,
             markup=True,
             valign='top',
             halign='left',
