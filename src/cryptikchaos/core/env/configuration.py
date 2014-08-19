@@ -215,8 +215,8 @@ if not constants.PLATFORM_ANDROID:
     #constants.GUI_FONT_COLOR = "#000000"
 else:
     #constants.GUI_FONT_COLOR = "#00E217"
-    constants.GUI_FONT_COLOR = "#FFFFFF"
-    #constants.GUI_FONT_COLOR = "#000000"
+    #constants.GUI_FONT_COLOR = "#FFFFFF"
+    constants.GUI_FONT_COLOR = "#000000"
 
 if constants.ENABLE_TEST_MODE:
     my_host = constants.LOCAL_TEST_HOST

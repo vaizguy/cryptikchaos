@@ -8,7 +8,8 @@ __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
 from kivy.uix.screenmanager import Screen
-from kivy.uix.rst import RstDocument
+
+from cryptikchaos.core.gui.rstdocbase import RstDocumentBase
 
 
 class AboutScreen(Screen):
@@ -18,7 +19,7 @@ class AboutScreen(Screen):
         super(Screen, self).__init__(**kwargs)
 
         # information about app label
-        self.about_label = RstDocument(
+        self.about_label = RstDocumentBase(
             text="""
 CryptikChaos[sup]TM[/sup] [i]is a work in progress![i]
 =======================================================

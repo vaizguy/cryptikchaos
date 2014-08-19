@@ -122,7 +122,7 @@ CryptikChaos Test_ Server
 
         # Send text to console
         self.display_text('\n'+text)
-                    
+            
         # Print in log
         if constants.ENABLE_CMD_LOG:
             # Get peer id for log
