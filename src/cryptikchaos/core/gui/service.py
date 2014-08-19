@@ -53,13 +53,13 @@ class GUIService(App):
             drawer=self.drawer,
             # Console splash greeting
             greeting=constants.GUI_WELCOME_MSG,
-            # Font type face
+            # Input Font type face
             input_font_type=constants.GUI_INPUT_FONT_TYPE,
-            # Font size
+            # Input Font size
             input_font_size=constants.GUI_INPUT_FONT_SIZE,
-            # Font type face
+            # Output Font type face
             output_font_type=constants.GUI_OUTPUT_FONT_TYPE,
-            # Font size
+            # Output Font size
             output_font_size=constants.GUI_OUTPUT_FONT_SIZE,
         )
 

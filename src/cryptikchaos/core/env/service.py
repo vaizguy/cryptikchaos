@@ -9,7 +9,6 @@ View app environment constants through the App.
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
-import re
 from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.core.env import constants as const
 from cryptikchaos.libs.utilities import serialize
@@ -137,7 +136,7 @@ To see value use: 'eko <constant name>'\n
         else:
             return "No environment variables defined."
 
-    # pympler inline Memory profiler Conditional code
+    # pympler inline memory profiler code
     if constants.PYMPLER_AVAILABLE:
         def memory_summary(self):
             "Using pympler summarize module to view memory summary."
