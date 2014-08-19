@@ -86,40 +86,57 @@ CryptikChaos Test_ Server
         Logger.info("Successfully closed services.")
         Logger.info("Closing Cryptikchaos Test Server.")
 
-    def print_message(self, msg, peerid=None):
+    def print_message(self, msg, peerid=None, intermediate=False):
         "Print a message in the output window."
 
-        # Convert to string
-        msg = str(msg).rstrip()
+        # Indicates multiline output required
+        if intermediate:
+            text = "{}{}".format(
+                constants.GUI_LABEL_LEFT_PADDING,
+                msg
+            )
+        else:
+        # One line print
+            if not peerid:
+                peerid = self.comm_service.peerid
 
-        if not peerid:
-            peerid = constants.LOCAL_TEST_PEER_ID
+            # If local pid, substitute with peer name
+            if peerid == self.comm_service.peerid:
+                peerid = constants.PEER_NAME
 
-        # If local pid, substitute with peer name
-        if peerid == constants.LOCAL_TEST_PEER_ID:
-            peerid = constants.LOCAL_TEST_PEER_NAME
+            # Get peer message color
+            rcc = self.comm_service.swarm_manager.get_peerid_color(
+                peerid
+            )
 
-        # Get peer message color
-        rcc = self.comm_service.swarm_manager.get_peerid_color(
-            peerid
-        )
+            # Single line output with peer id
+            text = "{}{}[color={}]{}[/color] : {}".format(
+                constants.GUI_LABEL_LEFT_PADDING,
+                constants.GUI_LABEL_PROMPT_SYM,
+                rcc,
+                str(peerid),
+                msg
+            )
 
-        # Single line output with peer id
-        text = "\n{}{}[color={}]{}[/color] : {}\n".format(
-            constants.GUI_LABEL_LEFT_PADDING,
-            constants.GUI_LABEL_PROMPT_SYM,
-            rcc,
-            str(peerid),
-            msg
-        )
+        text = '\n{}'.format(text)
 
-        # Add text
-        self.test_win.display_text(text)
+        # Send text to console
+        self.display_text('\n'+text)
+                    
+        # Print in log
+        if constants.ENABLE_CMD_LOG:
+            # Get peer id for log
+            if not peerid:
+                logger_peerid = constants.PEER_NAME
+            else:
+                logger_peerid = peerid
+                
+            Logger.debug("[{}] => {}".format(logger_peerid, msg))
 
     def display_text(self, text):
 
         # Append line to label
-        self.label.text += "[color={}]{}[/color]".format(
+        self.test_win.text += "\n[color={}]{}[/color]".format(
             constants.GUI_FONT_COLOR,
             text
         )

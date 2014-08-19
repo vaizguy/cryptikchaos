@@ -93,9 +93,6 @@ class CoreServices(object):
     def print_message(self, msg, peerid=None, intermediate=False):
         "Print a message in the output window."
 
-        # Convert to string
-        #msg = str(msg).rstrip()
-
         # Indicates multiline output required
         if intermediate:
             text = "{}{}".format(
