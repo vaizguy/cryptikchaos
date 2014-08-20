@@ -250,6 +250,20 @@ constants.GUI_LABEL_PROMPT = "{}{}".format(
     constants.GUI_LABEL_PROMPT_SYM
 )
 constants.GUI_PEER_REPR = "Peer {}--{}:{}"
+
+# Theme for rstdoc
+if constants.PLATFORM_ANDROID:
+    constants.RSTDOC_BG_COLOR = "0A0A0A"
+    constants.RSTDOC_LINK_COLOR = "ce5c00"
+    constants.RSTDOC_PARA_COLOR = "E6E3E3"
+    constants.RSTDOC_TITLE_COLOR = "204a87"
+    constants.RSTDOC_BULLET_COLOR = "000000"
+else:
+    constants.RSTDOC_BG_COLOR = "2E2E2E"
+    constants.RSTDOC_LINK_COLOR = "ce5c00"
+    constants.RSTDOC_PARA_COLOR = "E6E3E3"
+    constants.RSTDOC_TITLE_COLOR = "204a87"
+    constants.RSTDOC_BULLET_COLOR = "000000"
 # ------------------------------------------------------------------------####
 
 # Peer host (by default is localhost)
