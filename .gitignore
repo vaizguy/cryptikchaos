@@ -79,3 +79,6 @@ _trial_temp
 # Coverage files
 htmlcov
 .coverage
+
+# Profiler graph
+.svg
