@@ -17,7 +17,7 @@ class ConsoleInput(TextInput):
 
     "Console text input class."
 
-    def __init__(self, font_type, font_size, goto_consolescreen, size_y=1):
+    def __init__(self, goto_consolescreen, size_y=1):
 
         # Init super
         super(ConsoleInput, self).__init__()
@@ -27,10 +27,6 @@ class ConsoleInput(TextInput):
         self.multiline = True
         # Not password input
         self.password = False
-        # Font type
-        self.font_name = font_type
-        # Font size
-        self.font_size = font_size
         # Set size
         self.size_hint_y = size_y
         # Sets focus active

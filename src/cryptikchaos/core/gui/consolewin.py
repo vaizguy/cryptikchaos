@@ -21,8 +21,7 @@ class ConsoleWindow(GridLayout):
 
     "Console window class."
 
-    def __init__(self, goto_inputscreen,
-                 greeting, font_type, font_size):
+    def __init__(self, goto_inputscreen, greeting):
 
         # Init super
         super(ConsoleWindow, self).__init__()
@@ -36,10 +35,7 @@ class ConsoleWindow(GridLayout):
         self.view_area = GridLayout(cols=1, size_hint=(1, None))
 
         ## Create scrollable label for console output
-        self.scroll_view = ConsoleScrollView(
-            font_type=font_type,
-            font_size=font_size
-        )
+        self.scroll_view = ConsoleScrollView()
         
         self.add_widget(self.scroll_view)
 
@@ -50,10 +46,6 @@ class ConsoleWindow(GridLayout):
         # Input text box
         if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
             self.console_input = ConsoleInput(
-                # Font type
-                font_type=font_type,
-                # Font size
-                font_size=font_size,
                 # Goto console screen
                 goto_consolescreen=lambda *args, **kwargs: None,
                 # Size

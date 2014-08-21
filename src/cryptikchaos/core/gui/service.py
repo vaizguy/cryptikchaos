@@ -53,14 +53,6 @@ class GUIService(App):
             drawer=self.drawer,
             # Console splash greeting
             greeting=constants.GUI_WELCOME_MSG,
-            # Input Font type face
-            input_font_type=constants.GUI_INPUT_FONT_TYPE,
-            # Input Font size
-            input_font_size=constants.GUI_INPUT_FONT_SIZE,
-            # Output Font type face
-            output_font_type=constants.GUI_OUTPUT_FONT_TYPE,
-            # Output Font size
-            output_font_size=constants.GUI_OUTPUT_FONT_SIZE,
         )
 
         # Set up Side pane

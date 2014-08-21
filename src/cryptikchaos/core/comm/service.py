@@ -711,8 +711,6 @@ class CommService(object):
             shared_key=shared_key
         )
         
-        print "HEADER", header
-
         # Check if stream type is valid
         if not header:
             Logger.error("Invalid Stream checksum received.")

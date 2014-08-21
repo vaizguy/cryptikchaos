@@ -13,15 +13,13 @@ from cryptikchaos.core.gui.consoleinput import ConsoleInput
 
 class InputScreen(Screen):
 
-    def __init__(self, font_type, font_size, goto_consolescreen, **kwargs):
+    def __init__(self, goto_consolescreen, **kwargs):
 
         # Construct screen
         super(InputScreen, self).__init__(**kwargs)
 
         # Console input
         self.console_input = ConsoleInput(
-            font_type='DroidSans',
-            font_size=20,
             goto_consolescreen=goto_consolescreen
         )
 

@@ -210,13 +210,10 @@ constants.GUI_INPUT_FONT_SIZE = 15
 
 constants.GUI_LABEL_LEFT_PADDING = ""
 constants.GUI_LOGO = criptiklogo()
+
 if not constants.PLATFORM_ANDROID:
-    #constants.GUI_FONT_COLOR = "#00E217"
     constants.GUI_FONT_COLOR = "#999999"
-    #constants.GUI_FONT_COLOR = "#000000"
 else:
-    #constants.GUI_FONT_COLOR = "#00E217"
-    #constants.GUI_FONT_COLOR = "#FFFFFF"
     constants.GUI_FONT_COLOR = "#000000"
 
 if constants.ENABLE_TEST_MODE:
@@ -227,9 +224,9 @@ constants.GUI_WELCOME_MSG = """
 =============================
 {}CryptikChaos Network v{}_
 =============================
-{}.. NOTE:: [i]Drag left edge for navigation, Enter "help" (or) [TAB] for command listing![/i] \n
-{}:Node: {} \n
-{}:IP: {} \n
+{}.. NOTE:: [i]Drag left edge for navigation, Enter "help" (or) [TAB] for command listing![/i]\n
+{}:Node: {}\n
+{}:Host: {}\n
 {}:Date: {}\n
 ------------\n
 """.format(
