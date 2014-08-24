@@ -7,7 +7,7 @@ Twisted network client core.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 from kivy.logger import Logger
 from base64 import b64encode

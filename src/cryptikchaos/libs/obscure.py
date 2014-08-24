@@ -7,7 +7,7 @@ Contains methods that obscure plaintext.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 from hashlib import sha512
 

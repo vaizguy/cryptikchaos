@@ -8,7 +8,7 @@ https://github.com/kivy/kivy/wiki/Scrollable-Label
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 from kivy.properties import StringProperty
 

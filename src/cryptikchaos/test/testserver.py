@@ -7,7 +7,7 @@ python testserver.py
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 # Add cryptikchaos path
 import pythonpath

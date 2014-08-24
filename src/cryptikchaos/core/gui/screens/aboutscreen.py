@@ -5,7 +5,7 @@ Created on Jun 29, 2014
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 from kivy.uix.screenmanager import Screen
 

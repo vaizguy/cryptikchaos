@@ -5,7 +5,7 @@ Created on Aug 19, 2014
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 from kivy.uix.rst import RstDocument
 from kivy.properties import DictProperty

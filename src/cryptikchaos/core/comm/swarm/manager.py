@@ -7,7 +7,7 @@ Peer manager handles information of peers who have joined the swarm.
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 from kivy.logger import Logger
 

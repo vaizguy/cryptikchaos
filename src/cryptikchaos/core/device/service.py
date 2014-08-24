@@ -5,7 +5,7 @@ Created on Jul 20, 2014
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 import os.path
 from kivy import Logger
@@ -28,16 +28,21 @@ class DeviceService:
         except NotImplementedError:
             Logger.warn("No vibrate function defined for {} platform.".format(constants.PLATFORM))     
         else:
-            Logger.info("RING!!")                      
+            Logger.info("BUZZ!!")                      
         
     def notify_cb(self, title='', message='', timeout=1):
         
-        notification.notify(
-            title=title, 
-            message=message, 
-            app_name=constants.APP_NAME, 
-            app_icon=os.path.join(constants.KIVY_RESOURCE_PATH_1, 'icon.png'),
-            timeout=timeout
-        )
+        try:
+            notification.notify(
+                title=title, 
+                message=message, 
+                app_name=constants.APP_NAME, 
+                app_icon=os.path.join(constants.KIVY_RESOURCE_PATH_1, 'icon.png'),
+                timeout=timeout
+            )
+        except NotImplementedError:
+            Logger.warn("No vibrate function defined for {} platform.".format(constants.PLATFORM))     
+        else:
+            Logger.info("Fired Notification!")      
         
         

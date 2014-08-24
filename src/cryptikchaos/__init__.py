@@ -9,7 +9,7 @@ twisted framework - Async Networking
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 import kivy
 kivy.require('1.7.2')

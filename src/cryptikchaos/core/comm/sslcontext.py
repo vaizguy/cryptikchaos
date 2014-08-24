@@ -5,7 +5,7 @@ Created on Nov 16, 2013
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 from twisted.internet import ssl
 from OpenSSL import SSL

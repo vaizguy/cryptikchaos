@@ -30,7 +30,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 from __future__ import print_function
 
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 import sys
 import copy

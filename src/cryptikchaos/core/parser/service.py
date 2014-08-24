@@ -5,7 +5,7 @@ Created on Nov 10, 2013
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 from kivy.logger import Logger
 

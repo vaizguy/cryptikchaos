@@ -5,7 +5,7 @@ Created on Oct 15, 2013
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout

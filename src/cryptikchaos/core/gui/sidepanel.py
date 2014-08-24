@@ -5,7 +5,7 @@ Created on Dec 14, 2013
 '''
 
 __author__ = "Arun Vaidya"
-__version__ = "0.6"
+__version__ = "0.6.1"
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
