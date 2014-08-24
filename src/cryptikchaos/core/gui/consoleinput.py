@@ -17,10 +17,10 @@ class ConsoleInput(TextInput):
 
     "Console text input class."
 
-    def __init__(self, goto_consolescreen, size_y=1):
+    def __init__(self, goto_consolescreen, size_y=1, **kwargs):
 
         # Init super
-        super(ConsoleInput, self).__init__()
+        super(ConsoleInput, self).__init__(**kwargs)
 
         # Single line input, enter triggers
         # on_text_validate
@@ -50,7 +50,6 @@ class ConsoleInput(TextInput):
         self.prompt_len = len(constants.GUI_LABEL_PROMPT_SYM)
 
         # Command buffer
-        self.command_buffer = ''
         self.autocomplete_buffer = set()
         self.help_displayed_flag = False
 
@@ -140,10 +139,10 @@ class ConsoleInput(TextInput):
         if input_text:
             # Reset prompt
             instance._reset_prompt(instance)
-            # Handle the input
-            instance.handleinput_cmd_hook(input_text)
             # Got to console screen
             instance.goto_consolescreen()
+            # Handle the input
+            instance.handleinput_cmd_hook(input_text)
 
     def on_tab(self, instance, pcmd):
         "Method hook for entry of [TAB]"

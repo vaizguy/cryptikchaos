@@ -278,10 +278,11 @@ def run_kivy_app(cls):
         app.run()
     except KeyboardInterrupt:
         Logger.info("Recieved Keyboard interrupt. [CTRL+C]")
-        # Stop services
-        app.on_stop()
     else:
         Logger.info("Closed {} Kivy Application.".format(type(app).__name__))
+    finally:
+        # Stop services
+        app.on_stop()
         
 
 if __name__ == "__main__":

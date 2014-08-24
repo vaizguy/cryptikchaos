@@ -64,6 +64,7 @@ if platform == "android":
 else:
     constants.PLATFORM_ANDROID = False
 constants.PLATFORM = platform
+constants.APP_NAME = "cryptikchaos"
 # ------------------------------------------------------------------------####
 
 # ---Application Environment----------------------------------------------####

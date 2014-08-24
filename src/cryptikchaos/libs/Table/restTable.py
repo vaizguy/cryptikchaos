@@ -29,9 +29,10 @@ class restTable:
 
     def add_row(self, row):
         
-        row = list(row)
+        if type(row) == tuple:
+            row = list(row)
 
-        self.list_of_rows.append(row)
+        self.list_of_rows.append([re.escape(str(c)) for c in row])
         
     def ext_minlength(self):
         
@@ -40,12 +41,8 @@ class restTable:
 
             cnt = 1
             for i in xrange(0, len(row)):
-                # convert column val into string
-                row[i] = re.escape(str(row[i]))
-                # set col
-                col = str(row[i])
                 # measure the size of the col
-                col_len = len(col)
+                col_len = len(row[i])
                 try:
                     if col_len > self.cols_minlen_dict[cnt]:
                         self.cols_minlen_dict[cnt] = col_len
@@ -86,7 +83,7 @@ class restTable:
 
             for col in row:
                 max_col_len = self.cols_minlen_dict[col_cnt]
-                col_len = len(str(col))
+                col_len = len(col)
                 if col_cnt == self.num_of_cols:
                     table_content += col 
                 else:
@@ -116,8 +113,10 @@ if __name__ == '__main__':
     import cProfile, pstats, StringIO, random, string
     
     pr = cProfile.Profile()
+    pr.enable()
+
     rst = restTable(['Title1', 'Title2', 'Title3'])
-    
+ 
     for i in xrange(0, 100000):
         col1 = "".join(random.choice(string.ascii_uppercase + string.digits)
                 for x in xrange(random.randint(1, 20)))
@@ -126,7 +125,6 @@ if __name__ == '__main__':
         col3 = random.randint(1, 99999)
         rst.add_row([col1, col2, col3])
     
-    pr.enable()
     print rst
     pr.disable()
     

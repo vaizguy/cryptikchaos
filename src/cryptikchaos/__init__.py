@@ -29,10 +29,15 @@ class CryptikChaosApp(CoreServices):
 
     """
     
-    def __init__(self):
+    def __init__(self, **kwargs):
 
         # Init GUI Service
-        super(CryptikChaosApp, self).__init__()
+        super(CryptikChaosApp, self).__init__(**kwargs)
+        
+    def __del__(self):
+        
+        #Constructor calls
+        super(CryptikChaosApp, self).__del__()
               
         
 if __name__ == '__main__':

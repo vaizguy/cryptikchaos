@@ -21,10 +21,10 @@ class ConsoleWindow(GridLayout):
 
     "Console window class."
 
-    def __init__(self, goto_inputscreen, greeting):
+    def __init__(self, goto_inputscreen, greeting, **kwargs):
 
         # Init super
-        super(ConsoleWindow, self).__init__()
+        super(ConsoleWindow, self).__init__(**kwargs)
 
         # Number of cols
         self.cols = 1

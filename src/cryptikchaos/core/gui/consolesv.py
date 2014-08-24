@@ -10,7 +10,7 @@ https://github.com/kivy/kivy/wiki/Scrollable-Label
 __author__ = "Arun Vaidya"
 __version__ = "0.6"
 
-from kivy.properties import StringProperty, NumericProperty
+from kivy.properties import StringProperty
 
 from cryptikchaos.core.gui.rstdocbase import RstDocumentBase
 

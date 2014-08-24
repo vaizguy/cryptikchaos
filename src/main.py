@@ -30,8 +30,6 @@ def main():
         from cryptikchaos import CryptikChaosApp
     except KeyboardInterrupt:
         Logger.error("Cryptikchaos services was interrupted.")
-    except ImportError:
-        Logger.error("Please check if the package `cryptikchaos.CryptikChaosApp` exists.")
     else:
         from cryptikchaos.libs.utilities import run_kivy_app
         run_kivy_app(CryptikChaosApp)

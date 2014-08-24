@@ -14,7 +14,7 @@ from kivy.uix.button import Button
 
 class SidePanel(BoxLayout):
 
-    def __init__(self, drawer, main_panel):
+    def __init__(self, drawer, main_panel, **kwargs):
 
         # Hooks
         self.handleinput_cmd_hook = None
@@ -24,7 +24,7 @@ class SidePanel(BoxLayout):
         self.main_panel = main_panel
 
         # Init super
-        super(SidePanel, self).__init__()
+        super(SidePanel, self).__init__(**kwargs)
 
         # Set vertical orientation
         self.orientation = 'vertical'

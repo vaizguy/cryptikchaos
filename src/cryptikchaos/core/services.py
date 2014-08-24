@@ -27,23 +27,20 @@ class CoreServices(object):
 
         # Initiate device service
         self.services["DEVICE"] = DeviceService()
-
+        # Initiate environment service
+        self.services["ENV"] = EnvService()
+        # Initiate Lexical parser service
+        self.services["PARSER"] = ParserService(
+            cmd_aliases=constants.CMD_ALIASES
+        )
         # Initiate communication service
         self.services["COMM"] = CommService(
             peerid=constants.PEER_ID,
             host=constants.MY_HOST,
             port=constants.PEER_PORT,
-            printer=self.print_message
+            printer=self.print_message,
+            device=self.services["DEVICE"]
         )
-
-        # Initiate environment service
-        self.services["ENV"] = EnvService()
-
-        # Initiate Lexical parser service
-        self.services["PARSER"] = ParserService(
-            cmd_aliases=constants.CMD_ALIASES
-        )
-        
         # Start GUI service
         self.services["GUI"] = GUIService(
             self.handleinput_cmd_hook, 

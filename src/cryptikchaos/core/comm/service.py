@@ -48,7 +48,7 @@ class CommService(object):
     """
 
     def __init__(self, peerid, host, port,
-                 serverinit=True, clientinit=True, printer=None):
+                 serverinit=True, clientinit=True, printer=None, device=None):
         "Initialize communication layer."
 
         # Initialize Communications security core
@@ -58,6 +58,9 @@ class CommService(object):
         self.peerid = peerid
         self.host = host
         self.port = port
+        
+        # Get device service link
+        self.device = device
 
         # peer key
         self.peerkey = self.comsec_core.get_public_key()
@@ -274,7 +277,7 @@ class CommService(object):
         return (pid, shared_key, host, port)
 
     def _print(self, msg, dip=constants.PEER_HOST,
-               port=constants.PEER_PORT):
+               port=constants.PEER_PORT, notify=False):
         "Print message on console with peer id."
         
         # Get peer ID
@@ -283,9 +286,21 @@ class CommService(object):
         # Print with local peer id
         if not peer_id:
             peer_id = self.peerid
+        else:
+            notify = True
+
         # Print the message
         if self._printer:
             self._printer(msg, peer_id)
+        # Notify
+        # Display notifications
+        if notify and self.device:
+            self.device.vibrate_cb()
+            self.device.notify_cb(
+                title="ID: {}".format(peer_id), 
+                message=msg, 
+                timeout=1
+            )
         
         Logger.info("{} : {}".format(peer_id, msg))
 
@@ -810,7 +825,10 @@ class CommService(object):
             rsp = None
 
         elif header == constants.LOCAL_TEST_STREAM_TYPE:
-
+            
+            # Message receipt successful
+            self._print(content, src_ip)
+            
             # Repack stream maintaining the same content
             rsp = self.stream_manager.pack_stream(
                 stream_type=header,
@@ -821,10 +839,9 @@ class CommService(object):
 
         elif header == constants.PROTO_BULK_TYPE:
             
-            print "YES", header
-
             # Message receipt successful
             self._print(content, src_ip)
+
             # Generate response
             rsp = self.stream_manager.pack_stream(
                 stream_type=constants.PROTO_MACK_TYPE,

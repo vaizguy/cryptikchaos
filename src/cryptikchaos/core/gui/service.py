@@ -39,10 +39,10 @@ class GUIService(App):
     # Init attributes
     core_services = None
 
-    def __init__(self, handleinput_cmd_hook, getcommands_cmd_hook):
+    def __init__(self, handleinput_cmd_hook, getcommands_cmd_hook, **kwargs):
 
         # Init App
-        super(GUIService, self).__init__()
+        super(GUIService, self).__init__(**kwargs)
         
         # Main drawer
         self.drawer = NavigationDrawer()
