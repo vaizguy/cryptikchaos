@@ -10,6 +10,7 @@ __version__ = "0.6.1"
 from kivy.uix.screenmanager import ScreenManager
 from kivy.uix.screenmanager import SlideTransition
 
+from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.core.gui.screens.consolescreen import ConsoleScreen
 from cryptikchaos.core.gui.screens.aboutscreen import AboutScreen
 from cryptikchaos.core.gui.screens.inputscreen import InputScreen
@@ -64,12 +65,18 @@ class MainPanel(ScreenManager):
         self.current = "console"
 
     def register_handleinput_cmd_hook(self, hook):
-
-        self.input_screen.register_handleinput_cmd_hook(hook)
+        
+        if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
+            self.console_screen.console_window.console_input.register_handleinput_cmd_hook(hook)
+        else:
+            self.input_screen.register_handleinput_cmd_hook(hook)
 
     def register_getcommands_cmd_hook(self, hook):
-
-        self.input_screen.register_getcommands_cmd_hook(hook)
+        
+        if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
+            self.console_screen.console_window.console_input.register_getcommands_cmd_hook(hook)
+        else:
+            self.input_screen.register_getcommands_cmd_hook(hook)
 
     def goto_console_screen(self):
 

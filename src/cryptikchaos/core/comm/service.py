@@ -668,9 +668,9 @@ class CommService(object):
         # Check if peer is valid
         if not self.swarm_manager.is_peer(pid):
             Logger.warn(
-                "Peer {} is not in swarm. Add peer using adpeer cmd.".format(pid))
+                "Peer {} is not in swarm. Add peer using addpeer cmd.".format(pid))
             self._print(
-                "Peer {} is not in swarm. Add peer using adpeer cmd.".format(pid))
+                "Peer {} is not in swarm. Add peer using addpeer cmd.".format(pid))
             return False            
 
         # Check to see peer connection status

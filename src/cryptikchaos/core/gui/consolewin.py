@@ -13,7 +13,7 @@ from kivy.uix.button import Button
 
 from cryptikchaos.core.env.configuration import constants
 if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
-    from cryptikchaoscore.gui.consoleinput import ConsoleInput
+    from cryptikchaos.core.gui.consoleinput import ConsoleInput
 from cryptikchaos.core.gui.consolesv import ConsoleScrollView
 
 
@@ -51,6 +51,7 @@ class ConsoleWindow(GridLayout):
                 # Size
                 size_y=0.1
             )
+                
             # Add widget
             self.add_widget(self.console_input)
             
@@ -74,6 +75,15 @@ class ConsoleWindow(GridLayout):
 
         return self.width
     # ---------------------------------
+    
+    if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
+        def register_handleinput_cmd_hook(self, hook):
+            
+            self.console_input.register_handleinput_cmd_hook(hook)
+            
+        def register_getcommands_cmd_hook(self, hook):
+            
+            self.console_input.register_getcommands_cmd_hook(hook)
 
     def on_resize(self, instance, width, height):
 

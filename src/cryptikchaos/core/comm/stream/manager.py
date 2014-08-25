@@ -317,6 +317,28 @@ class StreamManager(StoreManager):
                 stream_content = AES_obj.decrypt(stream_content)
                 # Upad decrypted content
                 stream_content = self.unpad(stream_content)
+                
+        def pkey_action(val):
+            
+            val = md5hash(val)
+            return val               
+        
+        if stream_flag == STREAM_TYPES.UNAUTH:
+            Logger.debug("""Stream Unpacking: \n{}""".format(
+                self.storage_table(shorten_len=64, action_dict={"STREAM_PKEY":pkey_action}) ))
+            
+        Logger.debug("""DEBUG STREAM:
+        FLAG: {}
+        TYPE: {}
+        CONTENT: {}
+        KEY: {}
+        CHECKSUM: {}
+        """.format(
+                self.get_store_item(stream_uid, 'STREAM_FLAG'),
+                self.get_store_item(stream_uid, 'STREAM_TYPE'),
+                stream_content,
+                b64encode(self.get_store_item(stream_uid, 'STREAM_PKEY')),
+                self.get_store_hmac(stream_uid)))
 
         # Unshuffle contentself._storage[sid].hmac()
         if constants.ENABLE_SHUFFLE:

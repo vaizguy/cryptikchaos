@@ -32,12 +32,12 @@ class ConsoleInput(TextInput):
         # Sets focus active
         self.focus = False
         # Set background color
-        self.background_color = [1, 1, 1, 1]
+        self.background_color = [0, 0, 0, 1]
         # Set text color
-        self.foreground_color = [0, 0, 0, 1]
+        self.foreground_color = [1, 1, 1, 1]
         # Set padding for text input
         if not constants.PLATFORM_ANDROID:
-            self.padding = [25, 20, 10, 0]
+            self.padding = [15, 20, 10, 0]
 
         # Input command handler
         self.handleinput_cmd_hook = None

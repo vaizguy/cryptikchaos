@@ -54,7 +54,7 @@ else:
 constants.ENABLE_TEST_MODE = True
 constants.ENABLE_COMPRESSION = True
 constants.ENABLE_SHUFFLE = True
-constants.ENABLE_INPUT_SCREEN = True
+constants.ENABLE_INPUT_SCREEN = False
 constants.ENABLE_TLS = True
 constants.ENABLE_CMD_LOG = True
 
