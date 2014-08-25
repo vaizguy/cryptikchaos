@@ -14,9 +14,14 @@
 CryptikChaos
 ============
 
-Basic P2P client built on kivy and twisted python.
+Basic ReST Document CLI built on kivy and twisted python.
 
 #####_THIS PROJECT IS PURELY FOR EDUCATIONAL PURPOSES AND IS UNDER DEVELOPMENT._
+
+Screenshot:
+-----------
+
+![CryptikChaos Screenshot](https://cloud.githubusercontent.com/assets/2795461/4023370/01162400-2b8b-11e4-9e5f-e09ae4f2fe29.png)
 
 Dependencies:
 -------------
@@ -35,26 +40,26 @@ Dependencies:
 Run Main application:
 ---------------------
 
-* In module `src/cryptikchaos/env/configuration.py` ensure; 
+* In module `src/cryptikchaos/core/env/configuration.py` ensure; 
 ```python
 constants.ENABLE_TEST_MODE = False
 ```
 * Go to `src/cryptikchaos/test`
 * run `python main.py` in terminal.
 
-Setting up test environment:
-----------------------------
+Setting up chat test environment:
+---------------------------------
 
-**Test Interface/Protocol**
-* In module `src/cryptikchaos/env/configuration.py` enforce following values;
+**Test Interface and Communications Protocol**
+* In module `src/cryptikchaos/core/env/configuration.py` enforce following values;
 ```python
 constants.ENABLE_TEST_MODE = True
 constants.ENABLE_TLS = False
 ```
 * If `constants.ENABLE_TLS = True`, you will be prompted for respective pem passwords on any connection request as well as accessing the peer certificates, these are the private passwords used during creation of certificate signing reqest, more instructions are available in `src/cryptikchaos/certs/CERTS.md`. This is still in development.
 
-**Test Server Protocol with Trial**
-* Go to `src/cryptikchaos/core/comm` and run `trial test.test_server`
+**Test Communications Protocol with Trial**
+* Go to `src/cryptikchaos/core/comm` and run `trial test.test_server` or `./run_test`
 
 Run a simple send message test:
 -------------------------------
