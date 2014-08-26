@@ -7,7 +7,6 @@ Created on Aug 16, 2014
 __author__ = "Arun Vaidya"
 __version__ = "0.6.1"
 
-
 import re
 
 
@@ -109,27 +108,10 @@ class restTable:
         return self.table
 
 if __name__ == '__main__':
+    
+    from test.test_restTable import TestRestTable, run_test_case
+    run_test_case()
+    
+    
 
-    import cProfile, pstats, StringIO, random, string
-    
-    pr = cProfile.Profile()
-    pr.enable()
 
-    rst = restTable(['Title1', 'Title2', 'Title3'])
- 
-    for i in xrange(0, 100000):
-        col1 = "".join(random.choice(string.ascii_uppercase + string.digits)
-                for x in xrange(random.randint(1, 20)))
-        col2 = "".join(random.choice(string.ascii_uppercase + string.digits)
-                for x in xrange(random.randint(1, 20)))
-        col3 = random.randint(1, 99999)
-        rst.add_row([col1, col2, col3])
-    
-    print rst
-    pr.disable()
-    
-    s= StringIO.StringIO()
-    sortby = "cumulative"
-    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-    ps.print_stats()
-    print s.getvalue()
