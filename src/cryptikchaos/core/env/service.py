@@ -9,6 +9,8 @@ View app environment constants through the App.
 __author__ = "Arun Vaidya"
 __version__ = "0.6.1"
 
+import ConfigParser
+
 from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.core.env import constants as const
 from cryptikchaos.libs.utilities import serialize
@@ -51,7 +53,7 @@ class EnvService(object):
 
         Logger.info("Closing Environment service.")
 
-    def list_constants(self):
+    def list_constants(self, shorten=True):
         "List all env constants."
 
         constants = []
@@ -64,15 +66,36 @@ class EnvService(object):
                 constants.append(
                     (i, k, v)
                 )
-            else:
+            elif shorten:
                 constants.append(
                     (i, k,v[:50])
+                )
+            else:
+                constants.append(
+                    (i, k, v)
                 )
 
             i += 1
 
         return constants
-
+    
+    def dump_config(self):
+        
+        # Start config parser
+        config = ConfigParser.SafeConfigParser()
+        
+        # Set env constants into section
+        config.add_section('Environment')
+        for (k, v) in self.env_dict.iteritems():
+            if '%' not in v:
+                print k
+                config.set('Environment', k, v.encode('string_escape'))
+            
+        # Writing our configuration file to 'defaults.cfg'
+        with open('{}/core/env/defaults.cfg'.format(constants.PROJECT_PATH), 'wb') as configfile:
+            config.write(configfile)
+            Logger.info("Dumped environment to config file.")
+    
     def get_constant(self, name):
         "Get value of particular constant."
 
@@ -90,8 +113,8 @@ class EnvService(object):
             fkey: self.env_dict[fkey] for fkey in sorted(
                 [k for k in self.env_dict.keys() if k[0:5] == "STREAM_"]
             )
-        }
-
+        }   
+        
     def serialize_stream_conf(self):
         "Serialize capsule configuration."
 
@@ -158,3 +181,4 @@ if __name__ == "__main__":
     print "Len of serial config: {}".format(len(e.serialize_stream_conf()))
 
     print e.display_table()
+    e.dump_config()

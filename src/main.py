@@ -27,7 +27,7 @@ def main():
     pythonpath.AddSysPath('../..') # ../../main.py (pwd: test dir)
     
     try:
-        from cryptikchaos import CryptikChaosApp
+        from cryptikchaos.app import CryptikChaosApp
     except KeyboardInterrupt:
         Logger.error("Cryptikchaos services was interrupted.")
     else:
