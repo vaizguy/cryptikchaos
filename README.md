@@ -21,7 +21,7 @@ Basic ReST Document CLI built on kivy and twisted python.
 Screenshot:
 -----------
 
-![CryptikChaos Screenshot](https://cloud.githubusercontent.com/assets/2795461/4023370/01162400-2b8b-11e4-9e5f-e09ae4f2fe29.png)
+![Cryptikchaos-0.6.1](https://cloud.githubusercontent.com/assets/2795461/4050700/a66b9d06-2d5a-11e4-9259-add88df6a699.png)
 
 Dependencies:
 -------------
