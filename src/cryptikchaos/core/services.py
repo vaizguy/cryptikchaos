@@ -470,7 +470,18 @@ class CoreServices(object):
 
             self.services["ENV"].memory_summary()
             self.print_message("Dumped Memory profile to terminal.")
+            
+        def cmd_memdiff(self, _):
+            """
+            Command: memdiff
+            Lists memory footprints of active python objects.
+            Requires Pympler module to be installed.
+            Usage: memdiff
+            """
 
+            self.services["ENV"].memory_summary(False)
+            self.print_message("Dumped Memory tracker diff to terminal.")       
+            
     # Swarm graph visualizer
     if constants.NETWORKX_AVAILABLE:
         def cmd_graphswarm(self, _):

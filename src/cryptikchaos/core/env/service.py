@@ -21,7 +21,7 @@ from cryptikchaos.libs.Table.restTable import restTable
 from kivy import Logger
 
 if constants.PYMPLER_AVAILABLE:
-    from pympler import summary, muppy
+    from pympler import summary, muppy, tracker, refbrowser
 
 
 class EnvService(object):
@@ -48,6 +48,10 @@ class EnvService(object):
                 self.env_dict[attr] = str(
                     getattr(constants, attr)
                 ).encode('string_escape')
+                
+        # Initiate memory tracker
+        if constants.PYMPLER_AVAILABLE:
+            self.mem_tracker = tracker.SummaryTracker()
 
     def __del__(self):
 
@@ -161,15 +165,20 @@ To see value use: 'eko <constant name>'\n
 
     # pympler inline memory profiler code
     if constants.PYMPLER_AVAILABLE:
-        def memory_summary(self):
+        def memory_summary(self, summarize=True):
             "Using pympler summarize module to view memory summary."
-
-            all_objects = muppy.get_objects()
-            Logger.info("Memory Footprint:")
-            Logger.info("-----------------")
-            return summary.print_(summary.summarize(all_objects), limit=50)
-
-
+            
+            if summarize:
+                all_objects = muppy.get_objects()
+                Logger.info("Memory Footprint:")
+                Logger.info("-----------------")
+                return summary.print_(summary.summarize(all_objects), limit=50)
+            else:
+                Logger.info("Memory Tracker:")
+                Logger.info("---------------")
+                self.mem_tracker.print_diff()        
+               
+                
 if __name__ == "__main__":
     e = EnvService()
     lc = e.list_constants()

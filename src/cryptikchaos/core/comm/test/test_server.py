@@ -21,8 +21,9 @@ from cryptikchaos.libs.utilities import generate_auth_token
 from cryptikchaos.libs.utilities import md5hash
 
 def print_message(msg, peerid="[TESTPRINT]", intermediate=False, *args):
-
-    print "[TRIAL             ] {} {}\n".format(peerid, msg)
+    start_color = '\033[94m'
+    end_color = '\033[0m'
+    print "{}[TRIAL             ] {} {}{}\n".format(start_color, peerid, msg, end_color)
     
 def log_stream(stype, content, skey, l, sim=None):
     
@@ -178,7 +179,7 @@ class OuroborosTestCase(unittest.TestCase):
             stream_type=constants.PROTO_BULK_TYPE, 
             stream_content=random_stream(), 
             stream_host=self.peer_ip, 
-            shared_key=md5hash(shared_key)
+            shared_key=md5hash("INVALID KEY!!!")
         )
         
         #BULK MESSAGE ACK
@@ -205,6 +206,7 @@ class OuroborosTestCase(unittest.TestCase):
     def _start_transaction(self, transactions=1):
         
         # Get auth transaction
+        print_message("AUTHENTICATION TEST.")
         (auth_stream, aack_stream, dcon_stream) = self._get_auth_transaction()
         
         # send simulated auth request from virtual client
@@ -254,7 +256,7 @@ class OuroborosTestCase(unittest.TestCase):
         for i in range(1, transactions+1):
             
             print_message("Bulk Message Test Iteration : {}".format(i))
-            
+            print_message("BULK STREAM TEST FOR VALID STREAM.")
             (bulk_stream, mack_stream) = self._get_bulk_transaction()
                    
             # Reset connection 
@@ -281,6 +283,7 @@ class OuroborosTestCase(unittest.TestCase):
             self.proto.makeConnection(self.tr)
             
             #Check for invalid bulk msg stream
+            print_message("BULK STREAM TEST FOR INVALID STREAM.")
             (fake_stream, fmack_stream) = self._get_fake_transaction()
             
             self.proto.dataReceived('{}\r\n'.format(fake_stream))
@@ -288,6 +291,8 @@ class OuroborosTestCase(unittest.TestCase):
             fmack_response = self.tr.value().rstrip('\r\n')
 
             self.assertNotEqual(fmack_response, fmack_stream, "Fake request got a valid mack.")
+            
+            print_message("Invalid BULK Stream was rejected.")
     
     def test_transaction(self):
         

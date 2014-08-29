@@ -7,6 +7,11 @@ Created on Aug 27, 2014
 import cProfile, pstats, StringIO, random, string
 import unittest
 
+import pythonpath
+pythonpath.AddSysPath('../../../../../.')
+pythonpath.AddSysPath('../../../../.')
+pythonpath.AddSysPath('../../../.')
+
 from cryptikchaos.libs.Table.restTable import restTable
 
 
@@ -23,6 +28,8 @@ class TestRestTable(unittest.TestCase):
 
         rst = restTable(['Title1', 'Title2', 'Title3'])
 
+        pr.enable()
+
         for _ in xrange(0, 100000):
             col1 = "".join(random.choice(string.ascii_uppercase + string.digits)
                     for _ in xrange(random.randint(1, 20)))
@@ -31,7 +38,6 @@ class TestRestTable(unittest.TestCase):
             col3 = random.randint(1, 99999)
             rst.add_row([col1, col2, col3])
        
-        pr.enable()
         repr(rst)
         pr.disable()
 
