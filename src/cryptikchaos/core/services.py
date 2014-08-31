@@ -456,7 +456,7 @@ class CoreServices(object):
         Usage: exit
         """
 
-        self.stop()
+        self.services['GUI'].stop()
 
     # Pympler memory profiler
     if constants.PYMPLER_AVAILABLE:
