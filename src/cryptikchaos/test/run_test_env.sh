@@ -12,9 +12,6 @@ PSTAT_PATH="$PROFILE_PATH/profile.pstats"
 
 ## For Profiling
 if [[ $1 =~ "profile" ]]; then
-    # Remove client database
-    rm -rf ../db/*_db
-
     # Launch test server
     xterm -geometry 96x24+0-0 -e \
         "python $TEST_SCRIPT" &
@@ -30,13 +27,22 @@ if [[ $1 =~ "profile" ]]; then
         | dot -Tsvg -o ${PROFILE_PATH}/callgraph.svg
 
     # Remove pstat file
-    rm -f $PSTAT_PATH 
+    rm -f $PSTAT_PATH
+
+## Use webdebugger
+elif [[ $1 =~ "webdebug" ]]; then
+    # Launch test server
+    xterm -geometry 96x24+0-0 -e \
+        "python $TEST_SCRIPT" &
+
+    # Starting debug server
+    echo "Starting Debug server on http://localhost:5000/"
+    # Launch the main client
+    xterm -geometry 96x24+0+0 -e \
+        "python $MAIN_SCRIPT -m webdebugger"
 
 ## No profiling
 else
-    # Remove client database    
-    #rm -rf ../db/*_db # Persistant func removed temporarily
-
     # Launch test server
     xterm -geometry 96x24+0+0 -e "python $TEST_SCRIPT" &
 
