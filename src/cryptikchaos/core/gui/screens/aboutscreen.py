@@ -40,8 +40,8 @@ About
 :UID: {}
 :Host: {}
 :Platform: {}
-:Version: {}
---------------
+:Version: {}\n
+--------------\n
 """.format( 
            constants.PEER_ID,
            constants.MY_HOST,
