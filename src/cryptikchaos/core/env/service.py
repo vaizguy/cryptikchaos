@@ -19,9 +19,10 @@ from cryptikchaos.libs.utilities import deserialize
 from cryptikchaos.libs.Table.restTable import restTable
 
 from kivy import Logger
+from kivy.cache import Cache
 
 if constants.PYMPLER_AVAILABLE:
-    from pympler import summary, muppy, tracker, refbrowser
+    from pympler import summary, muppy, tracker
 
 
 class EnvService(object):
@@ -40,7 +41,10 @@ class EnvService(object):
         else:
             raise Exception("Error with environment setup.")
 
+        # Environment
         self.env_dict = {}
+        # Create cache
+        Cache.register(category='envcache', limit=2)
 
         # Populate constants
         for attr in dir(constants):
@@ -60,28 +64,37 @@ class EnvService(object):
     def list_constants(self, shorten=True):
         "List all env constants."
 
-        constants = []
-        i = 1
-
-        for k in sorted(self.env_dict.keys()):
-            v = self.env_dict[k].strip() 
-
-            if len(v[:50]) < 50:
-                constants.append(
-                    (i, k, v)
-                )
-            elif shorten:
-                constants.append(
-                    (i, k,v[:50])
-                )
-            else:
-                constants.append(
-                    (i, k, v)
-                )
-
-            i += 1
-
-        return constants
+        consts = Cache.get(category='envcache', key='constants')
+        
+        if not consts:
+            Logger.info("Building env constants list.")
+            consts = []
+            i = 1
+    
+            for k in sorted(self.env_dict.keys()):
+                v = self.env_dict[k].strip() 
+    
+                if len(v[:50]) < 50:
+                    consts.append(
+                        (i, k, v)
+                    )
+                elif shorten:
+                    consts.append(
+                        (i, k,v[:50])
+                    )
+                else:
+                    consts.append(
+                        (i, k, v)
+                    )
+    
+                i += 1
+            # Cache constants
+            Logger.info("Caching constants.")
+            Cache.append(category='envcache', key='constants', obj=consts)
+        else:
+            Logger.info("Retrieved constants from cache.")
+                
+        return consts
     
     def dump_config(self):
         
@@ -145,23 +158,33 @@ class EnvService(object):
         (useful for realtime debugging)
         Usage: env
         """
-
-        constants = self.list_constants()
-
-        if constants:
-            table = restTable(["S.NO", "CONSTANT", "VALUE"])
-
-            for c in constants:
-                table.add_row(c)
-
-            return """
+        
+        table = Cache.get(category='envcache', key='table')
+        
+        if not table:
+            Logger.info("Generating environment table.")
+            
+            constants = self.list_constants()
+            if constants:
+                table = restTable(["S.NO", "CONSTANT", "VALUE"])
+    
+                for c in constants:
+                    table.add_row(c)
+            else:
+                return "No environment variables defined."
+            
+            # Cache table for next run
+            Logger.info("Caching table.")
+            Cache.append(category='envcache', key='table', obj=table)
+        else:
+            Logger.info("Retrieving cached table.")
+                
+        return """
 Environment Constants:\n
 To see value use: 'eko <constant name>'\n
 \n{}
 
 """.format(table)
-        else:
-            return "No environment variables defined."
 
     # pympler inline memory profiler code
     if constants.PYMPLER_AVAILABLE:
