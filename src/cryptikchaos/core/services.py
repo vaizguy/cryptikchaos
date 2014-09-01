@@ -27,29 +27,31 @@ class CoreServices(object):
     def __init__(self):
             
         # Initialize Services
-        self.services = {}
-
-        # Initiate device service
-        self.services["DEVICE"] = DeviceService()
-        # Initiate environment service
-        self.services["ENV"] = EnvService()
-        # Initiate Lexical parser service
-        self.services["PARSER"] = ParserService(
-            cmd_aliases=constants.CMD_ALIASES
-        )
-        # Initiate communication service
-        self.services["COMM"] = CommService(
-            peerid=constants.PEER_ID,
-            host=constants.MY_HOST,
-            port=constants.PEER_PORT,
-            printer=self.print_message,
-            device=self.services["DEVICE"]
-        )
-        # Start GUI service
-        self.services["GUI"] = GUIService(
-            self.handleinput_cmd_hook, 
-            self.getcommands_cmd_hook
-        )
+        self.services = {
+            # Initiate device service
+            "DEVICE" : DeviceService(),
+            # Initiate environment service
+            "ENV" : EnvService(),
+            # Initiate Lexical parser service
+            "PARSER" : ParserService(
+                cmd_aliases=constants.CMD_ALIASES
+            ),
+            # Initiate communication service
+            "COMM" : CommService(
+                peerid=constants.PEER_ID,
+                host=constants.MY_HOST,
+                port=constants.PEER_PORT,
+                printer=self.print_message
+            ),
+            # Start GUI service
+            "GUI" : GUIService(
+                self.handleinput_cmd_hook, 
+                self.getcommands_cmd_hook
+            )
+        }
+        
+        # Register device service
+        self.services["COMM"].register_device_service(self.services["DEVICE"])
 
         # Get hooks
         self.inputtext_gui_hook = self.services["GUI"].inputtext_gui_hook
@@ -90,12 +92,13 @@ class CoreServices(object):
 
         # Indicates multiline output required
         if intermediate:
+            # multi line print
             text = "{}{}".format(
                 constants.GUI_LABEL_LEFT_PADDING,
                 msg
             )
         else:
-        # One line print
+            # single line print
             if not peerid:
                 peerid = self.services["COMM"].peerid
 
@@ -161,19 +164,36 @@ class CoreServices(object):
 
     def exec_command(self, cmd_line):
         "Execute a command."
+        
+        if cmd_line:
+            # Schedule pre cmd exec methods
+            Clock.schedule_once(lambda dt: self.pre_cmd(), 0.25)
+            # Schedule cmd exec
+            Clock.schedule_once(lambda dt: partial(self.one_cmd, cmd_line)(), 0.5)            
+            # Schedule post cmd exec methods                
+            Clock.schedule_once(lambda dt: self.post_cmd(), 0.25)
+        
+    def pre_cmd(self):
+        "All pre cmd execution events."
+        pass
+    
+    def one_cmd(self, cmd_line):
+        "Run cmd exec"
+        
+        # Parse cmd
+        (cmd, args) = self.parse_line(cmd_line)
 
-        if cmd_line is not None:
-            (cmd, args) = self.parse_line(cmd_line)
-
-            # Search for command
-            try:
-                func = getattr(self, 'cmd_' + cmd)
-            except AttributeError:
-                Clock.schedule_once(
-                    lambda dt: partial(self.default_cmd, cmd)(), 1)
-            else:
-                Clock.schedule_once(
-                    lambda dt: partial(func, args)(), 1)
+        # Search for command
+        try:
+            func = getattr(self, 'cmd_' + cmd)
+        except AttributeError:
+            self.default_cmd(cmd)
+        else:
+            func(args)        
+    
+    def post_cmd(self): 
+        "All post cmd execution events."        
+        pass
 
     def default_cmd(self, cmd):
         "If command not found."
@@ -195,27 +215,27 @@ class CoreServices(object):
             self.columnize(cmds, maxcol - 1)
             self.print_message(("\n"), None, True)
 
-    def columnize(self, list, displaywidth=80):
+    def columnize(self, str_list, displaywidth=80):
         """Display a list of strings as a compact set of columns.
 
         Each column is only as wide as necessary.
         Columns are separated by two spaces (one was not legible enough).
         """
 
-        if not list:
+        if not str_list:
             self.print_message("<empty>\n", None, True)
             return
-        nonstrings = [i for i in range(len(list))
-                      if not isinstance(list[i], str)]
+        nonstrings = [i for i in range(len(str_list))
+                      if not isinstance(str_list[i], str)]
         if nonstrings:
-            raise TypeError("list[i] not a string for i in %s" %
+            raise TypeError("str_list[i] not a string for i in %s" %
                             ", ".join(map(str, nonstrings)))
-        size = len(list)
+        size = len(str_list)
         if size == 1:
-            self.print_message('\n%s' % str(list[0]), None, True)
+            self.print_message('\n%s' % str(str_list[0]), None, True)
             return
         # Try every row count from 1 upwards
-        for nrows in range(1, len(list)):
+        for nrows in range(1, len(str_list)):
             ncols = (size + nrows - 1) // nrows
             colwidths = []
             totwidth = -2
@@ -225,7 +245,7 @@ class CoreServices(object):
                     i = row + nrows * col
                     if i >= size:
                         break
-                    x = list[i]
+                    x = str_list[i]
                     colwidth = max(colwidth, len(x))
                 colwidths.append(colwidth)
                 totwidth += colwidth + 2
@@ -234,7 +254,7 @@ class CoreServices(object):
             if totwidth <= displaywidth:
                 break
         else:
-            nrows = len(list)
+            nrows = len(str_list)
             ncols = 1
             colwidths = [0]
         for row in range(nrows):
@@ -244,7 +264,7 @@ class CoreServices(object):
                 if i >= size:
                     x = ""
                 else:
-                    x = list[i]
+                    x = str_list[i]
                 texts.append(x)
             while texts and not texts[-1]:
                 del texts[-1]

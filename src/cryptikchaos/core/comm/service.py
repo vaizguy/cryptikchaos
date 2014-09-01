@@ -14,8 +14,9 @@ __version__ = "0.6.1"
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 
-from cryptikchaos.core.env.configuration import constants
+from kivy.logger import Logger
 
+from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.core.comm.commcoreserver import CommCoreServerFactory
 from cryptikchaos.core.comm.commcoreclient import CommCoreClientFactory
 from cryptikchaos.core.comm.commcoreauth import CommCoreAuthFactory
@@ -25,15 +26,11 @@ from cryptikchaos.core.comm.stream.manager import STREAM_TYPES
 from cryptikchaos.core.comm.comsec import ComSecCore
 if constants.ENABLE_TLS:
     from cryptikchaos.core.comm.sslcontext import TLSCtxFactory
-
-from cryptikchaos.exceptions.streamExceptions import \
-    StreamOverflowError
-
+from cryptikchaos.exceptions.streamExceptions import StreamOverflowError
 from cryptikchaos.libs.utilities import generate_auth_token
 
 from twisted.internet import reactor
 
-from kivy.logger import Logger
 
 from base64 import b64encode
 
@@ -48,7 +45,7 @@ class CommService(object):
     """
 
     def __init__(self, peerid, host, port,
-                 serverinit=True, clientinit=True, printer=None, device=None):
+                 serverinit=True, clientinit=True, printer=None):
         "Initialize communication layer."
 
         # Initialize Communications security core
@@ -60,7 +57,7 @@ class CommService(object):
         self.port = port
         
         # Get device service link
-        self.device = device
+        self._device = None
 
         # peer key
         self.peerkey = self.comsec_core.get_public_key()
@@ -108,6 +105,13 @@ class CommService(object):
         self.stream_manager.__del__()
         # Close twisted listener
         self._stop_listener()
+        
+    def register_device_service(self, device):
+        "Must be called after init."
+        
+        # Register device service, cannot rebind
+        if not self._device:
+            self._device = device
 
     def _start_listener(self):
         "Start twisted server listener."
@@ -287,21 +291,23 @@ class CommService(object):
         if not peer_id:
             peer_id = self.peerid
         else:
-            notify = True
+            notify = constants.ENABLE_NOTIFICATIONS
 
         # Print the message
         if self._printer:
             self._printer(msg, peer_id)
-        # Notify
-        # Display notifications
-        if notify and self.device:
-            self.device.vibrate_cb()
-            self.device.notify_cb(
+        # Display device notifications
+        if notify and self._device:
+            self._device.vibrate_cb()
+            self._device.notify_cb(
                 title="ID: {}".format(peer_id), 
                 message=msg, 
                 timeout=1
             )
+        else:
+            Logger.warn("No device service registered.")
         
+        # Log message
         Logger.info("{} : {}".format(peer_id, msg))
 
     def _print_test(self, ctype, content):
