@@ -7,10 +7,14 @@ Created on Jul 19, 2014
 __author__ = "Arun Vaidya"
 __version__ = "0.6.1"
 
+from functools import partial
+
 from kivy.logger import Logger
+from kivy.clock import Clock
+# Increase kivy clock iteration
+Clock.max_iteration = 20
 
 from cryptikchaos.core.env.configuration import constants
-
 from cryptikchaos.core.env.service import EnvService
 from cryptikchaos.core.comm.service import CommService
 from cryptikchaos.core.parser.service import ParserService
@@ -165,9 +169,11 @@ class CoreServices(object):
             try:
                 func = getattr(self, 'cmd_' + cmd)
             except AttributeError:
-                return self.default_cmd(cmd)
+                Clock.schedule_once(
+                    lambda dt: partial(self.default_cmd, cmd)(), 1)
             else:
-                return func(args)
+                Clock.schedule_once(
+                    lambda dt: partial(func, args)(), 1)
 
     def default_cmd(self, cmd):
         "If command not found."
