@@ -165,18 +165,20 @@ class CoreServices(object):
     def exec_command(self, cmd_line):
         "Execute a command."
         
-        if cmd_line:
-            # Schedule pre cmd exec methods
-            Clock.schedule_once(lambda dt: self.pre_cmd(), 0.25)
-            # Schedule cmd exec
-            Clock.schedule_once(lambda dt: partial(self.one_cmd, cmd_line)(), 0.5)            
-            # Schedule post cmd exec methods                
-            Clock.schedule_once(lambda dt: self.post_cmd(), 0.25)
+        def run_cmd(cmd_line):
+            self.pre_cmd()
+            self.one_cmd(cmd_line)
+            self.post_cmd()
         
+        if cmd_line:
+            # Schedule command exec
+            Clock.schedule_once(lambda dt: partial(run_cmd, cmd_line)(), 0.25)
+
     def pre_cmd(self):
         "All pre cmd execution events."
-        pass
-    
+        
+        Logger.debug("@{} Pre-cmd".format(Clock.get_time()))
+   
     def one_cmd(self, cmd_line):
         "Run cmd exec"
         
@@ -189,11 +191,14 @@ class CoreServices(object):
         except AttributeError:
             self.default_cmd(cmd)
         else:
-            func(args)        
+            func(args)
+        
+        Logger.debug("@{} {}".format(Clock.get_time(), cmd_line))
     
     def post_cmd(self): 
-        "All post cmd execution events."        
-        pass
+        "All post cmd execution events."     
+        
+        Logger.debug("@{} Post-cmd".format(Clock.get_time()))
 
     def default_cmd(self, cmd):
         "If command not found."
