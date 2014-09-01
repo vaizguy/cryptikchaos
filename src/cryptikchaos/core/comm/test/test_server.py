@@ -14,8 +14,9 @@ from twisted.trial import unittest
 from twisted.test import proto_helpers
 
 from cryptikchaos.core.env.configuration import constants
-from cryptikchaos.core.comm.commcoreserver import CommCoreServerFactory
 from cryptikchaos.core.comm.service import CommService
+from cryptikchaos.core.device.service import DeviceService
+from cryptikchaos.core.comm.commcoreserver import CommCoreServerFactory
 from cryptikchaos.core.comm.stream.manager import STREAM_TYPES
 from cryptikchaos.libs.utilities import generate_auth_token
 from cryptikchaos.libs.utilities import md5hash
@@ -65,7 +66,10 @@ class OuroborosTestCase(unittest.TestCase):
     peer_port = 1597
     
     def setUp(self):
-              
+        
+        # Start device service
+        self.device_service = DeviceService()
+        
         # Communications service, contains both client & server
         self.comm_service = CommService(
             peerid=self.server_peer_id,
@@ -73,6 +77,9 @@ class OuroborosTestCase(unittest.TestCase):
             port=self.peer_port,
             printer=print_message
         )
+        
+        # Register device service
+        self.comm_service.register_device_service(self.device_service)
         
         # Start server protocol factory
         self.factory = CommCoreServerFactory(self.comm_service)
