@@ -16,7 +16,7 @@ class StoreManager(object):
     def __init__(self, name, valid_keys):
         "Initialize store manager."
 
-        Logger.info("STORAGE MANAGER: Opening [{}] store manager.".format(
+        Logger.info("STORE: Opening [{}] store manager.".format(
             name
         ))
 
@@ -119,7 +119,7 @@ class StoreManager(object):
                 # Apply action
                 for (key, action) in action_dict.iteritems():
                     if k == key:
-                        Logger.debug('STORAGE MANAGER: Performing  action on {}'.format(k))
+                        Logger.debug('STORE: Performing  action on {}'.format(k))
                         v = action(v)
                 # Check on length
                 if (len(str(v)) > shorten_len):

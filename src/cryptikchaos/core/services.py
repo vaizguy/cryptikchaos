@@ -56,10 +56,11 @@ class CoreServices(object):
         # Get hooks
         self.inputtext_gui_hook = self.services["GUI"].inputtext_gui_hook
         self.getmaxwidth_gui_hook = self.services["GUI"].getmaxwidth_gui_hook
+        self.clear_display_gui_hook = self.services["GUI"].clear_display_gui_hook
 
     def __del__(self):
 
-        Logger.info("SERVICES: Closing services.")
+        Logger.info("CORE: Closing services.")
 
         try:
             self.services["COMM"].__del__()
@@ -69,7 +70,7 @@ class CoreServices(object):
         except:
             pass
 
-        Logger.info("SERVICES: Successfully closed services.")
+        Logger.info("CORE: Successfully closed services.")
 
     def register_inputtext_gui_hook(self, hook):
 
@@ -133,7 +134,7 @@ class CoreServices(object):
             else:
                 logger_peerid = peerid
                 
-            Logger.debug("SERVICES: [{}] => {}".format(logger_peerid, msg))
+            Logger.debug("CORE: [{}] => {}".format(logger_peerid, msg))
 
     def print_table(self, table):
 
@@ -177,7 +178,7 @@ class CoreServices(object):
     def pre_cmd(self):
         "All pre cmd execution events."
         
-        Logger.debug("SERVICES: @{} Pre-cmd".format(Clock.get_time()))
+        Logger.debug("CORE: @{} Pre-cmd".format(Clock.get_time()))
    
     def one_cmd(self, cmd_line):
         "Run cmd exec"
@@ -193,12 +194,12 @@ class CoreServices(object):
         else:
             func(args)
         
-        Logger.debug("SERVICES: @{} {}".format(Clock.get_time(), cmd_line))
+        Logger.debug("CORE: @{} {}".format(Clock.get_time(), cmd_line))
     
     def post_cmd(self): 
         "All post cmd execution events."     
         
-        Logger.debug("SERVICES: @{} Post-cmd".format(Clock.get_time()))
+        Logger.debug("CORE: @{} Post-cmd".format(Clock.get_time()))
 
     def default_cmd(self, cmd):
         "If command not found."
@@ -207,7 +208,7 @@ class CoreServices(object):
         self.print_message(
             'Invalid Command "{}", enter "help" for command listing.'.format(cmd))
         # Command log
-        Logger.error('SERVICES: Command "%s" not found', cmd)
+        Logger.error('CORE: Command "%s" not found', cmd)
 
     def print_topics(self, header, cmds, maxcol):
         "Print help topics."
@@ -392,12 +393,12 @@ class CoreServices(object):
             return None
         else:
             if not msg:
-                Logger.warn("SERVICES: Please enter a message to send.")
+                Logger.warn("CORE: Please enter a message to send.")
                 return None
 
         if self.services["COMM"].pass_message(pid, msg):
             # command log
-            Logger.debug("SERVICES: Message sent to peer {}.".format(pid))
+            Logger.debug("CORE: Message sent to peer {}.".format(pid))
             # Display send message
             self.print_message("[>> {}] : {}".format(pid, msg))
         else:
@@ -479,6 +480,14 @@ class CoreServices(object):
             self.print_message("{} => {}".format(cmdline, v))
         else:
             self.print_message("{}".format(cmdline))
+            
+    def cmd_clear(self, _):
+        """
+        Command: clear
+        Clear the application display
+        Usage: clear
+        """
+        self.clear_display_gui_hook()
 
     def cmd_exit(self, _):
         """

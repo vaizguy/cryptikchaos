@@ -28,20 +28,24 @@ class ConsoleWindow(GridLayout):
 
         # Number of cols
         self.cols = 1
+        
+        # Save greeting
+        self.greeting = greeting
 
+        # Screen transition hook
         self.goto_input_screen = goto_inputscreen
 
-        # Create viewing area
-        self.view_area = GridLayout(cols=1, size_hint=(1, None))
-
-        ## Create scrollable label for console output
+        # Create scrollable label for console output
         self.scroll_view = ConsoleScrollView()
         
+        # Add scroll view widget
         self.add_widget(self.scroll_view)
 
         # Internal function-hook alias
         self.display_text = self.inputtext_gui_hook
-        self.display_text(greeting)
+        
+        # Clear screen and print title
+        self.display_text(greeting, clear=True)
 
         # Input text box
         if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
@@ -67,13 +71,17 @@ class ConsoleWindow(GridLayout):
             self.add_widget(self.enter_cmd_button)
 
     # GUI Hooks-----------------------
-    def inputtext_gui_hook(self, text):
+    def inputtext_gui_hook(self, text, clear=False):
 
-        self.scroll_view.display_text(text)
+        self.scroll_view.display_text(text, clear)
 
     def getmaxwidth_gui_hook(self):
 
         return self.width
+    
+    def clear_display_gui_hook(self):
+        
+        self.scroll_view.display_text(self.greeting, clear=True)
     # ---------------------------------
     
     if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):

@@ -69,6 +69,8 @@ class GUIService(App):
         self.inputtext_gui_hook = self.main_panel.inputtext_gui_hook
         # Get App GUI Width
         self.getmaxwidth_gui_hook = self.main_panel.getmaxwidth_gui_hook
+        # Clear display hook
+        self.clear_display_gui_hook = self.main_panel.clear_display_gui_hook
 
         # Register CMD hooks
         self.main_panel.register_handleinput_cmd_hook(

@@ -23,9 +23,15 @@ class RstDocumentBase(RstDocument):
         'bullet': constants.RSTDOC_BULLET_COLOR}
     )
     
-    def display_text(self, text):
+    def display_text(self, text, clear=False):
         
-        self.text += "[color={}]{}[/color]".format(
-            constants.GUI_FONT_COLOR,
-            text
-        )
+        if not clear:
+            self.text += "[color={}]{}[/color]".format(
+                constants.GUI_FONT_COLOR,
+                text
+            )
+        else:
+            self.text = "[color={}]{}[/color]".format(
+                constants.GUI_FONT_COLOR,
+                text
+            )            

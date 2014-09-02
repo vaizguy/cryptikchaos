@@ -51,6 +51,7 @@ class MainPanel(ScreenManager):
         # Add console - GUI hooks
         self.inputtext_gui_hook = self.console_screen.console_window.inputtext_gui_hook
         self.getmaxwidth_gui_hook = self.console_screen.console_window.getmaxwidth_gui_hook
+        self.clear_display_gui_hook = self.console_screen.console_window.clear_display_gui_hook
         self.focus_input_gui_hook = self.input_screen.console_input.focus_input_box
         self.unfocus_input_gui_hook = self.input_screen.console_input.unfocus_input_box
 
