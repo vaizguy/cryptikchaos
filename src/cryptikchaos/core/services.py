@@ -59,7 +59,7 @@ class CoreServices(object):
 
     def __del__(self):
 
-        Logger.info("Closing services.")
+        Logger.info("SERVICES: Closing services.")
 
         try:
             self.services["COMM"].__del__()
@@ -69,7 +69,7 @@ class CoreServices(object):
         except:
             pass
 
-        Logger.info("Successfully closed services.")
+        Logger.info("SERVICES: Successfully closed services.")
 
     def register_inputtext_gui_hook(self, hook):
 
@@ -133,7 +133,7 @@ class CoreServices(object):
             else:
                 logger_peerid = peerid
                 
-            Logger.debug("[{}] => {}".format(logger_peerid, msg))
+            Logger.debug("SERVICES: [{}] => {}".format(logger_peerid, msg))
 
     def print_table(self, table):
 
@@ -177,7 +177,7 @@ class CoreServices(object):
     def pre_cmd(self):
         "All pre cmd execution events."
         
-        Logger.debug("@{} Pre-cmd".format(Clock.get_time()))
+        Logger.debug("SERVICES: @{} Pre-cmd".format(Clock.get_time()))
    
     def one_cmd(self, cmd_line):
         "Run cmd exec"
@@ -193,12 +193,12 @@ class CoreServices(object):
         else:
             func(args)
         
-        Logger.debug("@{} {}".format(Clock.get_time(), cmd_line))
+        Logger.debug("SERVICES: @{} {}".format(Clock.get_time(), cmd_line))
     
     def post_cmd(self): 
         "All post cmd execution events."     
         
-        Logger.debug("@{} Post-cmd".format(Clock.get_time()))
+        Logger.debug("SERVICES: @{} Post-cmd".format(Clock.get_time()))
 
     def default_cmd(self, cmd):
         "If command not found."
@@ -207,7 +207,7 @@ class CoreServices(object):
         self.print_message(
             'Invalid Command "{}", enter "help" for command listing.'.format(cmd))
         # Command log
-        Logger.error('Command "%s" not found', cmd)
+        Logger.error('SERVICES: Command "%s" not found', cmd)
 
     def print_topics(self, header, cmds, maxcol):
         "Print help topics."
@@ -392,12 +392,12 @@ class CoreServices(object):
             return None
         else:
             if not msg:
-                Logger.warn("Please enter a message to send.")
+                Logger.warn("SERVICES: Please enter a message to send.")
                 return None
 
         if self.services["COMM"].pass_message(pid, msg):
             # command log
-            Logger.debug("Message sent to peer {}.".format(pid))
+            Logger.debug("SERVICES: Message sent to peer {}.".format(pid))
             # Display send message
             self.print_message("[>> {}] : {}".format(pid, msg))
         else:

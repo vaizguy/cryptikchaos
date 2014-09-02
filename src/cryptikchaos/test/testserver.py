@@ -59,7 +59,7 @@ CryptikChaos Test_ Server
         application is being run.
         '''
 
-        Logger.info("Cryptikchaos Test server started.")
+        Logger.info("TESTSERVER: Cryptikchaos Test server started.")
 
         # Initiate Twisted Server
         self.comm_service = CommService(
@@ -75,13 +75,13 @@ CryptikChaos Test_ Server
         closed).
         '''
 
-        Logger.info("Closing services.")
+        Logger.info("TESTSERVER: Closing services.")
 
         # Close services
         self.comm_service.__del__()
 
-        Logger.info("Successfully closed services.")
-        Logger.info("Closing Cryptikchaos Test Server.")
+        Logger.info("TESTSERVER: Successfully closed services.")
+        Logger.info("TESTSERVER: Closing Cryptikchaos Test Server.")
 
     def print_message(self, msg, peerid=None, intermediate=False):
         "Print a message in the output window."
@@ -128,7 +128,7 @@ CryptikChaos Test_ Server
             else:
                 logger_peerid = peerid
                 
-            Logger.debug("[{}] => {}".format(logger_peerid, msg))
+            Logger.debug("TESTSERVER: [{}] => {}".format(logger_peerid, msg))
 
     def display_text(self, text):
 

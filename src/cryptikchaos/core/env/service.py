@@ -37,7 +37,7 @@ class EnvService(object):
         try:
             constants.REBIND_CHECK = False
         except const.ConstError:
-            Logger.info("Environment constants are secure.")
+            Logger.info("ENV: Environment constants are secure.")
         else:
             raise Exception("Error with environment setup.")
 
@@ -59,7 +59,7 @@ class EnvService(object):
 
     def __del__(self):
 
-        Logger.info("Closing Environment service.")
+        Logger.info("ENV: Closing Environment service.")
 
     def list_constants(self, shorten=True):
         "List all env constants."
@@ -67,7 +67,7 @@ class EnvService(object):
         consts = Cache.get(category='envcache', key='constants')
         
         if not consts:
-            Logger.info("Building env constants list.")
+            Logger.info("ENV: Building env constants list.")
             consts = []
             i = 1
     
@@ -89,10 +89,10 @@ class EnvService(object):
     
                 i += 1
             # Cache constants
-            Logger.info("Caching constants.")
+            Logger.info("ENV: Caching constants.")
             Cache.append(category='envcache', key='constants', obj=consts)
         else:
-            Logger.info("Retrieved constants from cache.")
+            Logger.info("ENV: Retrieved constants from cache.")
                 
         return consts
     
@@ -111,7 +111,7 @@ class EnvService(object):
         # Writing our configuration file to 'defaults.cfg'
         with open('{}/core/env/defaults.cfg'.format(constants.PROJECT_PATH), 'wb') as configfile:
             config.write(configfile)
-            Logger.info("Dumped environment to config file.")
+            Logger.info("ENV: Dumped environment to config file.")
     
     def get_constant(self, name):
         "Get value of particular constant."
@@ -162,7 +162,7 @@ class EnvService(object):
         table = Cache.get(category='envcache', key='table')
         
         if not table:
-            Logger.info("Generating environment table.")
+            Logger.info("ENV: Generating environment table.")
             
             constants = self.list_constants()
             if constants:
@@ -174,10 +174,10 @@ class EnvService(object):
                 return "No environment variables defined."
             
             # Cache table for next run
-            Logger.info("Caching table.")
+            Logger.info("ENV: Caching table.")
             Cache.append(category='envcache', key='table', obj=table)
         else:
-            Logger.info("Retrieving cached table.")
+            Logger.info("ENV: Retrieving cached table.")
                 
         return """
 Environment Constants:\n
@@ -193,11 +193,11 @@ To see value use: 'eko <constant name>'\n
             
             if summarize:
                 all_objects = muppy.get_objects()
-                Logger.info("Memory Footprint:")
+                Logger.info("ENV: \nMemory Footprint:")
                 Logger.info("-----------------")
                 return summary.print_(summary.summarize(all_objects), limit=50)
             else:
-                Logger.info("Memory Tracker:")
+                Logger.info("ENV: \nMemory Tracker:")
                 Logger.info("---------------")
                 self.mem_tracker.print_diff()        
                

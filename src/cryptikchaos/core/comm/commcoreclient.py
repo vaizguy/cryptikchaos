@@ -47,14 +47,14 @@ class CommCoreClientProtocol(LineReceiver):
         self._peer_repr = self._peer_host + " on " + str(self._peer_port)
 
         Logger.debug(
-            "Connection success! Connected to {}".format(self._peer_repr))
+            "CLIENT: Connection success! Connected to {}".format(self._peer_repr))
 
         self.factory.app.on_server_connection(self.transport)
 
     def connectionLost(self, reason):
         "Run when connection is lost with server."
 
-        Logger.warn("Lost connection with peer {}".format(
+        Logger.warn("CLIENT: Lost connection with peer {}".format(
             self._peer_repr
             )
         )
@@ -83,7 +83,7 @@ class CommCoreClientProtocol(LineReceiver):
     def lineLengthExceeded(self, line):
         "Run when line length is exceeded."
 
-        Logger.error("received line is more than {}".format(self.MAX_LENGTH))
+        Logger.error("CLIENT: received line is more than {}".format(self.MAX_LENGTH))
 
 
 class CommCoreClientFactory(protocol.Factory):
@@ -97,21 +97,21 @@ class CommCoreClientFactory(protocol.Factory):
     def startedConnecting(self, connector):
         "Run when initiaition of connection takes place."
 
-        Logger.debug("Attempting connection...")
+        Logger.debug("CLIENT: Attempting connection...")
 
     def buildProtocol(self, addr):
         "Build protocol on successful connection."
 
-        Logger.debug("Connected.")
+        Logger.debug("CLIENT: Connected.")
 
         return self.protocol(self)
 
     def clientConnectionLost(self, connector, reason):
         "Run when connection with server is lost."
 
-        Logger.debug("Lost connection: {}".format(reason.getErrorMessage()))
+        Logger.debug("CLIENT: Lost connection: {}".format(reason.getErrorMessage()))
 
     def clientConnectionFailed(self, connector, reason):
         "Run when attempt to connect with server fails."
 
-        Logger.debug("Connection failed. {}".format(reason.getErrorMessage()))
+        Logger.debug("CLIENT: Connection failed. {}".format(reason.getErrorMessage()))

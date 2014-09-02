@@ -7,6 +7,7 @@ Created on Aug 9, 2014
 from base64 import b64encode
 import random
 import string
+from kivy import Logger
 import pythonpath
 pythonpath.AddSysPath('../../../../src')
 
@@ -21,10 +22,10 @@ from cryptikchaos.core.comm.stream.manager import STREAM_TYPES
 from cryptikchaos.libs.utilities import generate_auth_token
 from cryptikchaos.libs.utilities import md5hash
 
-def print_message(msg, peerid="[TESTPRINT]", intermediate=False, *args):
+def print_message(msg, peerid="TESTPRINT", intermediate=False, *args):
     start_color = '\033[94m'
     end_color = '\033[0m'
-    print "{}[TRIAL             ] {} {}{}\n".format(start_color, peerid, msg, end_color)
+    Logger.info("TRIAL: {}{} {}{}\n".format(start_color, peerid, msg, end_color))
     
 def log_stream(stype, content, skey, l, sim=None):
     

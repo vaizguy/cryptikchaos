@@ -61,7 +61,7 @@ def generate_uuid(host=None):
         uuid5(NAMESPACE_URL, host)
     )[0:8]
     
-    Logger.debug("UUID({}) = {}".format(host, uuid_str))
+    Logger.debug("UTILITIES: UUID({}) = {}".format(host, uuid_str))
     
     return uuid_str
 
@@ -104,7 +104,7 @@ def get_nat_ip():
     try:
         s.connect(("www.google.com", 80))
     except error:
-        Logger.debug('No active NAT connection.')
+        Logger.debug('UTILITIES: No active NAT connection.')
         return host
     else:
         host = s.getsockname()[0]
@@ -124,7 +124,7 @@ def get_my_ip():
             my_pub_ip = None
 
     except URLError:
-        Logger.debug('No active internet connection.')
+        Logger.debug('UTILITIES: No active internet connection.')
         my_pub_ip = None
     
     # Get local IP
@@ -236,7 +236,7 @@ def criptiklogo():
             logo = "".join(f.readlines())
     except IOError:
         # No logo present
-        Logger.error("Failed to read cryptikchaos logo.")
+        Logger.error("UTILITIES: Failed to read cryptikchaos logo.")
         return None
     else:
         # Return logo if success
@@ -273,13 +273,13 @@ def run_kivy_app(cls):
     app = cls()
     
     try:
-        Logger.info("Opening {} Kivy Application.".format(type(app).__name__))
+        Logger.info("UTILITIES: Opening {} Kivy Application.".format(type(app).__name__))
         # Start App mainloop
         app.run()
     except KeyboardInterrupt:
-        Logger.info("Recieved Keyboard interrupt. [CTRL+C]")
+        Logger.info("UTILITIES: Recieved Keyboard interrupt. [CTRL+C]")
     else:
-        Logger.info("Closed {} Kivy Application.".format(type(app).__name__))
+        Logger.info("UTILITIES: Closed {} Kivy Application.".format(type(app).__name__))
     finally:
         # Stop services
         app.on_stop()

@@ -77,13 +77,13 @@ class SwarmManager(StoreManager):
         if host == "localhost":
             host = constants.LOCAL_TEST_HOST
 
-        Logger.debug("Adding Peer {} , {}@{}".format(pid, host, port))
+        Logger.debug("SWARM: Adding Peer {} , {}@{}".format(pid, host, port))
 
         if pid in self.keys():
-            Logger.warn("Peer {} already exists. No changes made.".format(pid))
+            Logger.warn("SWARM: Peer {} already exists. No changes made.".format(pid))
             return None
         else:
-            Logger.debug("Adding Peer {} , {}@{}".format(pid, host, port))
+            Logger.debug("SWARM: Adding Peer {} , {}@{}".format(pid, host, port))
 
         # Peer dictionary structure defined here
         self.add_store(
@@ -100,7 +100,7 @@ class SwarmManager(StoreManager):
     def delete_peer(self, pid):
         "Remove unauth peer."
 
-        Logger.warn("Peer [{}] left swarm.".format(pid))
+        Logger.warn("SWARM: Peer [{}] left swarm.".format(pid))
         # remove peer connection
         del self.peer_connections[pid]
 
@@ -117,7 +117,7 @@ class SwarmManager(StoreManager):
         try:
             self.peer_connections[pid] = conn
         except KeyError:
-            Logger.error("Invalid Peer ID.")
+            Logger.error("SWARM: Invalid Peer ID.")
             return False
         else:
             return True
@@ -128,7 +128,7 @@ class SwarmManager(StoreManager):
         try:
             stat = self.get_peer_connection_status(pid)
         except KeyError:
-            Logger.error("Invalid Peer ID.")
+            Logger.error("SWARM: Invalid Peer ID.")
             return None
         else:
             if stat:

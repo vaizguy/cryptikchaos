@@ -26,9 +26,9 @@ class DeviceService:
         try:
             vibrator.vibrate(time)
         except NotImplementedError:
-            Logger.warn("No vibrate function defined for {} platform.".format(constants.PLATFORM))     
+            Logger.warn("DEVICE: No vibrate function defined for {} platform.".format(constants.PLATFORM))     
         else:
-            Logger.info("BUZZ!!")                      
+            Logger.info("DEVICE: BUZZ!!")                      
         
     def notify_cb(self, title='', message='', timeout=1):
         
@@ -41,8 +41,8 @@ class DeviceService:
                 timeout=timeout
             )
         except NotImplementedError:
-            Logger.warn("No vibrate function defined for {} platform.".format(constants.PLATFORM))     
+            Logger.warn("DEVICE: No vibrate function defined for {} platform.".format(constants.PLATFORM))     
         else:
-            Logger.info("Fired Notification!")      
+            Logger.info("DEVICE: Fired Notification!")      
         
         

@@ -72,22 +72,22 @@ class TLSCtxFactory(ssl.ClientContextFactory):
             ctx.use_certificate_file(self.crt)
 
         except SSL.Error as exception:
-            Logger.error(exception.message[0][2])
+            Logger.error("SSLCONTEXT: "+exception.message[0][2])
             raise SSLCertReadError(self.crt)
 
         else:
-            Logger.info("Loaded Peer SSL Certificate.")
+            Logger.info("SLCONTEXT: Loaded Peer SSL Certificate.")
 
         # Load private key
         try:
             ctx.use_privatekey_file(self.key)
 
         except SSL.Error as exception:
-            Logger.error(exception.message[0][2])
+            Logger.error("SSLCONTEXT"+exception.message[0][2])
             raise SSLKeyReadError(self.key)
 
         else:
-            Logger.info("Loaded Peer SSL key.")
+            Logger.info("SSLCONTEXT: Loaded Peer SSL key.")
 
         # Set verify mode and verify callback chain.
         ctx.set_verify(
@@ -109,14 +109,14 @@ class TLSCtxFactory(ssl.ClientContextFactory):
         if not preverifyOK:
             # Pre-verification failed
             Logger.debug(
-                "Certificate verification failed, {}".format(x509.get_subject()))
+                "SSLCONTEXT: Certificate verification failed, {}".format(x509.get_subject()))
 
         else:
             # Add post verification callback here.
             # Get x509 subject
             subject = x509.get_subject()
 
-            Logger.debug("Certificate [{}] Verfied.".format(subject))
+            Logger.debug("SSLCONTEXT: Certificate [{}] Verfied.".format(subject))
 
             # Perform post verification checks
             postverifyOK = self.postverifyCallback(subject)
@@ -150,9 +150,9 @@ class TLSCtxFactory(ssl.ClientContextFactory):
 
         # Checklist roundoff
         if checklist_count == len(_values_dict.keys()):
-            Logger.debug("Post certificate verfication passed.")
+            Logger.debug("SSLCONTEXT: Post certificate verfication passed.")
             return True
         else:
             Logger.debug(
-                "Post certification verfication failed. ({}/6 checks passed)".format(checklist_count))
+                "SSLCONTEXT: Post certification verfication failed. ({}/6 checks passed)".format(checklist_count))
             return False

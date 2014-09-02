@@ -24,7 +24,7 @@ class ParserService:
 
     def __del__(self):
 
-        Logger.info("Closing Parser service.")
+        Logger.info("PARSER: Closing Parser service.")
 
     def _replace_aliases(self, line):
         "Replace command aliases i.e '!, @, #' with command."
@@ -34,7 +34,7 @@ class ParserService:
             if line[0] == alias:
                 cmd = self.cmd_aliases[alias]
                 Logger.info(
-                    "Encountered alias '{}', Replacing with '{}'.".format(alias, cmd))
+                    "PARSER: Encountered alias '{}', Replacing with '{}'.".format(alias, cmd))
                 line = "{} {}".format(cmd, line[1:])
 
         return line

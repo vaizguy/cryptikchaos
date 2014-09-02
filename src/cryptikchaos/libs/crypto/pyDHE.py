@@ -30,11 +30,11 @@ from kivy.logger import Logger
 try:
     import Crypto.Random.random
     secure_random = Crypto.Random.random.getrandbits
-    Logger.info("Using Crypto secure random number generator")
+    Logger.info("pyDHE: Using Crypto secure random number generator")
 except ImportError:
     import OpenSSL
     secure_random = lambda x: long(hexlify(OpenSSL.rand.bytes(x >> 3)), 16)
-    Logger.info("Using OpenSSL secure random number generator")
+    Logger.info("pyDHE: Using OpenSSL secure random number generator")
 
 
 class DiffieHellman(object):

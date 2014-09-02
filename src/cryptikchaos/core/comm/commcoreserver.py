@@ -40,7 +40,7 @@ class CommCoreServerProtocol(LineReceiver):
         self._peer_repr = self._peer_host + " on " + str(self._peer_port)
 
         Logger.debug(
-            "Connection success! Connected to {}".format(self._peer_repr)
+            "SERVER: Connection success! Connected to {}".format(self._peer_repr)
         )
 
         self.factory.app.on_client_connection(self.transport)
@@ -49,7 +49,7 @@ class CommCoreServerProtocol(LineReceiver):
         "Run when connection is lost with server."
 
         Logger.warn(
-            "Lost connection with peer {}".format(self._peer_repr)
+            "SERVER: Lost connection with peer {}".format(self._peer_repr)
         )
 
         self.factory.app.on_client_disconnection(self.transport)
@@ -77,7 +77,7 @@ class CommCoreServerProtocol(LineReceiver):
     def lineLengthExceeded(self, line):
         "Run when line length is exceeded."
 
-        Logger.error("received line is more than {}".format(self.MAX_LENGTH))
+        Logger.error("SERVER: received line is more than {}".format(self.MAX_LENGTH))
 
 
 class CommCoreServerFactory(protocol.Factory):
@@ -91,6 +91,6 @@ class CommCoreServerFactory(protocol.Factory):
     def buildProtocol(self, addr):
         "Build protocol on successful connection."
 
-        Logger.debug("Connected.")
+        Logger.debug("SERVER: Connected.")
 
         return self.protocol(self)

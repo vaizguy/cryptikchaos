@@ -130,7 +130,7 @@ class CommService(object):
         "Stop twisted server listener"
         
         self.listener.stopListening()        
-        Logger.info('Ended twisted communications!')
+        Logger.info('COMM: Ended twisted communications!')
 
     def _start_connections(self):
         "Start peer connections on start."
@@ -171,7 +171,7 @@ class CommService(object):
 
         # If stream packing fails line=None
         if not line:
-            Logger.error("No stream to send.")
+            Logger.error("COMM: No stream to send.")
             return None
 
         try:
@@ -188,7 +188,7 @@ class CommService(object):
             if not self._sendLine(conn, stream):
                 return False
         except:
-            Logger.error("Connection to peer failed. Please try later.")
+            Logger.error("COMM: Connection to peer failed. Please try later.")
             print traceback.format_exc()
             return False
         else:
@@ -242,7 +242,7 @@ class CommService(object):
 
         except StreamOverflowError as SOError:
             self._printer(SOError.info, self.peerid)
-            Logger.warn(SOError.info)
+            Logger.warn("COMM: " + SOError.info)
             return False
 
         else:
@@ -271,7 +271,7 @@ class CommService(object):
             port
         )
 
-        Logger.debug("IP: {} Port: {} ".format(host, port))
+        Logger.debug("COMM: IP: {} Port: {} ".format(host, port))
 
         # Get the stream source's key
         shared_key = None
@@ -305,10 +305,10 @@ class CommService(object):
                 timeout=1
             )
         else:
-            Logger.warn("No device service registered.")
+            Logger.warn("COMM: No device service registered.")
         
         # Log message
-        Logger.info("{} : {}".format(peer_id, msg))
+        Logger.info("COMM: {} : {}".format(peer_id, msg))
 
     def _print_test(self, ctype, content):
         "Print test message."
@@ -333,7 +333,7 @@ class CommService(object):
                          port=constants.PEER_PORT):
         "Start connection with server."
 
-        Logger.debug("Connecting to pid: {}".format(pid))
+        Logger.debug("COMM: Connecting to pid: {}".format(pid))
 
         # Check if TLS is enable
         if constants.ENABLE_TLS and reactor.connectSSL(
@@ -366,7 +366,7 @@ class CommService(object):
         "Start connection with specified host server."
 
         Logger.debug(
-            "Initiating authenticated connection with pid: {}.".format(
+            "COMM: Initiating authenticated connection with pid: {}.".format(
                 pid
             )
         )
@@ -527,7 +527,7 @@ class CommService(object):
 
             # TODO
             # Add post TLS verification func here
-            Logger.info("TLS Verification is SUCCESSFUL!")
+            Logger.info("COMM: TLS Verification is SUCCESSFUL!")
 
     def handle_response_stream(self, response, connection):
         "Handle response from server."
@@ -570,14 +570,14 @@ class CommService(object):
                 content == constants.LOCAL_TEST_STR and
                 src_ip == constants.LOCAL_TEST_HOST
             ):
-                Logger.debug("Simple Message Transfer Test Passed.")
+                Logger.debug("COMM: Simple Message Transfer Test Passed.")
                 self._print(
                     "Simple Message Transfer Test Passed.",
                     src_ip,
                     constants.LOCAL_TEST_PORT
                 )
             else:
-                Logger.debug("""
+                Logger.debug("""COMM:
                 Sending Message Test Fail.
                 For test to pass,
                 1. Test server must be running.
@@ -590,7 +590,7 @@ class CommService(object):
                 )
 
         elif c_rsp_type == constants.PROTO_MACK_TYPE:
-            Logger.debug("Message ACK received from {}".format(src_ip))
+            Logger.debug("COMM: Message ACK received from {}".format(src_ip))
 
     def handle_auth_response_stream(self, response, connection):
         "Handle authentication response to add peer."
@@ -614,7 +614,7 @@ class CommService(object):
             try:
                 if self.valid_auth_req_tokens[src_ip] != request_id:
                     Logger.debug(
-                        "Received Invalid Request ACK ID [{}].".format(
+                        "COMM: Received Invalid Request ACK ID [{}].".format(
                             request_id
                         )
                     )
@@ -622,18 +622,18 @@ class CommService(object):
 
             except KeyError:
                 Logger.debug(
-                    "Received Invalid host '{}' request ACK.".format(
+                    "COMM: Received Invalid host '{}' request ACK.".format(
                         src_ip
                     )
                 )
                 return None
 
             else:
-                Logger.debug("Received valid request ACK.")
+                Logger.debug("COMM: Received valid request ACK.")
 
             # Generate shared key
             shared_key = self.comsec_core.generate_shared_key(pkey)
-            Logger.debug("Shared Key: {}".format(b64encode(shared_key)))
+            Logger.debug("COMM: Shared Key: {}".format(b64encode(shared_key)))
 
             # Add peer
             self.swarm_manager.add_peer(pid, shared_key, src_ip, src_port)
@@ -674,14 +674,14 @@ class CommService(object):
         # Check if peer is valid
         if not self.swarm_manager.is_peer(pid):
             Logger.warn(
-                "Peer {} is not in swarm. Add peer using addpeer cmd.".format(pid))
+                "COMM: Peer {} is not in swarm. Add peer using addpeer cmd.".format(pid))
             self._print(
-                "Peer {} is not in swarm. Add peer using addpeer cmd.".format(pid))
+                "COMM: Peer {} is not in swarm. Add peer using addpeer cmd.".format(pid))
             return False            
 
         # Check to see peer connection status
         if not self.swarm_manager.get_peer_connection_status(pid):
-            Logger.warn("Peer {} is offline.".format(pid))
+            Logger.warn("COMM: Peer {} is offline.".format(pid))
             self._print("Peer {} is offline.".format(pid))
             return False
 
@@ -734,7 +734,7 @@ class CommService(object):
         
         # Check if stream type is valid
         if not header:
-            Logger.error("Invalid Stream checksum received.")
+            Logger.error("COMM: Invalid Stream checksum received.")
             return rsp
 
         # Print test message if test server
@@ -750,12 +750,12 @@ class CommService(object):
             # Extract peer id
             (pid, request_id) = self._unpack_auth_content(content)
 
-            Logger.debug("Received auth request from Peer: {}".format(pid))
+            Logger.debug("COMM: Received auth request from Peer: {}".format(pid))
 
             # Add check for repeat additions
             if self.swarm_manager.is_peer(pid):
                 Logger.debug(
-                    "Received REPEAT auth request from Peer: {}, Ignoring Request.".format(pid))
+                    "COMM: Received REPEAT auth request from Peer: {}, Ignoring Request.".format(pid))
                 # Close twisted connection
                 connection.loseConnection()
                 return None
@@ -763,7 +763,7 @@ class CommService(object):
             # Add peer
             # Generate shared key
             shared_key = self.comsec_core.generate_shared_key(pkey)
-            Logger.debug("Shared Key: {}".format(b64encode(shared_key)))
+            Logger.debug("COMM: Shared Key: {}".format(b64encode(shared_key)))
 
             # A GUI hook could be placed here to check for
             # user approval before addition of the peer.
@@ -794,7 +794,7 @@ class CommService(object):
             )
 
             Logger.debug(
-                "Auth Response: {} Stream Length: {}".format(b64encode(rsp), len(rsp)))
+                "COMM: Auth Response: {} Stream Length: {}".format(b64encode(rsp), len(rsp)))
 
             # Send Auth response
             return rsp
@@ -802,20 +802,20 @@ class CommService(object):
         # Check if stream type is valid
         if not header:
             Logger.error(
-                "Invalid stream ID received from unpacking stream."
+                "COMM: Invalid stream ID received from unpacking stream."
             )
             return rsp
 
         # Check if connection is recognized
         if not self.swarm_manager.get_peer(src_pid):
             Logger.warn(
-                "Unknown pid @{} attempting contact.".format(src_ip)
+                "COMM: Unknown pid @{} attempting contact.".format(src_ip)
             )
 
-        Logger.debug("Received: {}".format(b64encode(stream)))
+        Logger.debug("COMM: Received: {}".format(b64encode(stream)))
 
         if header == constants.PROTO_DCON_TYPE:
-            Logger.debug("Received Disconnect ACK, AUTH Success!")
+            Logger.debug("COMM: Received Disconnect ACK, AUTH Success!")
 
             # Extract peer id
             (pid, _) = self._unpack_auth_content(content)
@@ -824,7 +824,7 @@ class CommService(object):
                 self.comsec_core.generate_shared_key(pkey) == \
                     self.swarm_manager.get_peer_key(pid):
 
-                Logger.debug("Peer {} AUTH Done!".format(pid))
+                Logger.debug("COMM: Peer {} AUTH Done!".format(pid))
                 # Close connection
                 connection.loseConnection()
 

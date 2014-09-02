@@ -102,7 +102,7 @@ class GUIService(App):
         application is being run.
         '''
 
-        Logger.debug("Cryptikchaos Client started.")
+        Logger.debug("GUI: Cryptikchaos Client started.")
 
         # Print criptikchaos banner
         Clock.schedule_once(self.print_logo, 1)
@@ -113,7 +113,7 @@ class GUIService(App):
         closed).
         '''
         
-        Logger.debug("Stopped Cryptikchaos Client.")
+        Logger.debug("GUI: Stopped Cryptikchaos Client.")
 
     def on_pause(self):
 
@@ -128,7 +128,7 @@ class GUIService(App):
 
         if constants.GUI_LOGO:
             # Print logo through log
-            Logger.info('\n{}'.format(constants.GUI_LOGO))
+            Logger.info('GUI: \n{}'.format(constants.GUI_LOGO))
 
         return args
 

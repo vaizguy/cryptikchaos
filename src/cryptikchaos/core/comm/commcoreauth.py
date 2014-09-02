@@ -41,7 +41,7 @@ class CommCoreAuthProtocol(LineReceiver):
         self._peer_repr = self._peer_host + " on " + str(self._peer_port)
 
         Logger.debug(
-            "Attempting handshake with {}".format(self._peer_repr)
+            "AUTH: Attempting handshake with {}".format(self._peer_repr)
         )
 
         self.factory.app.on_server_auth_open(self.transport)
@@ -50,7 +50,7 @@ class CommCoreAuthProtocol(LineReceiver):
         "Run when connection is lost with server."
 
         Logger.warn(
-            "Peer Authentication connection terminated : {}".format(
+            "AUTH: Peer Authentication connection terminated : {}".format(
                 self._peer_repr)
         )
 
@@ -70,7 +70,7 @@ class CommCoreAuthProtocol(LineReceiver):
     def lineLengthExceeded(self, line):
         "Run when line length is exceeded."
 
-        Logger.error("Recieved line is more than {}".format(self.MAX_LENGTH))
+        Logger.error("AUTH: Recieved line is more than {}".format(self.MAX_LENGTH))
 
 
 class CommCoreAuthFactory(protocol.Factory):
@@ -89,17 +89,17 @@ class CommCoreAuthFactory(protocol.Factory):
     def startedConnecting(self, connector):
         "Run when initiaition of connection takes place."
 
-        Logger.debug("Attempting auth...")
+        Logger.debug("AUTH: Attempting auth...")
 
     def clientConnectionLost(self, connector, reason):
         "Run when attempt to connect with server fails."
 
-        Logger.debug("Connection lost. {}".format(reason.getErrorMessage()))
+        Logger.debug("AUTH: Connection lost. {}".format(reason.getErrorMessage()))
 
     def clientConnectionFailed(self, connector, reason):
         "Run when attempt to connect with server fails."
 
-        Logger.debug("Connection failed. {}".format(reason.getErrorMessage()))
+        Logger.debug("AUTH: Connection failed. {}".format(reason.getErrorMessage()))
 
         # Display error on app console
         self.app._print("{}".format(reason.getErrorMessage()))
