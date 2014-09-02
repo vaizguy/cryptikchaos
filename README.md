@@ -56,7 +56,7 @@ Setting up chat test environment:
 constants.ENABLE_TEST_MODE = True
 constants.ENABLE_TLS = False
 ```
-* If `constants.ENABLE_TLS = True`, you will be prompted for respective pem passwords on any connection request as well as accessing the peer certificates, these are the private passwords used during creation of certificate signing reqest, more instructions are available in `src/cryptikchaos/certs/CERTS.md`. This is still in development.
+* If `constants.ENABLE_TLS = True`, the application will look for the respective certificates in the `src/cryptikchaos/certs` directory, more instructions on certificate generation can be found in `src/cryptikchaos/certs/CERTS.md`. This is still in development.
 
 **Test Communications Protocol with Trial**
 * Go to `src/cryptikchaos/core/comm` and run `trial test.test_server` or `./run_test`
