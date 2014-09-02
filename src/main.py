@@ -18,7 +18,7 @@ from kivy.logger import Logger
 
 @atexit.register
 def on_close():
-    Logger.info("Exiting python.")
+    Logger.info("MAIN APP: Exiting python.")
 
 def main():
     # Add cryptikchaos path
@@ -29,7 +29,7 @@ def main():
     try:
         from cryptikchaos.app import CryptikChaosApp
     except KeyboardInterrupt:
-        Logger.error("Cryptikchaos services was interrupted.")
+        Logger.error("MAIN APP: Cryptikchaos services was interrupted.")
     else:
         from cryptikchaos.libs.utilities import run_kivy_app
         run_kivy_app(CryptikChaosApp)
