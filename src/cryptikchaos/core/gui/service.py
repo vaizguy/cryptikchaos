@@ -43,6 +43,9 @@ class GUIService(App):
         # Init App
         super(GUIService, self).__init__(**kwargs)
         
+        # Disable default kivy settings
+        self.use_kivy_settings = False
+        
         # Main drawer
         self.drawer = NavigationDrawer()
 
@@ -139,12 +142,24 @@ class GUIService(App):
         win.bind(on_keyboard=self.my_key_handler)
 
     def my_key_handler(self, window, keycode1, keycode2, text, modifiers):
-
+        
+        #Logger.debug("H/W Keypress: {}".format(keycode1))
+        
         if keycode1 in [27, 1001]:
             # Go to console screen or close app
-            if self.main_panel.is_console_focused():
+            if self.drawer.state == "open":
+                self.drawer.anim_to_state("closed")
+            elif self.main_panel.is_console_focused():
                 self.stop()
             else:
                 self.main_panel.goto_console_screen()
             return True
-        return False
+        elif keycode1 == 319:
+            # Open navbar with menu key
+            if self.drawer.state == "closed":
+                self.drawer.anim_to_state("open")
+            else:
+                self.drawer.anim_to_state("closed")
+            return True
+        else:
+            return False

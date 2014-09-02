@@ -172,7 +172,7 @@ class CoreServices(object):
         
         if cmd_line:
             # Schedule command exec
-            Clock.schedule_once(lambda dt: partial(run_cmd, cmd_line)(), 0.25)
+            Clock.schedule_once(lambda dt: partial(run_cmd, cmd_line)(), 0.5)
 
     def pre_cmd(self):
         "All pre cmd execution events."
