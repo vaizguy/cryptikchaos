@@ -55,20 +55,22 @@ class CMDThreaderService(Thread):
                 
                 # Update command exec progress
                 if cmd_cnt-1 == 0:
-                    self.cmdprog_gui_hook(500)
+                    self.cmdprog_gui_hook(
+                        500) if self.cmdprog_gui_hook else None
                 else:
-                    self.cmdprog_gui_hook(1000*((cmd_cnt-1)/cmd_cnt))
+                    self.cmdprog_gui_hook(
+                        1000*((cmd_cnt-1)/cmd_cnt)) if self.cmdprog_gui_hook else None
                 
                 Logger.debug("CMDTHREADER: Executing command -> {}".format(cmd))
                 # Execute command
                 cmd()
                 
                 if cmd_cnt-1 == 0:
-                    self.cmdprog_gui_hook(1000)               
+                    self.cmdprog_gui_hook(1000) if self.cmdprog_gui_hook else None               
             else:
                 sleep(2)
                 # Reset progress
-                self.cmdprog_gui_hook(0)
+                self.cmdprog_gui_hook(0) if self.cmdprog_gui_hook else None
                 
     def on_stop(self):
         
