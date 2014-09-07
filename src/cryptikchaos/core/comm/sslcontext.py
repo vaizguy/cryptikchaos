@@ -76,7 +76,7 @@ class TLSCtxFactory(ssl.ClientContextFactory):
             raise SSLCertReadError(self.crt)
 
         else:
-            Logger.info("SLCONTEXT: Loaded Peer SSL Certificate.")
+            Logger.info("SSLCONTEXT: Loaded Peer SSL Certificate.")
 
         # Load private key
         try:

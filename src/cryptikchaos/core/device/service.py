@@ -26,7 +26,9 @@ class DeviceService:
         try:
             vibrator.vibrate(time)
         except NotImplementedError:
-            Logger.warn("DEVICE: No vibrate function defined for {} platform.".format(constants.PLATFORM))     
+            Logger.warn(
+                "DEVICE: No vibrate function defined for {} platform.".format(
+                    constants.PLATFORM))     
         else:
             Logger.info("DEVICE: BUZZ!!")                      
         
@@ -41,7 +43,9 @@ class DeviceService:
                 timeout=timeout
             )
         except NotImplementedError:
-            Logger.warn("DEVICE: No vibrate function defined for {} platform.".format(constants.PLATFORM))     
+            Logger.warn(
+                "DEVICE: No vibrate function defined for {} platform.".format(
+                    constants.PLATFORM))     
         else:
             Logger.info("DEVICE: Fired Notification!")      
         

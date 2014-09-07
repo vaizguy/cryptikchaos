@@ -7,10 +7,10 @@ Created on Jul 19, 2014
 __author__ = "Arun Vaidya"
 __version__ = "0.6.1"
 
-from functools import partial
+from functools import partial    
 
 from kivy.logger import Logger
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 # Increase kivy clock iteration
 Clock.max_iteration = 20
 
@@ -20,18 +20,21 @@ from cryptikchaos.core.comm.service import CommService
 from cryptikchaos.core.parser.service import ParserService
 from cryptikchaos.core.device.service import DeviceService
 from cryptikchaos.core.gui.service import GUIService
+from cryptikchaos.core.cmdthreader.service import CMDThreaderService
     
     
 class CoreServices(object):
 
     def __init__(self):
-            
+        
         # Initialize Services
         self.services = {
             # Initiate device service
             "DEVICE" : DeviceService(),
             # Initiate environment service
             "ENV" : EnvService(),
+            # Start Command threader service
+            "CMDTHREADER" : CMDThreaderService(),
             # Initiate Lexical parser service
             "PARSER" : ParserService(
                 cmd_aliases=constants.CMD_ALIASES
@@ -47,9 +50,9 @@ class CoreServices(object):
             "GUI" : GUIService(
                 self.handleinput_cmd_hook, 
                 self.getcommands_cmd_hook
-            )
+            ),
         }
-        
+              
         # Register device service
         self.services["COMM"].register_device_service(self.services["DEVICE"])
 
@@ -86,8 +89,10 @@ class CoreServices(object):
     
     def on_stop(self):
         
-        return self.services["GUI"].on_stop()
+        self.services["CMDTHREADER"].on_stop()
+        self.services["GUI"].on_stop()
 
+    @mainthread
     def print_message(self, msg, peerid=None, intermediate=False):
         "Print a message in the output window."
 
@@ -173,7 +178,9 @@ class CoreServices(object):
         
         if cmd_line:
             # Schedule command exec
-            Clock.schedule_once(lambda dt: partial(run_cmd, cmd_line)(), 0.5)
+            self.services["CMDTHREADER"].push_cmd(
+                partial(run_cmd, cmd_line)
+            )
 
     def pre_cmd(self):
         "All pre cmd execution events."
