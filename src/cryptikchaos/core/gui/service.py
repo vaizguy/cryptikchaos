@@ -70,7 +70,9 @@ class GUIService(App):
         # Get App GUI Width
         self.getmaxwidth_gui_hook = self.main_panel.getmaxwidth_gui_hook
         # Clear display hook
-        self.clear_display_gui_hook = self.main_panel.clear_display_gui_hook
+        self.cleardisplay_gui_hook = self.main_panel.cleardisplay_gui_hook
+        # Update progress bar
+        self.cmdprog_gui_hook = self.main_panel.cmdprog_gui_hook
 
         # Register CMD hooks
         self.main_panel.register_handleinput_cmd_hook(

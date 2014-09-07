@@ -18,5 +18,3 @@ from cryptikchaos.core.gui.rstdocbase import RstDocumentBase
 class  ConsoleScrollView(RstDocumentBase):
        
     text = StringProperty('')
-
-

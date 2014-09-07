@@ -13,15 +13,15 @@ __version__ = "0.6.1"
 import pythonpath
 pythonpath.AddSysPath('../..') # (pwd: test)
 
-from kivy.app import App
-from kivy import Logger
-from kivy.clock import mainthread
-from kivy.resources import resource_add_path
-
 from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.core.comm.service import CommService
 from cryptikchaos.core.gui.consolesv import ConsoleScrollView
 from cryptikchaos.libs.utilities import get_time
+
+from kivy.app import App
+from kivy import Logger
+from kivy.resources import resource_add_path
+
 # Add kivy resource paths
 resource_add_path(constants.KIVY_RESOURCE_PATH_1)
 
@@ -82,8 +82,7 @@ CryptikChaos Test_ Server
 
         Logger.info("TESTSERVER: Successfully closed services.")
         Logger.info("TESTSERVER: Closing Cryptikchaos Test Server.")
-        
-    @mainthread
+
     def print_message(self, msg, peerid=None, intermediate=False):
         "Print a message in the output window."
 

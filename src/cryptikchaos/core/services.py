@@ -52,15 +52,20 @@ class CoreServices(object):
                 self.getcommands_cmd_hook
             ),
         }
-              
-        # Register device service
-        self.services["COMM"].register_device_service(self.services["DEVICE"])
 
         # Get hooks
         self.inputtext_gui_hook = self.services["GUI"].inputtext_gui_hook
-        self.getmaxwidth_gui_hook = self.services["GUI"].getmaxwidth_gui_hook
-        self.clear_display_gui_hook = self.services["GUI"].clear_display_gui_hook
-
+        self.cleardisplay_gui_hook = self.services["GUI"].cleardisplay_gui_hook
+        self.cmdprog_gui_hook = self.services["GUI"].cmdprog_gui_hook
+                              
+        # Register device service
+        self.services["COMM"].register_device_service(self.services["DEVICE"])
+        
+        # Register cmd progress updater
+        self.services["CMDTHREADER"].register_progress_updater(
+            self.cmdprog_gui_hook
+        )
+        
     def __del__(self):
 
         Logger.info("CORE: Closing services.")
@@ -74,14 +79,6 @@ class CoreServices(object):
             pass
 
         Logger.info("CORE: Successfully closed services.")
-
-    def register_inputtext_gui_hook(self, hook):
-
-        self.inputtext_gui_hook = hook
-
-    def register_getmaxwidth_gui_hook(self, hook):
-
-        self.getmaxwidth_gui_hook = hook
         
     def run(self):
         
@@ -494,7 +491,7 @@ class CoreServices(object):
         Clear the application display
         Usage: clear
         """
-        self.clear_display_gui_hook()
+        self.cleardisplay_gui_hook()
 
     def cmd_exit(self, _):
         """

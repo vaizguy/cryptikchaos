@@ -24,8 +24,14 @@ class CMDThreaderService(Thread):
         # Set to stop event
         self.stop = Event()
         Logger.debug("CMDTHREADER: Starting Thread {}.".format(id(self)))
+        # CMD status updater
+        self.cmdprog_gui_hook = None
         # Start thread
         self.start()
+        
+    def register_progress_updater(self, hook):
+               
+        self.cmdprog_gui_hook = hook
         
     def exec_cmd(self, command):
         
@@ -40,15 +46,29 @@ class CMDThreaderService(Thread):
         while(not self.stop.is_set()):
            
             if self._cmd_deck:
+                                
+                # get number of commands
+                cmd_cnt = len(self._cmd_deck)
+                
                 # Get command and arguments
                 cmd = self._cmd_deck.pop()
+                
+                # Update command exec progress
+                if cmd_cnt-1 == 0:
+                    self.cmdprog_gui_hook(500)
+                else:
+                    self.cmdprog_gui_hook(1000*((cmd_cnt-1)/cmd_cnt))
                 
                 Logger.debug("CMDTHREADER: Executing command -> {}".format(cmd))
                 # Execute command
                 cmd()
                 
+                if cmd_cnt-1 == 0:
+                    self.cmdprog_gui_hook(1000)               
             else:
                 sleep(2)
+                # Reset progress
+                self.cmdprog_gui_hook(0)
                 
     def on_stop(self):
         

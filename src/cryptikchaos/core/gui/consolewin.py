@@ -10,6 +10,8 @@ __version__ = "0.6.1"
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
+from kivy.uix.progressbar import ProgressBar
+from kivy.clock import mainthread
 
 from cryptikchaos.core.env.configuration import constants
 if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
@@ -37,6 +39,7 @@ class ConsoleWindow(GridLayout):
 
         # Create scrollable label for console output
         self.scroll_view = ConsoleScrollView()
+        self.scroll_view.size_hint_y = 0.9
         
         # Add scroll view widget
         self.add_widget(self.scroll_view)
@@ -46,6 +49,11 @@ class ConsoleWindow(GridLayout):
         
         # Clear screen and print title
         self.display_text(greeting, clear=True)
+        
+        # Add progress bar
+        self.progress_bar = ProgressBar(max=1000, size_hint_y=0.01)
+        
+        self.add_widget(self.progress_bar)
 
         # Input text box
         if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
@@ -53,7 +61,7 @@ class ConsoleWindow(GridLayout):
                 # Goto console screen
                 goto_consolescreen=lambda *args, **kwargs: None,
                 # Size
-                size_y=0.1
+                size_y=0.09
             )
                 
             # Add widget
@@ -63,7 +71,7 @@ class ConsoleWindow(GridLayout):
             # Command input button
             self.enter_cmd_button = Button(
                 text="Enter Command",
-                size_hint_y=0.1,
+                size_hint_y=0.09,
             )
             # Bind event - on_press
             self.enter_cmd_button.bind(on_press=self.goto_inputscreen)
@@ -71,17 +79,25 @@ class ConsoleWindow(GridLayout):
             self.add_widget(self.enter_cmd_button)
 
     # GUI Hooks-----------------------
+    @mainthread
     def inputtext_gui_hook(self, text, clear=False):
 
         self.scroll_view.display_text(text, clear)
 
+    @mainthread
     def getmaxwidth_gui_hook(self):
 
         return self.width
     
-    def clear_display_gui_hook(self):
+    @mainthread
+    def cleardisplay_gui_hook(self):
         
         self.scroll_view.display_text(self.greeting, clear=True)
+        
+    @mainthread
+    def cmdprog_gui_hook(self, status_val):
+        
+        self.progress_bar.value = status_val
     # ---------------------------------
     
     if not (constants.PLATFORM_ANDROID or constants.ENABLE_INPUT_SCREEN):
@@ -118,10 +134,6 @@ if __name__ == '__main__':
                 goto_inputscreen=lambda *args, **kwargs: None,                 
                 # Console splash greeting
                 greeting="Testing Window!" * 1000,
-                # Font type face
-                font_type=constants.GUI_FONT_TYPE,
-                # Font size
-                font_size=14
             )
 
             # Window resize hook
