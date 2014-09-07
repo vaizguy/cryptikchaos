@@ -27,7 +27,7 @@ class CMDThreaderService(Thread):
         # Start thread
         self.start()
         
-    def push_cmd(self, command):
+    def exec_cmd(self, command):
         
         self._cmd_deck.appendleft(command)
         
@@ -37,12 +37,8 @@ class CMDThreaderService(Thread):
         
     def run(self):
         
-        while(True):
-            if self.stop.is_set():
-                Logger.debug("CMDTHREADER: Exiting Thread {}.".format(id(self)))
-                # Stop running this thread so the main Python process can exit.
-                return
-            
+        while(not self.stop.is_set()):
+           
             if self._cmd_deck:
                 # Get command and arguments
                 cmd = self._cmd_deck.pop()
@@ -56,6 +52,7 @@ class CMDThreaderService(Thread):
                 
     def on_stop(self):
         
+        Logger.debug("CMDTHREADER: Exiting Thread {}.".format(id(self)))
         # Set stop event
         self.stop.set()
                 
@@ -68,8 +65,8 @@ if __name__ == '__main__':
     
     try_1 = partial(printer, "func 1")
     try_2 = partial(printer, "func 2")
-    cmd_t.push_cmd(try_1)
-    cmd_t.push_cmd(try_2)
+    cmd_t.exec_cmd(try_1)
+    cmd_t.exec_cmd(try_2)
     
     # For testing purpose we wait for commands to execute before
     # closing the thread

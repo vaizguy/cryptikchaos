@@ -178,7 +178,7 @@ class CoreServices(object):
         
         if cmd_line:
             # Schedule command exec
-            self.services["CMDTHREADER"].push_cmd(
+            self.services["CMDTHREADER"].exec_cmd(
                 partial(run_cmd, cmd_line)
             )
 
