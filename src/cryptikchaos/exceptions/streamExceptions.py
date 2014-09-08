@@ -22,16 +22,13 @@ class StreamOverflowError(StreamError):
 
     def __init__(self, limit=None):
 
-        # Size limit
-        if limit:
-            self.limit = constants.STREAM_SIZE
-        else:
-            self.limit = limit
-
         # Error message
-        self.stream_msg = "Exceeded limit of {} Bytes".format(
-            self.limit
-        )
+        if limit:
+            self.stream_msg = "Exceeded limit of {} Bytes".format(
+               limit
+            )
+        else:
+            self.stream_msg = "Received stream does not match legal limits."
 
         # Content information
         self.info = "Message limit is capped at {}.".format(
