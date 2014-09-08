@@ -59,7 +59,7 @@ class CMDThreaderService(Thread):
                         500) if self.cmdprog_gui_hook else None
                 else:
                     self.cmdprog_gui_hook(
-                        1000*((cmd_cnt-1)/cmd_cnt)) if self.cmdprog_gui_hook else None
+                        1000*((1)/cmd_cnt)) if self.cmdprog_gui_hook else None
                 
                 Logger.debug("CMDTHREADER: Executing command -> {}".format(cmd))
                 # Execute command
