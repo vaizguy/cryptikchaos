@@ -25,7 +25,7 @@ class DeviceService:
         
         try:
             vibrator.vibrate(time)
-        except NotImplementedError:
+        except (NotImplementedError, ImportError):
             Logger.warn(
                 "DEVICE: No vibrate function defined for {} platform.".format(
                     constants.PLATFORM))     
@@ -42,7 +42,7 @@ class DeviceService:
                 app_icon=os.path.join(constants.KIVY_RESOURCE_PATH_1, 'icon.png'),
                 timeout=timeout
             )
-        except NotImplementedError:
+        except (NotImplementedError, ImportError):
             Logger.warn(
                 "DEVICE: No vibrate function defined for {} platform.".format(
                     constants.PLATFORM))     
