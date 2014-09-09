@@ -68,19 +68,17 @@ class CoreServices(object):
             ),
         }
 
-        # Get hooks
+        # GUI hooks used locally
         self.inputtext_gui_hook = self.services["GUI"].inputtext_gui_hook
         self.cleardisplay_gui_hook = self.services["GUI"].cleardisplay_gui_hook
         self.cmdprog_gui_hook = self.services["GUI"].cmdprog_gui_hook
                               
-        # Register device service
+        # Register device service with comm service
         self.services["COMM"].register_device_service(self.services["DEVICE"])
-        
-        # Register cmd progress updater
-        self.services["CMDTHREADER"].register_progress_updater(
-            self.cmdprog_gui_hook
-        )
-        
+        # Register gui service with cmdthreader service
+        self.services["CMDTHREADER"].register_gui_service(self.services["GUI"]) 
+        self.services["CMDTHREADER"].start()
+             
     def __del__(self):
 
         Logger.info("CORE: Closing services.")

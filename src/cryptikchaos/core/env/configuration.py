@@ -232,9 +232,9 @@ if constants.ENABLE_TEST_MODE:
 else:
     my_host = constants.PEER_HOST
 constants.GUI_WELCOME_MSG = """
-=============================
-{}CryptikChaos Network v{}_
-=============================
+=======================
+{}CryptikChaos v{}_
+=======================
 {}.. NOTE:: [i]Drag left edge for navigation, Enter "help" (or) [TAB] for command listing![/i]\n
 {}:Node: {}
 {}:Host: {}
@@ -252,11 +252,8 @@ constants.GUI_WELCOME_MSG = """
     get_time(),
 )
 
-constants.GUI_LABEL_PROMPT_SYM = ">> "
-constants.GUI_LABEL_PROMPT = "{}{}".format(
-    constants.GUI_LABEL_LEFT_PADDING,
-    constants.GUI_LABEL_PROMPT_SYM
-)
+constants.GUI_LABEL_PROMPT_SYM = ""
+
 constants.GUI_PEER_REPR = "Peer {}--{}:{}"
 
 # Theme for rstdoc

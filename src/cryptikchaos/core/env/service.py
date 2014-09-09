@@ -76,7 +76,7 @@ class EnvService(object):
 
         Logger.info("ENV: Closing Environment service.")
 
-    def list_constants(self, shorten=True):
+    def list_constants(self, shorten=True, show_indx=False):
         "List all env constants."
 
         consts = Cache.get(category='envcache', key='constants')
@@ -88,20 +88,15 @@ class EnvService(object):
     
             for k in sorted(self.env_dict.keys()):
                 v = self.env_dict[k].strip() 
-    
-                if len(v[:50]) < 50:
-                    consts.append(
-                        (i, k, v)
-                    )
-                elif shorten:
-                    consts.append(
-                        (i, k,v[:50])
-                    )
+                row = []
+                if show_indx:
+                    if shorten and len(v[:50]) > 50:
+                        row = (i, k,v[:50])
                 else:
-                    consts.append(
-                        (i, k, v)
-                    )
-    
+                    row = (k, v) 
+                        
+                consts.append(row)
+        
                 i += 1
             # Cache constants
             Logger.info("ENV: Caching constants.")
@@ -167,7 +162,7 @@ class EnvService(object):
             self.deserialize_stream_conf(serialstr) == self.caps_conf_dict()
         )
 
-    def display_table(self):
+    def display_table(self, show_indx=False):
         """
         View Application environment constants.
         (useful for realtime debugging)
@@ -179,9 +174,12 @@ class EnvService(object):
         if not table:
             Logger.info("ENV: Generating environment table.")
             
-            constants = self.list_constants()
+            constants = self.list_constants(show_indx=show_indx)
             if constants:
-                table = restTable(["S.NO", "CONSTANT", "VALUE"])
+                if show_indx:
+                    table = restTable(["S.NO", "CONSTANT", "VALUE"])
+                else:
+                    table = restTable(["CONSTANT", "VALUE"])
     
                 for c in constants:
                     table.add_row(c)

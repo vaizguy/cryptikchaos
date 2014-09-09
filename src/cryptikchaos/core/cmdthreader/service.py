@@ -40,13 +40,14 @@ class CMDThreaderService(Thread):
         self.stop = Event()
         Logger.debug("CMDTHREADER: Starting Thread {}.".format(id(self)))
         # CMD status updater
+        self._gui_service = None
         self.cmdprog_gui_hook = None
-        # Start thread
-        self.start()
         
-    def register_progress_updater(self, hook):
+    def register_gui_service(self, gui_service):
                
-        self.cmdprog_gui_hook = hook
+        if not self._gui_service:
+            self._gui_service = gui_service
+            self.cmdprog_gui_hook = self._gui_service.cmdprog_gui_hook
         
     def exec_cmd(self, command):
         
@@ -57,7 +58,10 @@ class CMDThreaderService(Thread):
         return bool(self._cmd_deck)
         
     def run(self):
-        
+                            
+        if not self._gui_service:
+            Logger.warn("CMDTHREADER: No GUI service registered.")
+                
         while(not self.stop.is_set()):
            
             if self._cmd_deck:
@@ -69,23 +73,27 @@ class CMDThreaderService(Thread):
                 cmd = self._cmd_deck.pop()
                 
                 # Update command exec progress
-                if cmd_cnt-1 == 0:
-                    self.cmdprog_gui_hook(
-                        500) if self.cmdprog_gui_hook else None
-                else:
-                    self.cmdprog_gui_hook(
-                        1000*((1)/cmd_cnt)) if self.cmdprog_gui_hook else None
+                if self._gui_service:
+                    if cmd_cnt-1 == 0:
+                        self.cmdprog_gui_hook(
+                            500) if self.cmdprog_gui_hook else None
+                    else:
+                        self.cmdprog_gui_hook(
+                            1000*((1)/cmd_cnt)) if self.cmdprog_gui_hook else None
                 
                 Logger.debug("CMDTHREADER: Executing command -> {}".format(cmd))
                 # Execute command
                 cmd()
                 
-                if cmd_cnt-1 == 0:
-                    self.cmdprog_gui_hook(1000) if self.cmdprog_gui_hook else None               
+                if self._gui_service:
+                    if cmd_cnt-1 == 0:
+                        self.cmdprog_gui_hook(1000) if self.cmdprog_gui_hook else None
+          
             else:
                 sleep(2)
                 # Reset progress
-                self.cmdprog_gui_hook(0) if self.cmdprog_gui_hook else None
+                if self._gui_service:
+                    self.cmdprog_gui_hook(0) if self.cmdprog_gui_hook else None
                 
     def on_stop(self):
         
@@ -96,6 +104,7 @@ class CMDThreaderService(Thread):
 if __name__ == '__main__':
     from functools import partial    
     cmd_t = CMDThreaderService()
+    cmd_t.start()
     
     def printer(msg):
         print msg
