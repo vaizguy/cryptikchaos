@@ -312,13 +312,14 @@ class CommService(object):
         if self._printer:
             self._printer(msg, peer_id)
         # Display device notifications
-        if notify and self._device:
-            self._device.vibrate_cb()
-            self._device.notify_cb(
-                title="ID: {}".format(peer_id), 
-                message=msg, 
-                timeout=1
-            )
+        if self._device:
+            if notify:
+                self._device.vibrate_cb()
+                self._device.notify_cb(
+                    title="ID: {}".format(peer_id), 
+                    message=msg, 
+                    timeout=1
+                )
         else:
             Logger.warn("COMM: No device service registered.")
         

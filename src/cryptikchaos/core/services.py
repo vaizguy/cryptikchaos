@@ -26,7 +26,9 @@ from functools import partial
 
 from kivy.logger import Logger
 from kivy.clock import Clock, mainthread
-# Increase kivy clock iteration
+# Increase kivy clock iteration 
+# done after switching console view from 
+# kivy label to rstDocument 
 Clock.max_iteration = 20
 
 from cryptikchaos.core.env.configuration import constants
@@ -314,7 +316,7 @@ class CoreServices(object):
                 try:
                     doc = getattr(self, 'cmd_' + arg).__doc__
                     if doc:
-                        self.print_message("%s" % str(doc), wrap=False)
+                        self.print_message("%s" % str(doc))
                         return
                 except AttributeError:
                     pass

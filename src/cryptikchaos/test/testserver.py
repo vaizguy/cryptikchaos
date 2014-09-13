@@ -30,6 +30,7 @@ pythonpath.AddSysPath('../..') # (pwd: test)
 
 from cryptikchaos.core.env.configuration import constants
 from cryptikchaos.core.comm.service import CommService
+from cryptikchaos.core.device.service import DeviceService
 from cryptikchaos.core.gui.consolesv import ConsoleScrollView
 from cryptikchaos.libs.utilities import get_time
 
@@ -83,7 +84,12 @@ CryptikChaos Test_ Server
             port=constants.LOCAL_TEST_PORT,
             clientinit=False,
             printer=self.print_message)
-
+        
+        self.device_service = DeviceService()
+        
+        # Register device service with comm service
+        self.comm_service.register_device_service(self.device_service)
+        
     def on_stop(self):
         '''Event handler for the on_stop event, which is fired when the
         application has finished running (e.g. the window is about to be

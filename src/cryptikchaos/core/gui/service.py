@@ -159,7 +159,13 @@ class GUIService(App):
 
         win = Window
         win.bind(on_keyboard=self.my_key_handler)
-
+        
+    def toggle_drawer_state(self):
+        if self.drawer.state == "open":
+            self.drawer.anim_to_state("closed")
+        else:
+            self.drawer.anim_to_state("open")
+        
     def my_key_handler(self, window, keycode1, keycode2, text, modifiers):
         
         #Logger.debug("H/W Keypress: {}".format(keycode1))
@@ -175,10 +181,7 @@ class GUIService(App):
             return True
         elif keycode1 == 319:
             # Open navbar with menu key
-            if self.drawer.state == "closed":
-                self.drawer.anim_to_state("open")
-            else:
-                self.drawer.anim_to_state("closed")
+            self.toggle_drawer_state()
             return True
         else:
             return False
