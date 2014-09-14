@@ -129,7 +129,6 @@ class MainPanel(ScreenManager):
 if __name__ == '__main__':
 
     from kivy.app import App
-    from cryptikchaos.core.env.configuration import constants
 
     # Add kivy resource paths
     from kivy.resources import resource_add_path
@@ -142,10 +141,6 @@ if __name__ == '__main__':
             root = MainPanel(
                 drawer=None,
                 greeting="MainPanel Test",
-                input_font_type=constants.GUI_INPUT_FONT_TYPE,
-                input_font_size=constants.GUI_INPUT_FONT_SIZE,
-                output_font_type=constants.GUI_OUTPUT_FONT_TYPE,
-                output_font_size=constants.GUI_OUTPUT_FONT_SIZE,
             )
 
             return root

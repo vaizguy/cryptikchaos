@@ -37,7 +37,7 @@ along with CryptikChaos. If not, see <http://www.gnu.org/licenses/>.
 
 __author__ = "Arun Vaidya"
 __version__ = "0.6.1"
-__license__ = "G"
+__license__ = "GNU GPLv3"
 
 # Minimum requirements;
 import kivy 
