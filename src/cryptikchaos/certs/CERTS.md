@@ -17,8 +17,6 @@ Instructions:
 * To create a certificate authority, use the CA.pl script:
 ```/usr/lib/ssl/misc/CA.pl -newca```
 
-* Rename the `demoCA` directory to `cryptikchaosCA`.
-
 * To create a new certificate signing request:
 ```/usr/lib/ssl/misc/CA.pl -newreq```
 
@@ -28,4 +26,8 @@ Instructions:
 * to prevent passwords from having to be manually entered you can use the openssl command to decrypt the keys:
 ```openssl rsa -in newkey.pem -out newrsakey.pem```
 
-* The last 2 steps will have to be done twice to generate both client and test server keys and certificates not before renaming them respectively with required .crt and .key extensions.
+* Rename ```newcert.pem to <peerid>.crt``` and ```newrsakey.pem to <peerid>.key```
+ 
+* Delete unused files ```rm -f newreq.pem newkey.pem```
+
+* Repeat the steps 2 till last for test server's certificate and key.
