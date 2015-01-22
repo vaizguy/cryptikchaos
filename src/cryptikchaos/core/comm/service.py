@@ -88,7 +88,7 @@ class CommService(object):
                 constants.PROJECT_PATH,
                 self.peerid
             )
-            self.ssca = "{}/certs/cryptikchaosCA/cacert.pem".format(
+            self.ssca = "{}/certs/demoCA/cacert.pem".format(
                 constants.PROJECT_PATH
             )
 
@@ -720,9 +720,7 @@ class CommService(object):
 
         # Check if peer is present
         if self.swarm_manager.get_peer(pid):
-            self._print(
-                "Peer already in list."
-            )
+            self._print("Peer already in swarm.")
             return False
 
         # Start a connection with peer

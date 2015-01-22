@@ -124,17 +124,17 @@ class TLSCtxFactory(ssl.ClientContextFactory):
         if not preverifyOK:
             # Pre-verification failed
             Logger.debug(
-                "SSLCONTEXT: Certificate verification failed, {}".format(x509.get_subject()))
+                "SSLCONTEXT: [Pre-verification] Certificate verification failed, {}".format(x509.get_subject()))
 
         else:
             # Add post verification callback here.
             # Get x509 subject
             subject = x509.get_subject()
 
-            Logger.debug("SSLCONTEXT: Certificate [{}] Verfied.".format(subject))
+            Logger.debug("SSLCONTEXT: [Pre-verification] Certificate [{}] Verfied.".format(subject))
 
             # Perform post verification checks
-            postverifyOK = self.postverifyCallback(subject)
+            postverifyOK = self.postverifyCallback(subject, preverifyOK)
 
             # Post verification tasks
             if postverifyOK:
@@ -142,7 +142,10 @@ class TLSCtxFactory(ssl.ClientContextFactory):
 
         return preverifyOK and postverifyOK
 
-    def postverifyCallback(self, subject):
+    def postverifyCallback(self, subject, preverifyOK):
+        
+        if not preverifyOK:
+            return preverifyOK
 
         # variables for post-verify callback check on cert fields
         _cert_fields = constants.SSL_CERT_FIELDS
@@ -156,18 +159,18 @@ class TLSCtxFactory(ssl.ClientContextFactory):
 
         # Check fields
         for i in _values_dict.keys():
-
-            for v in _values_dict[i]:
-                # Check fields
-                if certificate_components[_cert_fields[i]] == v:
-                    checklist_count += 1
-                    break
+            
+            if certificate_components[_cert_fields[i]] in _values_dict[i]:
+                checklist_count += 1
+            else:
+                print certificate_components[_cert_fields[i]] 
+                print _values_dict[i]
 
         # Checklist roundoff
         if checklist_count == len(_values_dict.keys()):
-            Logger.debug("SSLCONTEXT: Post certificate verfication passed.")
+            Logger.debug("SSLCONTEXT: [Post-verification] certificate verfication passed.")
             return True
         else:
             Logger.debug(
-                "SSLCONTEXT: Post certification verfication failed. ({}/6 checks passed)".format(checklist_count))
+                "SSLCONTEXT: [Post-verification] Certificate verification failed. ({}/{} checks passed)".format(checklist_count, len(_values_dict.keys())))
             return False

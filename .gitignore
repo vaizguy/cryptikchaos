@@ -57,6 +57,7 @@ archive/*
 
 # Certificates and keys
 src/cryptikchaos/certs/cryptikchaosCA/*
+src/cryptikchaos/certs/demoCA/*
 *.key
 *.crt
 *.pem

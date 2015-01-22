@@ -99,7 +99,11 @@ CryptikChaos Test_ Server
         Logger.info("TESTSERVER: Closing services.")
 
         # Close services
-        self.comm_service.__del__()
+        try:
+            self.comm_service.__del__()
+        except AttributeError:
+            pass
+                       
 
         Logger.info("TESTSERVER: Successfully closed services.")
         Logger.info("TESTSERVER: Closing Cryptikchaos Test Server.")

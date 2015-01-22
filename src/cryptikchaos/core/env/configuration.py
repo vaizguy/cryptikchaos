@@ -212,7 +212,7 @@ constants.RULER = '-'
 # ---SSL Field requirements constants-------------------------------------####
 constants.SSL_CERT_FIELDS = ('C', 'CN', 'O', 'ST', 'emailAddress', 'OU')
 constants.SSL_POST_VERIF_VALUES = {
-    1: ["cryptikchaosCA", "cryptikchaos", "criptikchaostest"],
+    1: ["cryptikchaosCA", "cryptikchaos", "cryptikchaostest"],
     4: ["cryptikchaos@googlegroups.com"]
 }
 # ------------------------------------------------------------------------####
