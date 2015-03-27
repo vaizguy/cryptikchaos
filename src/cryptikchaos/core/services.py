@@ -380,6 +380,11 @@ class CoreServices(object):
         Adds the test server to swarm.
         Usage: addtest
         """
+        
+        # Check if test mode enabled
+        if not constants.ENABLE_TEST_MODE:
+            self.print_message("Test mode has been disabled. Please enable it to use this command.")
+            return 0
 
         # Print to console
         self.print_message(
@@ -434,6 +439,11 @@ class CoreServices(object):
         Usage: test
         """
 
+        # Check if test mode enabled
+        if not constants.ENABLE_TEST_MODE:
+            self.print_message("Test mode has been disabled. Please enable it to use this command.")
+            return 0
+        
         # Print test string
         self.print_message(
             "Sending Test String: {}".format(constants.LOCAL_TEST_STR)
